@@ -29,6 +29,27 @@ function previewComments() {
   return Object.entries(saved).flatMap(([episodeId, comments]) => comments.map(comment => ({ ...comment, episodeId, id: comment.id || `${episodeId}-${comment.time}-${comment.name}` }))).filter(comment => comment.pending !== false);
 }
 
+function easternDay(value) {
+  const date = new Date(value || Date.now());
+  if (Number.isNaN(date.valueOf())) return '';
+  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(date);
+  const values = Object.fromEntries(parts.filter(part => part.type !== 'literal').map(part => [part.type, part.value]));
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
+function isPreferredActiveShow(candidate, current) {
+  const candidateRank = Number(candidate.status === 'scheduled');
+  const currentRank = Number(current.status === 'scheduled');
+  if (candidateRank !== currentRank) return candidateRank > currentRank;
+  return new Date(candidate.updatedAt || candidate.createdAt) > new Date(current.updatedAt || current.createdAt);
+}
+
+function activeDraftForDay(shows, input) {
+  const day = easternDay(input.airDate || Date.now());
+  return shows.filter(show => show.format === (input.format || 'Podcast') && ['draft', 'scheduled'].includes(show.status) && easternDay(show.airDate || show.createdAt) === day)
+    .reduce((best, show) => !best || isPreferredActiveShow(show, best) ? show : best, null);
+}
+
 async function previewRequest(url, options = {}) {
   const method = options.method || 'GET';
   if (url === '/api/auth/session') return { loggedIn: true, user: { id: 'demo', name: 'CMA Demo' }, choices: [] };
@@ -53,8 +74,10 @@ async function previewRequest(url, options = {}) {
   if (url === '/api/admin/shows' && method === 'GET') return { shows };
   if (url === '/api/admin/shows' && method === 'POST') {
     const input = JSON.parse(options.body || '{}'); const now = new Date().toISOString();
+    const existing = activeDraftForDay(shows, input);
+    if (existing) return { show: existing, reused: true };
     const show = { id: crypto.randomUUID(), slug: `demo-${now.slice(0,10)}`, status: 'draft', title: input.title || 'Untitled show', episodeTitle: input.episodeTitle || '', excerpt: '', publishBlog: input.publishBlog ?? false, category: 'News', format: input.format || 'Podcast', duration: '', readTime: '', airDate: input.airDate || now, publishAt: null, publishedAt: null, source: { type: input.sourceType || 'upload', url: '', assetId: '', twitchVideoId: '' }, media: { podcastUrl: '', twitchUrl: '', youtubeUrl: '', imageUrl: '' }, transcript: '', bodyHtml: '', chapters: [], links: [], mentions: [], quote: '', review: { blog: false, chapters: false, links: false, media: false }, ai: {}, createdAt: now, updatedAt: now };
-    shows = [show, ...shows]; storePreviewShows(shows); return { show };
+    shows = [show, ...shows]; storePreviewShows(shows); return { show, reused: false };
   }
   const match = url.match(/^\/api\/admin\/shows\/([^/]+)(?:\/(generate|transcribe|download|publish|schedule|archive))?$/);
   if (!match) throw new Error('That action is not available in the hosted preview.');
@@ -139,7 +162,7 @@ function showDashboard() {
 }
 
 function iconFor(show) { return show.format === 'Livestream' ? '◉' : show.format === 'Article' ? '✎' : '🎙'; }
-function dateLabel(show) { return new Date(show.airDate || show.createdAt).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }); }
+function dateLabel(show) { return new Date(show.airDate || show.createdAt).toLocaleDateString([], { timeZone: 'America/New_York', weekday: 'short', month: 'short', day: 'numeric' }); }
 
 function row(show) {
   const status = show.status === 'scheduled' && show.publishAt ? `Scheduled ${new Date(show.publishAt).toLocaleString([], { timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })} ET` : show.status;
@@ -147,9 +170,14 @@ function row(show) {
 }
 
 function renderDashboard() {
-  const active = state.shows.filter(show => ['draft', 'scheduled'].includes(show.status));
+  const active = state.shows.filter(show => ['draft', 'scheduled'].includes(show.status)).reduce((unique, show) => {
+    const key = `${show.format}:${easternDay(show.airDate || show.createdAt)}`;
+    const current = unique.get(key);
+    if (!current || isPreferredActiveShow(show, current)) unique.set(key, show);
+    return unique;
+  }, new Map());
   const past = state.shows.filter(show => ['published', 'archived'].includes(show.status));
-  $('#active-list').innerHTML = active.length ? active.map(row).join('') : '<div class="empty-row">Nothing waiting—start tonight’s show above.</div>';
+  $('#active-list').innerHTML = active.size ? [...active.values()].map(row).join('') : '<div class="empty-row">Nothing waiting—start tonight’s show above.</div>';
   $('#past-list').innerHTML = past.length ? past.map(row).join('') : '<div class="empty-row">Past releases will appear here.</div>';
 }
 
@@ -174,7 +202,11 @@ async function createNew(format) {
     title: names[format], episodeTitle: format === 'Article' ? '' : names[format], airDate: now.toISOString(), format,
     sourceType: format === 'Livestream' ? 'twitch' : format === 'Article' ? 'manual' : 'upload', publishBlog: format === 'Article'
   }) });
-  state.shows.unshift(payload.show); openShow(payload.show, format === 'Article' ? 'review' : 'source');
+  const existingIndex = state.shows.findIndex(show => show.id === payload.show.id);
+  if (existingIndex >= 0) state.shows[existingIndex] = payload.show;
+  else state.shows.unshift(payload.show);
+  if (payload.reused) toast(`Today’s ${format === 'Livestream' ? 'Twitch show' : format.toLowerCase()} is already open. Picking up where you left off.`);
+  openShow(payload.show, payload.show.status === 'scheduled' ? 'release' : format === 'Article' ? 'review' : 'source');
 }
 
 function openShow(show, step = 'source') {

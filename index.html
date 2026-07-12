@@ -315,6 +315,7 @@
   /* Unified episode + show notes page */
   .unified-watch{position:relative;min-height:210px;margin:18px 0;background:linear-gradient(135deg,var(--purple),var(--coral),var(--teal));border-radius:8px;display:grid;place-items:center;color:#fff;overflow:hidden}.unified-watch.hidden{display:none}.unified-watch>span{position:absolute;left:14px;bottom:12px;background:rgba(32,36,61,.75);padding:5px 8px;border-radius:3px;font:800 9px Archivo;text-transform:uppercase}.watch-play{width:62px;height:62px;border:0;border-radius:50%;background:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 28px rgba(32,36,61,.28)}.watch-play::after{content:"";border-left:19px solid var(--ink);border-top:12px solid transparent;border-bottom:12px solid transparent;margin-left:5px}.article .player{margin:18px 0}.article .player .pbtn{border:0}.chapter-block{margin:18px 0 28px}.chapter-block .chap{margin:0}.chapter-block .chap-row{cursor:pointer}.chapter-block .chap-row:hover{background:#f8edf3}.article .post-body{margin-top:28px}.platform-card{overflow:hidden}.platform-orbit{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.platform-bubble{min-height:94px;border-radius:8px;color:#fff!important;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:5px;margin:0!important;font:800 10px Archivo;text-transform:uppercase;transition:.2s transform,.2s box-shadow;animation:platformFloat 3.8s ease-in-out infinite}.platform-bubble:nth-child(2){animation-delay:-.7s}.platform-bubble:nth-child(3){animation-delay:-1.4s}.platform-bubble:nth-child(4){animation-delay:-2.1s}.platform-bubble:nth-child(5){animation-delay:-2.8s;grid-column:1/-1;min-height:78px}.platform-bubble:hover{transform:translateY(-5px) rotate(-1deg);box-shadow:0 10px 24px rgba(32,36,61,.25)}.platform-bubble b{font-size:25px;line-height:1}.platform-bubble.spotify{background:#1db954}.platform-bubble.apple{background:linear-gradient(135deg,#b44cff,#ed207c)}.platform-bubble.iheart{background:#c6002b}.platform-bubble.twitch{background:#9146ff}.platform-bubble.youtube{background:#ff0033}@keyframes platformFloat{0%,100%{translate:0 0}50%{translate:0 -4px}}.episode-community{margin-top:46px;padding:34px;border:1px solid var(--line);border-top:8px solid var(--purple);border-radius:9px;background:linear-gradient(135deg,#fbf4fa,#fff)}.community-intro{max-width:680px}.community-intro h2{font-size:clamp(25px,3vw,38px);margin:7px 0}.community-intro p{color:var(--ink-soft)}.comment-grid{display:grid;grid-template-columns:1fr .8fr;gap:22px;margin-top:25px}.comment-list{display:flex;flex-direction:column;gap:10px}.comment{background:#fff;border:1px solid var(--line);border-radius:7px;padding:16px}.comment strong{font:800 12px Archivo}.comment time{display:block;color:var(--ink-soft);font-size:10px;margin:2px 0 8px}.comment p{font-size:14px}.comment.pending{border-style:dashed;background:#fffaf0}.comment.pending::before{content:"Waiting for CMA review";display:block;color:#9b6811;font:800 9px Archivo;text-transform:uppercase;margin-bottom:7px}.comment-form{background:#fff;border:1px solid var(--line);border-radius:8px;padding:20px}.comment-form h3{font-size:17px;margin-bottom:14px}.comment-form label{display:block;font:800 10px Archivo;text-transform:uppercase;margin-bottom:11px}.comment-form input,.comment-form textarea{width:100%;margin-top:6px;padding:11px;border:1px solid var(--line);border-radius:5px;font:14px Inter}.comment-form textarea{min-height:110px;resize:vertical}.comment-form .btn{width:100%;justify-content:center}.comment-form small{display:block;color:var(--ink-soft);font-size:10px;margin-top:9px;text-align:center}
   @media(max-width:760px){.comment-grid{grid-template-columns:1fr}.episode-community{padding:24px 18px}.platform-orbit{grid-template-columns:repeat(3,1fr)}.platform-bubble:nth-child(5){grid-column:auto}.platform-bubble{min-height:78px}}
+  .platform-bubble{gap:7px}.platform-bubble img{width:29px;height:29px;display:block;object-fit:contain}.platform-bubble.spotify{background:#1ed760}.platform-bubble.apple{background:linear-gradient(135deg,#8f35d1,#d856bd)}.platform-bubble.iheart{background:#c6002b}.platform-bubble.twitch{background:#9146ff}.platform-bubble.youtube{background:#ff0000}
 </style>
 </head>
 <body>
@@ -420,7 +421,7 @@
         <div class="map-card">
           <div class="map-stage" id="listener-map"></div>
           <div class="map-loading" id="map-loading">Loading the listener map…</div>
-            <div class="map-legend"><span><i style="background:#9146ff"></i>Twitch</span><span><i style="background:#1ed760"></i>Spotify</span><span><i style="background:#ed207c"></i>Apple</span><span><i style="background:#e4312b"></i>iHeart</span><span><i style="background:#ff0033"></i>YouTube</span></div>
+            <div class="map-legend"><span><i style="background:#9146ff"></i>Twitch</span><span><i style="background:#1ed760"></i>Spotify</span><span><i style="background:#8f35d1"></i>Apple Podcasts</span><span><i style="background:#c6002b"></i>iHeartRadio</span><span><i style="background:#ff0000"></i>YouTube</span></div>
             <div class="map-focus" id="map-focus"><strong>Listeners are checking in</strong><span>Tap a pin to meet the morning crew.</span></div>
         </div>
         <aside class="checkin-panel">
@@ -533,14 +534,6 @@
     <div class="wrap">
       <div class="sec-head"><div><span class="eyebrow" style="color:var(--teal)">Read</span><h2>The CMA Blog</h2><p>Standalone stories, useful deep dives, and optional written companions—created and approved from the CMA admin page.</p></div></div>
 
-      <!-- AI workflow strip -->
-      <div class="process">
-        <div class="pstep"><div class="n"><span class="ic" style="background:var(--coral)">🎙️</span><span class="num">STEP 1</span></div><h4>Record</h4><p>Your livestream or podcast audio — or a quick Apple Voice Memo.</p></div>
-        <div class="pstep"><div class="n"><span class="ic" style="background:var(--sun);color:var(--ink)">📝</span><span class="num">STEP 2</span></div><h4>Transcribe</h4><p>Turned into text automatically — cloud or fully on-device.</p></div>
-        <div class="pstep"><div class="n"><span class="ic" style="background:var(--teal)">✦</span><span class="num">STEP 3</span></div><h4>AI drafts</h4><p>Recap, chapters, links mentioned, and a quote card — in your voice.</p></div>
-        <div class="pstep"><div class="n"><span class="ic" style="background:var(--ink)">✅</span><span class="num">STEP 4</span></div><h4>You publish</h4><p>Skim it, tweak it, hit post. Minutes, not an hour.</p></div>
-      </div>
-
       <!-- Featured post -->
       <div id="blog-feature"></div>
 
@@ -610,11 +603,11 @@
             </form>
           </div>
           <div class="aside-card platform-card"><span class="engine-tag">Listen or watch</span><h4>Take the show with you</h4><div class="platform-orbit">
-            <a class="platform-bubble spotify" id="platform-spotify" href="https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN" target="_blank" rel="noopener"><b>♫</b><span>Spotify</span></a>
-            <a class="platform-bubble apple" id="platform-apple" href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener"><b>●</b><span>Apple</span></a>
-            <a class="platform-bubble iheart" id="platform-iheart" href="https://www.iheart.com/podcast/269-the-morning-show-podcast-92979375/" target="_blank" rel="noopener"><b>♥</b><span>iHeart</span></a>
-            <a class="platform-bubble twitch" id="platform-twitch" href="https://www.twitch.tv/CarlaMarieandAnthony" target="_blank" rel="noopener"><b>◉</b><span>Twitch</span></a>
-            <a class="platform-bubble youtube" id="platform-youtube" href="https://www.youtube.com/channel/UCOevkSiHvkmZKV2NC9J_8rQ" target="_blank" rel="noopener"><b>▶</b><span>YouTube</span></a>
+            <a class="platform-bubble spotify" id="platform-spotify" href="https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/spotify/FFFFFF" alt="" aria-hidden="true"><span>Spotify</span></a>
+            <a class="platform-bubble apple" id="platform-apple" href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/applepodcasts/FFFFFF" alt="" aria-hidden="true"><span>Apple Podcasts</span></a>
+            <a class="platform-bubble iheart" id="platform-iheart" href="https://www.iheart.com/podcast/269-the-morning-show-podcast-92979375/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/iheartradio/FFFFFF" alt="" aria-hidden="true"><span>iHeartRadio</span></a>
+            <a class="platform-bubble twitch" id="platform-twitch" href="https://www.twitch.tv/CarlaMarieandAnthony" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/twitch/FFFFFF" alt="" aria-hidden="true"><span>Twitch</span></a>
+            <a class="platform-bubble youtube" id="platform-youtube" href="https://www.youtube.com/channel/UCOevkSiHvkmZKV2NC9J_8rQ" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/youtube/FFFFFF" alt="" aria-hidden="true"><span>YouTube</span></a>
           </div></div>
         </aside>
       </div>
@@ -788,7 +781,7 @@ function epCard(it,i){
       <div class="play"></div><span class="dur">${it.dur}</span>
     </div>
     <div class="ep-meta"><div class="d">${it.short}</div><h3>${it.epSub}</h3>
-      <div class="ep-listen"><span class="chip">Spotify</span><span class="chip">Apple</span><span class="chip">YouTube</span></div>
+      <div class="ep-listen"><span class="chip">Spotify</span><span class="chip">Apple Podcasts</span><span class="chip">YouTube</span></div>
     </div>
   </article>`;
 }

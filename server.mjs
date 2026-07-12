@@ -6,7 +6,7 @@ import crypto from 'node:crypto';
 import { pipeline } from 'node:stream/promises';
 import { pathToFileURL } from 'node:url';
 import { loadEnv, envFlag } from './lib/env.mjs';
-import { createShow, getShow, listShows, publishDueShows, publishShow, publicShape, updateShow } from './lib/store.mjs';
+import { createOrReuseShow, getShow, listShows, publishDueShows, publishShow, publicShape, updateShow } from './lib/store.mjs';
 import { generatePackage, runLocalProcess, transcribeFile } from './lib/ai.mjs';
 import { listTwitchVideos } from './lib/twitch.mjs';
 import { addCheckin, addComment, createAlert, listComments, moderateComment, publicCommunity } from './lib/community.mjs';
@@ -345,7 +345,10 @@ async function api(req, res, url) {
   }
 
   if (pathname === '/api/admin/shows' && req.method === 'GET') return json(res, 200, { shows: await listShows() });
-  if (pathname === '/api/admin/shows' && req.method === 'POST') return json(res, 201, { show: await createShow(await readJson(req)) });
+  if (pathname === '/api/admin/shows' && req.method === 'POST') {
+    const created = await createOrReuseShow(await readJson(req), process.env.CMA_TIMEZONE || 'America/New_York');
+    return json(res, created.reused ? 200 : 201, created);
+  }
   if (pathname === '/api/admin/alerts' && req.method === 'POST') return json(res, 201, { alert: await createAlert({ ...(await readJson(req)), source: sessionUser(req)?.name || 'CMA' }) });
   if (pathname === '/api/admin/comments' && req.method === 'GET') return json(res, 200, { comments: await listComments('pending') });
   const commentRoute = pathname.match(/^\/api\/admin\/comments\/([^/]+)\/(approve|remove)$/);
@@ -408,15 +411,22 @@ async function api(req, res, url) {
 
   if (pathname === '/api/shortcuts/ingest' && req.method === 'POST') {
     const body = await readJson(req);
-    let show = await createShow({
+    const created = await createOrReuseShow({
       title: body.title || 'Shortcut import', episodeTitle: body.episodeTitle || body.title || '', transcript: body.transcript || '',
-      sourceType: body.sourceType || 'shortcut', sourceUrl: body.sourceUrl || '', airDate: body.airDate || new Date().toISOString()
-    });
+      sourceType: body.sourceType || 'shortcut', sourceUrl: body.sourceUrl || '', airDate: body.airDate || new Date().toISOString(), format: body.format || 'Podcast'
+    }, process.env.CMA_TIMEZONE || 'America/New_York');
+    let show = created.show;
+    if (created.reused && body.transcript && !show.transcript?.trim()) {
+      show = await updateShow(show.id, {
+        transcript: body.transcript,
+        source: { ...show.source, type: body.sourceType || 'shortcut', url: body.sourceUrl || show.source?.url || '' }
+      });
+    }
     if (body.generate && show.transcript) {
       const result = await generatePackage(show, body.provider || 'auto');
       show = await updateShow(show.id, applyGenerated(show, result));
     }
-    return json(res, 201, { show });
+    return json(res, created.reused ? 200 : 201, { show, reused: created.reused });
   }
 
   return false;
