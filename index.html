@@ -312,6 +312,9 @@
   .coming-grid{grid-template-columns:repeat(2,1fr)}
   .map-card{position:relative;padding:0;background:#dcecff}.map-stage{min-height:520px;background:#dcecff;border-radius:10px;overflow:hidden}.map-stage .maplibregl-canvas{outline:0}.map-stage .maplibregl-ctrl-attrib{font-size:9px}.map-stage .maplibregl-ctrl-group{border-radius:4px}.listener-marker{width:32px;height:40px;cursor:pointer;filter:drop-shadow(0 5px 5px rgba(17,21,41,.35))}.listener-pin{position:relative;width:27px;height:27px;border:3px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);animation:realPinPulse 2.6s infinite}.listener-pin::after{content:"";position:absolute;width:7px;height:7px;left:7px;top:7px;border-radius:50%;background:#fff}.listener-marker:hover .listener-pin,.listener-marker.active .listener-pin{scale:1.25;animation:none}@keyframes realPinPulse{0%,100%{box-shadow:0 0 0 0 rgba(237,32,124,.55)}50%{box-shadow:0 0 0 11px rgba(237,32,124,0)}}.map-card .map-focus{left:22px;bottom:34px}.map-card .map-legend{right:14px;top:14px}.map-loading{position:absolute;inset:0;display:grid;place-items:center;background:var(--ink);color:#fff;font:800 12px Archivo;z-index:6}.map-loading.hidden{display:none}
   @media(max-width:760px){.support-feature{grid-template-columns:1fr;padding:30px 25px}.coming-grid{grid-template-columns:1fr}.map-card .map-focus{left:12px;bottom:38px}.map-card .map-legend{right:12px;top:12px}.map-stage{min-height:440px}}
+  /* Unified episode + show notes page */
+  .unified-watch{position:relative;min-height:210px;margin:18px 0;background:linear-gradient(135deg,var(--purple),var(--coral),var(--teal));border-radius:8px;display:grid;place-items:center;color:#fff;overflow:hidden}.unified-watch.hidden{display:none}.unified-watch>span{position:absolute;left:14px;bottom:12px;background:rgba(32,36,61,.75);padding:5px 8px;border-radius:3px;font:800 9px Archivo;text-transform:uppercase}.watch-play{width:62px;height:62px;border:0;border-radius:50%;background:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 28px rgba(32,36,61,.28)}.watch-play::after{content:"";border-left:19px solid var(--ink);border-top:12px solid transparent;border-bottom:12px solid transparent;margin-left:5px}.article .player{margin:18px 0}.article .player .pbtn{border:0}.chapter-block{margin:18px 0 28px}.chapter-block .chap{margin:0}.chapter-block .chap-row{cursor:pointer}.chapter-block .chap-row:hover{background:#f8edf3}.article .post-body{margin-top:28px}.platform-card{overflow:hidden}.platform-orbit{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.platform-bubble{min-height:94px;border-radius:8px;color:#fff!important;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:5px;margin:0!important;font:800 10px Archivo;text-transform:uppercase;transition:.2s transform,.2s box-shadow;animation:platformFloat 3.8s ease-in-out infinite}.platform-bubble:nth-child(2){animation-delay:-.7s}.platform-bubble:nth-child(3){animation-delay:-1.4s}.platform-bubble:nth-child(4){animation-delay:-2.1s}.platform-bubble:nth-child(5){animation-delay:-2.8s;grid-column:1/-1;min-height:78px}.platform-bubble:hover{transform:translateY(-5px) rotate(-1deg);box-shadow:0 10px 24px rgba(32,36,61,.25)}.platform-bubble b{font-size:25px;line-height:1}.platform-bubble.spotify{background:#1db954}.platform-bubble.apple{background:linear-gradient(135deg,#b44cff,#ed207c)}.platform-bubble.iheart{background:#c6002b}.platform-bubble.twitch{background:#9146ff}.platform-bubble.youtube{background:#ff0033}@keyframes platformFloat{0%,100%{translate:0 0}50%{translate:0 -4px}}.episode-community{margin-top:46px;padding:34px;border:1px solid var(--line);border-top:8px solid var(--purple);border-radius:9px;background:linear-gradient(135deg,#fbf4fa,#fff)}.community-intro{max-width:680px}.community-intro h2{font-size:clamp(25px,3vw,38px);margin:7px 0}.community-intro p{color:var(--ink-soft)}.comment-grid{display:grid;grid-template-columns:1fr .8fr;gap:22px;margin-top:25px}.comment-list{display:flex;flex-direction:column;gap:10px}.comment{background:#fff;border:1px solid var(--line);border-radius:7px;padding:16px}.comment strong{font:800 12px Archivo}.comment time{display:block;color:var(--ink-soft);font-size:10px;margin:2px 0 8px}.comment p{font-size:14px}.comment.pending{border-style:dashed;background:#fffaf0}.comment.pending::before{content:"Waiting for CMA review";display:block;color:#9b6811;font:800 9px Archivo;text-transform:uppercase;margin-bottom:7px}.comment-form{background:#fff;border:1px solid var(--line);border-radius:8px;padding:20px}.comment-form h3{font-size:17px;margin-bottom:14px}.comment-form label{display:block;font:800 10px Archivo;text-transform:uppercase;margin-bottom:11px}.comment-form input,.comment-form textarea{width:100%;margin-top:6px;padding:11px;border:1px solid var(--line);border-radius:5px;font:14px Inter}.comment-form textarea{min-height:110px;resize:vertical}.comment-form .btn{width:100%;justify-content:center}.comment-form small{display:block;color:var(--ink-soft);font-size:10px;margin-top:9px;text-align:center}
+  @media(max-width:760px){.comment-grid{grid-template-columns:1fr}.episode-community{padding:24px 18px}.platform-orbit{grid-template-columns:repeat(3,1fr)}.platform-bubble:nth-child(5){grid-column:auto}.platform-bubble{min-height:78px}}
 </style>
 </head>
 <body>
@@ -572,69 +575,32 @@
   </section>
 </div>
 
-<!-- ============ EPISODE DETAIL (player-forward) ============ -->
-<div id="episode" class="view">
-  <section class="detail">
-    <div class="wrap">
-      <span class="back" data-nav="episodes">← All episodes</span>
-      <div class="detail-grid">
-        <div>
-          <span class="eyebrow" id="e-date"></span>
-          <h1 id="e-title" style="font-size:clamp(26px,3.8vw,42px);font-weight:900;margin:10px 0 18px"></h1>
-          <div class="watch">
-            <div class="screen photo" id="e-screen"><div class="play"></div><span class="cam">📷 Full livestream replay</span></div>
-          </div>
-          <div class="player">
-            <div class="row"><div class="pbtn"></div><div><div class="ptitle">Listen to the podcast</div><div class="ptime"><span id="e-dur"></span> · The Morning Show Podcast</div></div></div>
-            <div class="track"><i></i></div>
-          </div>
-          <span class="engine-tag">✦ AI chapters · auto-generated from the episode</span>
-          <div class="chap" id="e-chapters"></div>
-          <div class="crosslink">
-            <div><div class="cl-t">📝 Prefer to read?</div><div class="cl-s">The full written recap, links, and quote card.</div></div>
-            <button class="btn coral sm" id="e-to-post">Read the recap →</button>
-          </div>
-        </div>
-        <div>
-          <div class="aside-card"><h4>Listen on</h4>
-            <a class="platform" href="https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN" target="_blank" rel="noopener">Spotify</a>
-            <a class="platform" href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener">Apple Podcasts</a>
-            <a class="platform" href="https://www.iheart.com/podcast/269-the-morning-show-podcast-92979375/" target="_blank" rel="noopener">iHeartRadio</a>
-            <a class="platform" href="https://www.youtube.com/channel/UCOevkSiHvkmZKV2NC9J_8rQ" target="_blank" rel="noopener">YouTube</a>
-          </div>
-          <div class="aside-card"><h4>Watch the stream</h4>
-            <a class="platform" href="https://www.twitch.tv/CarlaMarieandAnthony" target="_blank" rel="noopener">Twitch</a>
-            <a class="platform" href="https://www.youtube.com/channel/UCOevkSiHvkmZKV2NC9J_8rQ" target="_blank" rel="noopener">YouTube Live</a>
-          </div>
-          <div class="aside-card community-placeholder"><span class="engine-tag">Community pilot</span><h4>Episode conversation</h4><p>Listener comments will live here after moderation, sign-in, and Spotify-sharing options are finalized.</p></div>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
-
-<!-- ============ BLOG POST DETAIL (article-forward) ============ -->
+<!-- ============ UNIFIED EPISODE + SHOW NOTES DETAIL ============ -->
 <div id="post" class="view">
   <section class="detail">
     <div class="wrap">
-      <span class="back" data-nav="blog">← Show Notes</span>
+      <span class="back" data-nav="episodes">← Episodes &amp; show notes</span>
       <div class="detail-grid">
         <div class="article">
           <div class="kicker"><span class="chip-cat" id="p-cat"></span><span class="engine-tag" style="margin:0">✦ Auto-drafted from the episode, reviewed by the team</span></div>
           <h1 id="p-title"></h1>
-          <div class="by"><span id="p-date"></span> · <span id="p-read"></span> · The Carla Marie &amp; Anthony Show</div>
+          <div class="by"><span id="p-date"></span> · <span id="p-read"></span> · <span id="p-format"></span> · The Carla Marie &amp; Anthony Show</div>
           <div class="lead-img photo" id="p-img"><span class="cam">📷 New branding photo</span></div>
+
+          <div class="unified-watch hidden" id="u-watch"><button class="watch-play" id="u-watch-play" aria-label="Watch the full replay"></button><span>Watch the full stream replay</span></div>
+          <div class="player" id="u-player">
+            <div class="row"><button class="pbtn" id="u-play" aria-label="Open the podcast"></button><div><div class="ptitle" id="u-player-title">Listen to the podcast</div><div class="ptime"><span id="u-duration"></span> · The Morning Show Podcast</div></div></div>
+            <div class="track"><i></i></div>
+          </div>
+          <div class="chapter-block"><span class="engine-tag">✦ AI chapters · reviewed by CMA</span><div class="chap" id="u-chapters"></div></div>
+
           <div class="post-body" id="p-body"></div>
           <div class="quote-card">
             <div class="qt" id="p-quote"></div>
-            <div class="qmeta"><span class="qby"><b>The Carla Marie &amp; Anthony Show</b></span><button class="qshare" onclick="alert('Prototype: exports a share-ready image or posts straight to social.')">⤴ Share card</button></div>
-          </div>
-          <div class="crosslink">
-            <div><div class="cl-t">🎧 Rather listen?</div><div class="cl-s">Play this episode — audio or the full stream.</div></div>
-            <button class="btn coral sm" id="p-to-ep">Listen to the episode →</button>
+            <div class="qmeta"><span class="qby"><b>The Carla Marie &amp; Anthony Show</b></span><button class="qshare" id="share-quote">⤴ Share card</button></div>
           </div>
         </div>
-        <div>
+        <aside>
           <div class="aside-card links-card"><span class="engine-tag">✦ Auto-extracted</span><h4>Links mentioned</h4><ul id="p-links"></ul></div>
           <div class="aside-card links-card" id="mentions-card"><span class="engine-tag">✦ Detected in the transcript</span><h4>Things mentioned</h4><ul id="p-mentions"></ul></div>
           <div class="aside-card"><h4>Never miss a morning</h4>
@@ -643,8 +609,20 @@
               <button class="btn coral sm" style="width:100%;justify-content:center" type="submit">Sign up</button>
             </form>
           </div>
-        </div>
+          <div class="aside-card platform-card"><span class="engine-tag">Listen or watch</span><h4>Take the show with you</h4><div class="platform-orbit">
+            <a class="platform-bubble spotify" id="platform-spotify" href="https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN" target="_blank" rel="noopener"><b>♫</b><span>Spotify</span></a>
+            <a class="platform-bubble apple" id="platform-apple" href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener"><b>●</b><span>Apple</span></a>
+            <a class="platform-bubble iheart" id="platform-iheart" href="https://www.iheart.com/podcast/269-the-morning-show-podcast-92979375/" target="_blank" rel="noopener"><b>♥</b><span>iHeart</span></a>
+            <a class="platform-bubble twitch" id="platform-twitch" href="https://www.twitch.tv/CarlaMarieandAnthony" target="_blank" rel="noopener"><b>◉</b><span>Twitch</span></a>
+            <a class="platform-bubble youtube" id="platform-youtube" href="https://www.youtube.com/channel/UCOevkSiHvkmZKV2NC9J_8rQ" target="_blank" rel="noopener"><b>▶</b><span>YouTube</span></a>
+          </div></div>
+        </aside>
       </div>
+
+      <section class="episode-community" id="episode-community">
+        <div class="community-intro"><span class="eyebrow">Community pilot</span><h2>Keep the conversation going</h2><p>A moderated place to react to this episode—even if you do not use Spotify or Instagram.</p></div>
+        <div class="comment-grid"><div class="comment-list" id="episode-comments"></div><form class="comment-form" id="comment-form"><h3>Join this episode’s conversation</h3><label>Name or handle<input name="name" maxlength="40" required placeholder="MorningShowFan"></label><label>Your comment<textarea name="comment" maxlength="500" required placeholder="What did you think?"></textarea></label><button class="btn coral" type="submit">Submit for review</button><small id="comment-status">Comments appear after CMA moderation.</small></form></div>
+      </section>
     </div>
   </section>
 </div>
@@ -769,8 +747,13 @@ let QUOTES = {
 const CATCOLOR = {"News":"#ED207C","Pop Culture":"#1B9A8B","Games":"#20243D","Life":"#A54D98"};
 
 const $ = s=>document.querySelector(s);
-const views = ['home','episodes','blog','about','episode','post'];
+const views = ['home','episodes','blog','about','post'];
 let current = 0;
+const COMMENT_KEY='cma-episode-comments';
+const DEMO_COMMENTS=[
+  {name:'PNW Morning Crew',time:'Today at 8:42 AM',comment:'The chapter links make it so easy to jump back to the part I wanted to send my sister.'},
+  {name:'Jersey Jen',time:'Today at 9:06 AM',comment:'Listening from Hoboken and I absolutely picked the same side in this story.'}
+];
 
 /* ---- card renderers ---- */
 function epCard(it,i){
@@ -839,40 +822,38 @@ function renderBlog(cat='all',q=''){
   $('#all-posts').innerHTML = rows || `<p style="color:var(--ink-soft);padding:20px 0">No posts match — try another word or category.</p>`;
 }
 
-/* ---- detail views ---- */
-function openEpisode(i){
-  current=i; const it=ITEMS[i];
-  $('#e-date').textContent = it.date + ' · ' + it.fmt;
-  $('#e-title').textContent = it.epSub;
-  $('#e-dur').textContent = it.dur;
-  $('#e-screen').style.background = it.grad;
-  $('#e-chapters').innerHTML = (CHAPTERS[i]||CHAPTERS[0]).map(c=>`<div class="chap-row"><span class="ts">${c[0]}</span><span class="ct">${c[1]}</span></div>`).join('');
-  const watchUrl=it.media?.twitchUrl||it.media?.youtubeUrl;
-  const listenUrl=it.media?.podcastUrl;
-  $('#e-to-post').style.display=it.publishBlog===false?'none':'';
-  const watchButton=$('#e-screen .play');
-  const listenButton=$('.player .pbtn');
-  watchButton.title=watchUrl?'Open the full replay':'Replay link coming soon';
-  listenButton.title=listenUrl?'Open the podcast':'Podcast link coming soon';
-  watchButton.onclick=()=>watchUrl&&window.open(watchUrl,'_blank','noopener');
-  listenButton.onclick=()=>listenUrl&&window.open(listenUrl,'_blank','noopener');
-  show('episode');
+/* ---- one unified episode + show notes view ---- */
+function renderEpisodeComments(item){
+  const key=item.id||`${item.date}-${item.epSub}`;const saved=JSON.parse(localStorage.getItem(COMMENT_KEY)||'{}');const pending=saved[key]||[];
+  const approved=communityComments.filter(comment=>comment.episodeId===key).map(comment=>({...comment,time:new Date(comment.createdAt).toLocaleDateString([],{month:'short',day:'numeric'})}));
+  $('#episode-comments').innerHTML=[...DEMO_COMMENTS,...approved,...pending].map(comment=>`<article class="comment ${comment.pending?'pending':''}"><strong>${String(comment.name).replace(/[<>]/g,'')}</strong><time>${comment.time}</time><p>${String(comment.comment).replace(/[<>]/g,'')}</p></article>`).join('');
 }
-function openPost(i){
+function openUnified(i){
   current=i; const it=ITEMS[i]; const c=CATCOLOR[it.cat]||'#171410';
   const cat=$('#p-cat'); cat.textContent=it.cat; cat.style.background=c;
   $('#p-title').textContent = it.postTitle;
   $('#p-date').textContent = it.date;
   $('#p-read').textContent = it.read;
+  $('#p-format').textContent = it.fmt;
   $('#p-img').style.background = it.grad;
   $('#p-body').innerHTML = it.body;
   $('#p-quote').textContent = QUOTES[i]||QUOTES[0];
+  const listenUrl=it.media?.podcastUrl||'';const watchUrl=it.media?.twitchUrl||it.media?.youtubeUrl||'';
+  $('#u-duration').textContent=it.dur;$('#u-player-title').textContent=it.fmt==='Livestream'?'Listen to the podcast version':'Listen to the podcast';
+  $('#u-play').title=listenUrl?'Open the podcast':'Podcast link coming soon';$('#u-play').onclick=()=>listenUrl&&window.open(listenUrl,'_blank','noopener');
+  $('#u-watch').classList.toggle('hidden',it.fmt!=='Livestream'||!watchUrl);$('#u-watch-play').onclick=()=>watchUrl&&window.open(watchUrl,'_blank','noopener');
+  $('#u-chapters').innerHTML=(CHAPTERS[i]||CHAPTERS[0]).map(c=>`<div class="chap-row" data-chapter-url="${listenUrl}"><span class="ts">${c[0]}</span><span class="ct">${c[1]}</span></div>`).join('');
   $('#p-links').innerHTML = (LINKS[i]||LINKS[0]).map(l=>`<li><span>${l[0]}</span><a href="${l[1]}" target="_blank" rel="noopener">Open →</a></li>`).join('');
   const mentions=it.mentions||[];
   $('#mentions-card').style.display=mentions.length?'block':'none';
   $('#p-mentions').innerHTML=mentions.map(m=>`<li><span><strong>${m.name}</strong><br><small>${m.context||m.type}</small></span>${m.verifiedUrl?`<a href="${m.verifiedUrl}" target="_blank" rel="noopener">Open →</a>`:'<span style="color:var(--ink-soft);font-size:11px">Mentioned</span>'}</li>`).join('');
+  if(watchUrl)$('#platform-twitch').href=it.media?.twitchUrl||'https://www.twitch.tv/CarlaMarieandAnthony';
+  if(it.media?.youtubeUrl)$('#platform-youtube').href=it.media.youtubeUrl;
+  renderEpisodeComments(it);
   show('post');
 }
+function openEpisode(i){openUnified(i)}
+function openPost(i){openUnified(i)}
 function show(id){
   views.forEach(v=>document.getElementById(v).classList.toggle('active', v===id));
   document.querySelectorAll('nav.links a[data-nav]').forEach(a=>a.classList.toggle('active', a.dataset.nav===id));
@@ -885,8 +866,9 @@ document.addEventListener('click',e=>{
   const po=e.target.closest('[data-post]'); if(po){openPost(+po.dataset.post);return;}
   const nv=e.target.closest('[data-nav]'); if(nv){show(nv.dataset.nav);}
 });
-$('#e-to-post').addEventListener('click',()=>openPost(current));
-$('#p-to-ep').addEventListener('click',()=>openEpisode(current));
+$('#u-chapters').addEventListener('click',event=>{const row=event.target.closest('[data-chapter-url]');if(row?.dataset.chapterUrl)window.open(row.dataset.chapterUrl,'_blank','noopener');});
+$('#share-quote').addEventListener('click',async()=>{const item=ITEMS[current];const text=`“${$('#p-quote').textContent}” — The Carla Marie & Anthony Show`;try{if(navigator.share)await navigator.share({title:item.postTitle,text,url:location.href});else{await navigator.clipboard.writeText(`${text}\n${location.href}`);alert('Quote and episode link copied.');}}catch{}});
+$('#comment-form').addEventListener('submit',async event=>{event.preventDefault();const item=ITEMS[current];const key=item.id||`${item.date}-${item.epSub}`;const form=new FormData(event.currentTarget);const input={episodeId:key,episodeTitle:item.postTitle,name:form.get('name').trim(),comment:form.get('comment').trim()};let submitted;try{const response=await fetch('/api/public/comments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)});if(!response.ok)throw new Error();submitted=(await response.json()).comment;}catch{submitted={...input,id:`local-${Date.now()}`};}const saved=JSON.parse(localStorage.getItem(COMMENT_KEY)||'{}');saved[key]=[...(saved[key]||[]),{...submitted,time:'Submitted just now',pending:true}];localStorage.setItem(COMMENT_KEY,JSON.stringify(saved));event.currentTarget.reset();$('#comment-status').textContent='✓ Submitted. CMA can approve it before it appears publicly.';renderEpisodeComments(item);});
 
 // episodes filters/search
 $('#ep-chips').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
@@ -938,7 +920,7 @@ hydratePublished();
 const CHECKIN_KEY='cma-demo-checkins';
 const PLATFORM_COLORS={twitch:'#9146ff',spotify:'#1ed760',apple:'#ed207c',iheart:'#e4312b',youtube:'#ff0033',other:'#1b9a8b'};
 const REGION_COORDS={WA:[-120.7,47.4],OR:[-120.5,44],CA:[-119.5,36.7],NV:[-116.6,39],AZ:[-111.7,34.3],UT:[-111.6,39.3],ID:[-114.5,44.2],MT:[-109.6,47],WY:[-107.6,43],CO:[-105.5,39],NM:[-106,34.5],ND:[-100.5,47.5],SD:[-100,44.5],NE:[-99.8,41.5],KS:[-98.4,38.5],OK:[-97.5,35.6],TX:[-99.3,31.2],MN:[-94.5,46],IA:[-93.5,42],MO:[-92.5,38.4],AR:[-92.4,34.9],LA:[-92,31],WI:[-89.8,44.6],IL:[-89.4,40],MI:[-85.5,44.3],IN:[-86.1,39.9],OH:[-82.8,40.3],KY:[-85.3,37.7],TN:[-86.4,35.8],MS:[-89.7,32.7],AL:[-86.8,32.8],GA:[-83.5,32.7],FL:[-82.4,28.1],SC:[-80.9,33.8],NC:[-79.4,35.5],VA:[-78.7,37.5],WV:[-80.5,38.6],PA:[-77.7,41],NY:[-75.5,43],NJ:[-74.5,40.1],MD:[-76.7,39],DE:[-75.5,39],CT:[-72.7,41.6],RI:[-71.5,41.7],MA:[-71.8,42.2],VT:[-72.7,44],NH:[-71.6,43.7],ME:[-69,45.2],AK:[-152,64],HI:[-157,20.8]};
-let communityCheckins=[],listenerMap=null,mapMarkers=[];
+let communityCheckins=[],communityComments=[],listenerMap=null,mapMarkers=[];
 
 function checkinCoords(item){
   const longitude=Number(item.longitude),latitude=Number(item.latitude);
@@ -982,7 +964,7 @@ async function loadCommunity(){
   catch{
     try{payload=await fetch('data/community.json').then(response=>response.json());}catch{payload={checkins:[],alerts:[]};}
   }
-  const local=JSON.parse(localStorage.getItem(CHECKIN_KEY)||'[]');communityCheckins=[...local,...(payload.checkins||[])];initListenerMap(payload.mapStyleUrl);renderCheckins();
+  const local=JSON.parse(localStorage.getItem(CHECKIN_KEY)||'[]');communityCheckins=[...local,...(payload.checkins||[])];communityComments=payload.comments||[];initListenerMap(payload.mapStyleUrl);renderCheckins();if($('#post').classList.contains('active'))renderEpisodeComments(ITEMS[current]);
   if(payload.discordInviteUrl){const link=$('#discord-join');link.href=payload.discordInviteUrl;link.target='_blank';link.rel='noopener';link.textContent='Join the CMA Discord';link.classList.remove('disabled');link.removeAttribute('aria-disabled');}
   const demoAlerts=JSON.parse(localStorage.getItem('cma-community-alerts')||'[]');showNewestAlert([...demoAlerts,...(payload.alerts||[])].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)));
 }

@@ -193,10 +193,13 @@ Android and supported desktop browsers can use the browser's one-tap install pro
 - `GET /api/public/content` — published packages only.
 - `GET /api/public/community` — listener pins, recent alerts, and the configured Discord invite.
 - `POST /api/public/checkins` — privacy-limited city/state listener check-in.
+- `POST /api/public/comments` — submit an episode comment into CMA's moderation queue.
 - `GET/POST /api/admin/shows` — list/create packages.
 - `PATCH /api/admin/shows/:id` — edit the complete package.
 - `POST /api/admin/uploads` — private raw media upload.
 - `POST /api/admin/alerts` — create a custom listener announcement.
+- `GET /api/admin/comments` — comments waiting for CMA review.
+- `POST /api/admin/comments/:id/approve|remove` — publish or discard a listener comment.
 - `POST /api/admin/shows/:id/download` — download linked media locally.
 - `POST /api/admin/shows/:id/transcribe` — local/OpenAI transcription.
 - `POST /api/admin/shows/:id/generate` — local/OpenAI/Gemini editorial draft.

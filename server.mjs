@@ -9,7 +9,7 @@ import { loadEnv, envFlag } from './lib/env.mjs';
 import { createShow, getShow, listShows, publishDueShows, publishShow, publicShape, updateShow } from './lib/store.mjs';
 import { generatePackage, runLocalProcess, transcribeFile } from './lib/ai.mjs';
 import { listTwitchVideos } from './lib/twitch.mjs';
-import { addCheckin, createAlert, publicCommunity } from './lib/community.mjs';
+import { addCheckin, addComment, createAlert, listComments, moderateComment, publicCommunity } from './lib/community.mjs';
 
 const ROOT = process.cwd();
 loadEnv(ROOT);
@@ -23,6 +23,7 @@ const SESSION_COOKIE = 'cma_admin_session';
 const SESSION_KEY = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
 const loginAttempts = new Map();
 const checkinAttempts = new Map();
+const commentAttempts = new Map();
 
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8',
@@ -122,6 +123,13 @@ function checkinAllowed(req) {
   if (recent.length >= 5) return false;
   checkinAttempts.set(key, [...recent, now]);
   return true;
+}
+
+function commentAllowed(req) {
+  const key = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
+  const now = Date.now(); const recent = (commentAttempts.get(key) || []).filter(time => now - time < 60 * 60 * 1000);
+  if (recent.length >= 4) return false;
+  commentAttempts.set(key, [...recent, now]); return true;
 }
 
 function authorized(req) {
@@ -267,6 +275,11 @@ async function api(req, res, url) {
     return json(res, 201, { checkin: await addCheckin(await readJson(req)) });
   }
 
+  if (pathname === '/api/public/comments' && req.method === 'POST') {
+    if (!commentAllowed(req)) return errorJson(res, 429, 'That is enough comments for now. Try again later.');
+    return json(res, 201, { comment: await addComment(await readJson(req)) });
+  }
+
   if (pathname === '/api/health' && req.method === 'GET') {
     return json(res, 200, { ok: true, service: 'cma-show-platform', time: new Date().toISOString() });
   }
@@ -334,6 +347,12 @@ async function api(req, res, url) {
   if (pathname === '/api/admin/shows' && req.method === 'GET') return json(res, 200, { shows: await listShows() });
   if (pathname === '/api/admin/shows' && req.method === 'POST') return json(res, 201, { show: await createShow(await readJson(req)) });
   if (pathname === '/api/admin/alerts' && req.method === 'POST') return json(res, 201, { alert: await createAlert({ ...(await readJson(req)), source: sessionUser(req)?.name || 'CMA' }) });
+  if (pathname === '/api/admin/comments' && req.method === 'GET') return json(res, 200, { comments: await listComments('pending') });
+  const commentRoute = pathname.match(/^\/api\/admin\/comments\/([^/]+)\/(approve|remove)$/);
+  if (commentRoute && req.method === 'POST') {
+    const comment = await moderateComment(decodeURIComponent(commentRoute[1]), commentRoute[2]);
+    return comment ? json(res, 200, { comment }) : errorJson(res, 404, 'Comment not found.');
+  }
   if (pathname === '/api/admin/uploads' && req.method === 'POST') return json(res, 201, await saveUpload(req, url));
   if (pathname === '/api/admin/twitch/videos' && req.method === 'GET') return json(res, 200, { videos: await listTwitchVideos(Number(url.searchParams.get('limit') || 10)) });
 

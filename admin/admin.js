@@ -1,6 +1,6 @@
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
-const state = { status: null, user: null, shows: [], current: null, step: 'source', saveTimer: null, saving: false };
+const state = { status: null, user: null, shows: [], comments: [], current: null, step: 'source', saveTimer: null, saving: false };
 const hostedPreview = location.hostname.endsWith('vercel.app') || location.hostname.endsWith('github.io') || new URLSearchParams(location.search).has('staticPreview');
 const PREVIEW_SHOWS_KEY = 'cma-hosted-preview-content-v2';
 const PREVIEW_ALERTS_KEY = 'cma-demo-alerts';
@@ -24,6 +24,10 @@ function storePreviewAlert(input) {
   localStorage.setItem('cma-community-alerts', JSON.stringify([alert, ...alerts].slice(0, 25)));
   return alert;
 }
+function previewComments() {
+  const saved = JSON.parse(localStorage.getItem('cma-episode-comments') || '{}');
+  return Object.entries(saved).flatMap(([episodeId, comments]) => comments.map(comment => ({ ...comment, episodeId, id: comment.id || `${episodeId}-${comment.time}-${comment.name}` }))).filter(comment => comment.pending !== false);
+}
 
 async function previewRequest(url, options = {}) {
   const method = options.method || 'GET';
@@ -34,6 +38,16 @@ async function previewRequest(url, options = {}) {
     openai: { ready: false }, localTranscription: { ready: false }, localGeneration: { ready: false }, gemini: { ready: false }, megaphone: { ready: false }, twitch: { ready: false }
   } };
   if (url === '/api/admin/alerts' && method === 'POST') return { alert: storePreviewAlert(JSON.parse(options.body || '{}')) };
+  if (url === '/api/admin/comments' && method === 'GET') return { comments: previewComments() };
+  const previewCommentRoute = url.match(/^\/api\/admin\/comments\/([^/]+)\/(approve|remove)$/);
+  if (previewCommentRoute && method === 'POST') {
+    const saved = JSON.parse(localStorage.getItem('cma-episode-comments') || '{}');
+    for (const [episodeId, comments] of Object.entries(saved)) saved[episodeId] = comments.filter(comment => {
+      const id = comment.id || `${episodeId}-${comment.time}-${comment.name}`; if (id !== decodeURIComponent(previewCommentRoute[1])) return true;
+      if (previewCommentRoute[2] === 'approve') { comment.pending = false; return true; } return false;
+    });
+    localStorage.setItem('cma-episode-comments', JSON.stringify(saved)); return { comment: { id: decodeURIComponent(previewCommentRoute[1]) } };
+  }
   if (url.startsWith('/api/admin/twitch/videos')) return { videos: [{ id: 'demo-vod', title: 'CMA Live — demo replay', url: 'https://www.twitch.tv/CarlaMarieandAnthony', createdAt: new Date().toISOString(), duration: '1h 12m', thumbnailUrl: '../assets/cma-hero.webp' }] };
   let shows = await previewShows();
   if (url === '/api/admin/shows' && method === 'GET') return { shows };
@@ -109,10 +123,10 @@ async function boot() {
 }
 
 async function loadData() {
-  const [status, content] = await Promise.all([request('/api/admin/status'), request('/api/admin/shows')]);
-  state.status = status; state.shows = content.shows;
+  const [status, content, moderation] = await Promise.all([request('/api/admin/status'), request('/api/admin/shows'), request('/api/admin/comments')]);
+  state.status = status; state.shows = content.shows; state.comments = moderation.comments || [];
   if (state.current) state.current = state.shows.find(show => show.id === state.current.id) || null;
-  renderConnections(); renderDashboard();
+  renderConnections(); renderDashboard(); renderModeration();
 }
 
 function showDashboard() {
@@ -137,6 +151,11 @@ function renderDashboard() {
   const past = state.shows.filter(show => ['published', 'archived'].includes(show.status));
   $('#active-list').innerHTML = active.length ? active.map(row).join('') : '<div class="empty-row">Nothing waiting—start tonight’s show above.</div>';
   $('#past-list').innerHTML = past.length ? past.map(row).join('') : '<div class="empty-row">Past releases will appear here.</div>';
+}
+
+function renderModeration() {
+  $('#comment-count').textContent = state.comments.length;
+  $('#moderation-list').innerHTML = state.comments.length ? state.comments.map(comment => `<article class="moderation-item"><span><strong>${esc(comment.name)}</strong><small>${esc(comment.episodeTitle || 'Episode conversation')}</small></span><div class="moderation-actions"><button class="approve" data-comment-action="approve" data-comment-id="${esc(comment.id)}">Approve</button><button data-comment-action="remove" data-comment-id="${esc(comment.id)}">Remove</button></div><p>${esc(comment.comment)}</p></article>`).join('') : '<div class="moderation-empty">Nothing waiting right now.</div>';
 }
 
 function renderConnections() {
@@ -302,6 +321,9 @@ document.addEventListener('click', event => {
   const opener = event.target.closest('[data-open]'); if (opener) { const show = state.shows.find(item => item.id === opener.dataset.open); if (show) openShow(show, show.status === 'scheduled' ? 'release' : 'review'); }
   const go = event.target.closest('[data-go]'); if (go) goStep(go.dataset.go);
   const step = event.target.closest('#steps [data-step]'); if (step) goStep(step.dataset.step);
+  const moderation = event.target.closest('[data-comment-action]'); if (moderation) {
+    request(`/api/admin/comments/${encodeURIComponent(moderation.dataset.commentId)}/${moderation.dataset.commentAction}`, { method: 'POST', body: '{}' }).then(() => { state.comments = state.comments.filter(comment => comment.id !== moderation.dataset.commentId); renderModeration(); toast(moderation.dataset.commentAction === 'approve' ? 'Comment approved.' : 'Comment removed.'); }).catch(error => toast(error.message, 'error'));
+  }
   const add = event.target.closest('[data-add]'); if (add && state.current) {
     if (add.dataset.add === 'link') state.current.links.push({ label: '', url: '', context: '' });
     if (add.dataset.add === 'mention') state.current.mentions.push({ name: '', type: 'other', context: '', searchQuery: '', verifiedUrl: '' });

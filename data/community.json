@@ -7,5 +7,6 @@
     { "id": "demo-chicago", "name": "Morning Mike", "city": "Chicago", "region": "IL", "latitude": 41.878, "longitude": -87.63, "platforms": ["iheart"], "createdAt": "2026-07-12T14:02:00.000Z" },
     { "id": "demo-la", "name": "West Coast Wakeup", "city": "Los Angeles", "region": "CA", "latitude": 34.052, "longitude": -118.244, "platforms": ["twitch", "apple", "spotify"], "createdAt": "2026-07-12T13:48:00.000Z" }
   ],
-  "alerts": []
+  "alerts": [],
+  "comments": []
 }
