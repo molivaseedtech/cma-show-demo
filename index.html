@@ -14,6 +14,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://use.typekit.net/wqj6dqq.css" />
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css" />
+<script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
 <style>
   :root{
     --cream:#FFFFFF; --ink:#20243D; --ink-soft:#4f5262;
@@ -304,6 +306,12 @@
   @media(max-width:860px){.listener-map-shell{grid-template-columns:1fr}.map-stage{min-height:380px}}
   @media(max-width:760px){.coming-grid{grid-template-columns:1fr}}
   @media(max-width:600px){.hero{padding-top:42px}.stream{box-shadow:7px 7px 0 var(--coral)}.host .ph{width:42%}.listen-strip span{display:none}.support-strip{justify-content:flex-start}}
+  /* Full-size support placement and real MapLibre community map. */
+  .support-feature{position:relative;overflow:hidden;background:linear-gradient(115deg,var(--coral),var(--purple) 58%,var(--teal));color:#fff;border-radius:10px;padding:38px 42px;display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:center;box-shadow:12px 12px 0 var(--ink)}
+  .support-feature::before{content:"+";position:absolute;right:33%;top:-72px;font:900 250px termina;color:rgba(255,255,255,.12)}.support-feature>*{position:relative;z-index:1}.support-feature .eyebrow{color:#fff}.support-feature h2{font-size:clamp(28px,4vw,48px);margin:8px 0 12px}.support-feature p{max-width:650px;font-size:16px}.support-actions{display:flex;flex-direction:column;gap:10px}.support-actions .btn{justify-content:center}.support-actions small{text-align:center;color:rgba(255,255,255,.8)}
+  .coming-grid{grid-template-columns:repeat(2,1fr)}
+  .map-card{position:relative;padding:0;background:#dcecff}.map-stage{min-height:520px;background:#dcecff;border-radius:10px;overflow:hidden}.map-stage .maplibregl-canvas{outline:0}.map-stage .maplibregl-ctrl-attrib{font-size:9px}.map-stage .maplibregl-ctrl-group{border-radius:4px}.listener-marker{width:32px;height:40px;cursor:pointer;filter:drop-shadow(0 5px 5px rgba(17,21,41,.35))}.listener-pin{position:relative;width:27px;height:27px;border:3px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);animation:realPinPulse 2.6s infinite}.listener-pin::after{content:"";position:absolute;width:7px;height:7px;left:7px;top:7px;border-radius:50%;background:#fff}.listener-marker:hover .listener-pin,.listener-marker.active .listener-pin{scale:1.25;animation:none}@keyframes realPinPulse{0%,100%{box-shadow:0 0 0 0 rgba(237,32,124,.55)}50%{box-shadow:0 0 0 11px rgba(237,32,124,0)}}.map-card .map-focus{left:22px;bottom:34px}.map-card .map-legend{right:14px;top:14px}.map-loading{position:absolute;inset:0;display:grid;place-items:center;background:var(--ink);color:#fff;font:800 12px Archivo;z-index:6}.map-loading.hidden{display:none}
+  @media(max-width:760px){.support-feature{grid-template-columns:1fr;padding:30px 25px}.coming-grid{grid-template-columns:1fr}.map-card .map-focus{left:12px;bottom:38px}.map-card .map-legend{right:12px;top:12px}.map-stage{min-height:440px}}
 </style>
 </head>
 <body>
@@ -323,7 +331,6 @@
 </header>
 
 <div class="listen-strip"><span>Catch us on</span><a href="https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN" target="_blank" rel="noopener">Spotify</a><a href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener">Apple</a><a href="https://www.iheart.com/podcast/269-the-morning-show-podcast-92979375/" target="_blank" rel="noopener">iHeartRadio</a><a href="https://www.twitch.tv/CarlaMarieandAnthony" target="_blank" rel="noopener">Twitch</a></div>
-<div class="support-strip"><span class="coming">Coming with launch: support the show</span><span>One place for membership, bonus perks, and merch</span><a href="https://youlookgreat.co/" target="_blank" rel="noopener">Shop YLG now</a></div>
 
 <main>
 <!-- ============ HOME ============ -->
@@ -361,6 +368,15 @@
     </div>
   </section>
 
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="support-feature">
+        <div><span class="eyebrow">Support the show</span><h2>Help keep good mornings going.</h2><p>A future home for CMA membership, Patreon-style support, listener perks, and bonus content—with You Look Great apparel ready today.</p></div>
+        <div class="support-actions"><a class="btn light" href="https://youlookgreat.co/" target="_blank" rel="noopener">Shop YLG apparel</a><button class="btn ghost" style="color:#fff;border-color:#fff" type="button" onclick="alert('Membership and Patreon options are being finalized.')">Membership coming soon</button><small>Always optional. The show stays available to everyone.</small></div>
+      </div>
+    </div>
+  </section>
+
   <!-- Latest episodes (podcast) -->
   <section class="block">
     <div class="wrap">
@@ -388,7 +404,6 @@
     <div class="wrap">
       <div class="sec-head"><div><span class="eyebrow">What’s next</span><h2>More ways to be part of the show</h2><p>These are visible concept placeholders while the final services and moderation rules are selected.</p></div></div>
       <div class="coming-grid">
-        <article class="coming-card"><span class="soon">Coming soon</span><h3>Support the show</h3><p>An optional membership area for listeners who want to contribute, unlock future extras, or jump to YLG merch.</p></article>
         <article class="coming-card"><span class="soon">Website feature</span><h3>Where are you listening?</h3><p>Check in on the live community map below. Twitch will later share the same listener map during streams.</p></article>
         <article class="coming-card"><span class="soon">Community pilot</span><h3>Keep the conversation going</h3><p>A moderated home for episode comments and listener interaction, including people who do not use Spotify or Instagram.</p></article>
       </div>
@@ -400,14 +415,10 @@
       <div class="sec-head"><div><span class="eyebrow" style="color:var(--teal)">Live community map</span><h2>Good mornings from everywhere</h2><p>See where listeners are checking in and what they are using. Pins show only a submitted city and state/region—never a street address.</p></div></div>
       <div class="listener-map-shell">
         <div class="map-card">
-          <div class="map-stage" id="listener-map">
-            <div class="map-globe">
-              <svg class="map-land" viewBox="0 0 800 360" aria-hidden="true"><path fill="#54c2b5" d="M52 91l56-42 77 10 42 34 56-8 60 34-25 34-66 4-31 39-52-11-41 29-49-26-32-51zm312 29 77-48 84 12 49-24 91 20 74 48-36 36-68 8-43 47-55-7-32-37-70 9-56-27zm126 106 61-13 38 34-12 55-45 32-47-27-18-43z"/></svg>
-              <div class="map-pins" id="map-pins"></div>
-            </div>
+          <div class="map-stage" id="listener-map"></div>
+          <div class="map-loading" id="map-loading">Loading the listener map…</div>
             <div class="map-legend"><span><i style="background:#9146ff"></i>Twitch</span><span><i style="background:#1ed760"></i>Spotify</span><span><i style="background:#ed207c"></i>Apple</span><span><i style="background:#e4312b"></i>iHeart</span><span><i style="background:#ff0033"></i>YouTube</span></div>
             <div class="map-focus" id="map-focus"><strong>Listeners are checking in</strong><span>Tap a pin to meet the morning crew.</span></div>
-          </div>
         </div>
         <aside class="checkin-panel">
           <span class="eyebrow">Add your pin</span><h3>Listening? Check in.</h3><p>Your pin can use one color or a mix based on where you listen.</p>
@@ -926,31 +937,44 @@ hydratePublished();
 /* ---- Listener check-in map + Discord community ---- */
 const CHECKIN_KEY='cma-demo-checkins';
 const PLATFORM_COLORS={twitch:'#9146ff',spotify:'#1ed760',apple:'#ed207c',iheart:'#e4312b',youtube:'#ff0033',other:'#1b9a8b'};
-const REGION_POINTS={WA:[14,31],OR:[13,39],CA:[14,52],NV:[18,48],AZ:[21,57],UT:[21,47],ID:[18,37],MT:[23,32],WY:[24,42],CO:[25,49],NM:[24,58],ND:[28,32],SD:[29,39],NE:[30,46],KS:[30,52],OK:[31,58],TX:[29,66],MN:[32,34],IA:[33,43],MO:[34,50],AR:[34,58],LA:[35,66],WI:[35,37],IL:[36,46],MI:[38,37],IN:[38,46],OH:[40,45],KY:[39,52],TN:[39,57],MS:[37,63],AL:[39,63],GA:[42,62],FL:[44,70],SC:[44,57],NC:[45,53],VA:[45,49],WV:[42,49],PA:[43,43],NY:[44,36],NJ:[45,43],MD:[45,47],DE:[46,46],CT:[46,37],RI:[47,38],MA:[47,35],VT:[45,31],NH:[47,31],ME:[49,27],AK:[8,69],HI:[20,73]};
-let communityCheckins=[];
+const REGION_COORDS={WA:[-120.7,47.4],OR:[-120.5,44],CA:[-119.5,36.7],NV:[-116.6,39],AZ:[-111.7,34.3],UT:[-111.6,39.3],ID:[-114.5,44.2],MT:[-109.6,47],WY:[-107.6,43],CO:[-105.5,39],NM:[-106,34.5],ND:[-100.5,47.5],SD:[-100,44.5],NE:[-99.8,41.5],KS:[-98.4,38.5],OK:[-97.5,35.6],TX:[-99.3,31.2],MN:[-94.5,46],IA:[-93.5,42],MO:[-92.5,38.4],AR:[-92.4,34.9],LA:[-92,31],WI:[-89.8,44.6],IL:[-89.4,40],MI:[-85.5,44.3],IN:[-86.1,39.9],OH:[-82.8,40.3],KY:[-85.3,37.7],TN:[-86.4,35.8],MS:[-89.7,32.7],AL:[-86.8,32.8],GA:[-83.5,32.7],FL:[-82.4,28.1],SC:[-80.9,33.8],NC:[-79.4,35.5],VA:[-78.7,37.5],WV:[-80.5,38.6],PA:[-77.7,41],NY:[-75.5,43],NJ:[-74.5,40.1],MD:[-76.7,39],DE:[-75.5,39],CT:[-72.7,41.6],RI:[-71.5,41.7],MA:[-71.8,42.2],VT:[-72.7,44],NH:[-71.6,43.7],ME:[-69,45.2],AK:[-152,64],HI:[-157,20.8]};
+let communityCheckins=[],listenerMap=null,mapMarkers=[];
 
-function checkinPoint(item){
-  if(REGION_POINTS[item.region])return REGION_POINTS[item.region];
-  const hash=[...(item.city+item.region)].reduce((total,char)=>((total*31)+char.charCodeAt(0))>>>0,7);
-  return [12+(hash%36),28+((hash>>>5)%43)];
+function checkinCoords(item){
+  const longitude=Number(item.longitude),latitude=Number(item.latitude);
+  return Number.isFinite(longitude)&&Number.isFinite(latitude)?[longitude,latitude]:(REGION_COORDS[item.region]||[-98.5,39.5]);
 }
 function pinBackground(platforms){
   const colors=(platforms||[]).map(platform=>PLATFORM_COLORS[platform]||PLATFORM_COLORS.other);
   return colors.length>1?`conic-gradient(${colors.map((color,index)=>`${color} ${index/colors.length*100}% ${(index+1)/colors.length*100}%`).join(',')})`:(colors[0]||PLATFORM_COLORS.other);
 }
 function focusCheckin(item,pin){
-  document.querySelectorAll('.map-pin').forEach(value=>value.classList.remove('active'));pin?.classList.add('active');
+  document.querySelectorAll('.listener-marker').forEach(value=>value.classList.remove('active'));pin?.classList.add('active');
   const focus=$('#map-focus');focus.querySelector('strong').textContent=`${item.name} · ${item.city}, ${item.region}`;
   focus.querySelector('span').textContent=`Listening on ${item.platforms.map(value=>value==='iheart'?'iHeart':value[0].toUpperCase()+value.slice(1)).join(' + ')}`;
+  if(listenerMap)listenerMap.flyTo({center:checkinCoords(item),zoom:7,speed:.85,curve:1.35,essential:true});
 }
 function renderCheckins(){
-  const pins=$('#map-pins');pins.innerHTML='';
+  if(!listenerMap||!listenerMap.loaded())return;
+  mapMarkers.forEach(marker=>marker.remove());mapMarkers=[];
   communityCheckins.slice(0,80).forEach((item,index)=>{
-    const [x,y]=checkinPoint(item);const pin=document.createElement('button');pin.className='map-pin';pin.type='button';
-    pin.style.left=`${x}%`;pin.style.top=`${y}%`;pin.style.background=pinBackground(item.platforms);pin.style.animationDelay=`${(index%8)*-.31}s`;
-    pin.setAttribute('aria-label',`${item.name} in ${item.city}, ${item.region}`);pin.addEventListener('click',()=>focusCheckin(item,pin));pins.append(pin);
+    const markerElement=document.createElement('button');markerElement.className='listener-marker';markerElement.type='button';markerElement.setAttribute('aria-label',`${item.name} in ${item.city}, ${item.region}`);
+    const pin=document.createElement('span');pin.className='listener-pin';pin.style.background=pinBackground(item.platforms);pin.style.animationDelay=`${(index%8)*-.31}s`;markerElement.append(pin);
+    markerElement.addEventListener('click',()=>focusCheckin(item,markerElement));
+    mapMarkers.push(new maplibregl.Marker({element:markerElement,anchor:'bottom'}).setLngLat(checkinCoords(item)).addTo(listenerMap));
   });
-  if(communityCheckins[0])focusCheckin(communityCheckins[0],pins.firstElementChild);
+  if(communityCheckins[0]){const focus=$('#map-focus');focus.querySelector('strong').textContent=`${communityCheckins[0].name} · ${communityCheckins[0].city}, ${communityCheckins[0].region}`;focus.querySelector('span').textContent=`Listening on ${communityCheckins[0].platforms.join(' + ')}`;}
+}
+function initListenerMap(styleUrl){
+  if(listenerMap||!window.maplibregl)return;
+  listenerMap=new maplibregl.Map({container:'listener-map',style:styleUrl||'https://demotiles.maplibre.org/globe.json',center:[-98.5,38.5],zoom:2.5,minZoom:1.2,maxZoom:14,attributionControl:true});
+  listenerMap.addControl(new maplibregl.NavigationControl({showCompass:false}),'bottom-right');
+  listenerMap.on('load',()=>{$('#map-loading').classList.add('hidden');renderCheckins();});
+  listenerMap.on('error',()=>{$('#map-loading').textContent='The live map could not load. Check the map provider connection.';});
+}
+async function geocodeCity(city,region){
+  try{const url=`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=us&q=${encodeURIComponent(`${city}, ${region}, USA`)}`;const result=await fetch(url,{headers:{Accept:'application/json'}}).then(response=>response.json());if(result[0])return{longitude:Number(result[0].lon),latitude:Number(result[0].lat)};}catch{}
+  const fallback=REGION_COORDS[region]||[-98.5,39.5];return{longitude:fallback[0],latitude:fallback[1]};
 }
 async function loadCommunity(){
   let payload;
@@ -958,17 +982,18 @@ async function loadCommunity(){
   catch{
     try{payload=await fetch('data/community.json').then(response=>response.json());}catch{payload={checkins:[],alerts:[]};}
   }
-  const local=JSON.parse(localStorage.getItem(CHECKIN_KEY)||'[]');communityCheckins=[...local,...(payload.checkins||[])];renderCheckins();
+  const local=JSON.parse(localStorage.getItem(CHECKIN_KEY)||'[]');communityCheckins=[...local,...(payload.checkins||[])];initListenerMap(payload.mapStyleUrl);renderCheckins();
   if(payload.discordInviteUrl){const link=$('#discord-join');link.href=payload.discordInviteUrl;link.target='_blank';link.rel='noopener';link.textContent='Join the CMA Discord';link.classList.remove('disabled');link.removeAttribute('aria-disabled');}
   const demoAlerts=JSON.parse(localStorage.getItem('cma-community-alerts')||'[]');showNewestAlert([...demoAlerts,...(payload.alerts||[])].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)));
 }
 $('#checkin-form').addEventListener('submit',async event=>{
   event.preventDefault();const form=new FormData(event.currentTarget);const input={name:form.get('name')?.trim(),city:form.get('city')?.trim(),region:form.get('region')?.trim().toUpperCase(),platforms:form.getAll('platform')};
   const status=$('#checkin-status');if(!input.platforms.length){status.textContent='Choose at least one listening platform.';return;}
+  status.textContent='Finding your city on the map…';Object.assign(input,await geocodeCity(input.city,input.region));
   let checkin;
   try{const response=await fetch('/api/public/checkins',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)});if(!response.ok)throw new Error();checkin=(await response.json()).checkin;}
   catch{checkin={...input,id:`local-${Date.now()}`,createdAt:new Date().toISOString()};const local=JSON.parse(localStorage.getItem(CHECKIN_KEY)||'[]');localStorage.setItem(CHECKIN_KEY,JSON.stringify([checkin,...local].slice(0,20)));}
-  communityCheckins=[checkin,...communityCheckins.filter(item=>item.id!==checkin.id)];renderCheckins();event.currentTarget.reset();status.textContent=`✓ Your ${input.region} pin is on the map.`;
+  communityCheckins=[checkin,...communityCheckins.filter(item=>item.id!==checkin.id)];renderCheckins();event.currentTarget.reset();status.textContent=`✓ Your ${input.region} pin is on the map.`;if(listenerMap)listenerMap.flyTo({center:checkinCoords(checkin),zoom:7,speed:.8,essential:true});
 });
 
 function showNewestAlert(alerts){

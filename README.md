@@ -170,7 +170,13 @@ A practical Shortcut is: receive a Voice Memo or file → run a local transcript
 
 ## Listener map, Discord, and PWA alerts
 
-The public site includes a website-first listener check-in map. A check-in stores only the submitted display name, city/town, state/region, selected platforms, and time. It never asks for a street address or stores precise GPS coordinates. Pins change color by listening platform and use a gradient for multi-platform listeners. The same community feed can later power a Twitch overlay.
+The public site includes a website-first listener check-in map rendered with MapLibre GL JS. It supports real map tiles, pan/zoom controls, globe view, animated city fly-to, and geographic markers. A check-in stores only the submitted display name, city/town, state/region, city-center coordinates, selected platforms, and time. It never asks for a street address or precise GPS coordinates. Pins change color by listening platform and use a gradient for multi-platform listeners. The same community feed can later power a Twitch overlay.
+
+The demo uses MapLibre's public demonstration globe style and low-volume city lookup. Before audience launch, configure a managed MapTiler/Google Maps style or CMA-hosted tiles:
+
+```dotenv
+CMA_MAP_STYLE_URL=https://your-map-provider/style.json
+```
 
 Set the official Discord invite when CMA provides it:
 

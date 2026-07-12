@@ -259,7 +259,7 @@ async function api(req, res, url) {
   }
 
   if (pathname === '/api/public/community' && req.method === 'GET') {
-    return json(res, 200, { ...(await publicCommunity()), discordInviteUrl: process.env.CMA_DISCORD_INVITE_URL || '' });
+    return json(res, 200, { ...(await publicCommunity()), discordInviteUrl: process.env.CMA_DISCORD_INVITE_URL || '', mapStyleUrl: process.env.CMA_MAP_STYLE_URL || '' });
   }
 
   if (pathname === '/api/public/checkins' && req.method === 'POST') {
