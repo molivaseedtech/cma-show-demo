@@ -233,7 +233,7 @@ function renderSource() {
 
 function updateBlogChoice() {
   const on = $('#publish-blog').checked;
-  $('#blog-fields').classList.toggle('hidden', !on); $('#blog-choice-label').textContent = on ? 'Include post' : 'No post';
+  $('#blog-fields').classList.toggle('hidden', !on); $('#blog-choice-label').textContent = on ? 'Add to Blog' : 'Episode only';
   $('#check-blog-row').classList.toggle('hidden', !on);
 }
 
@@ -247,7 +247,7 @@ function renderRepeats() {
 function renderReleaseSummary() {
   const show = state.current;
   const media = show.format === 'Livestream' ? 'Twitch replay' : show.format === 'Article' ? 'No episode' : 'Megaphone podcast';
-  $('#release-summary').innerHTML = `<div class="summary-card"><span>Release</span><strong>${esc(show.episodeTitle || show.title || 'Untitled')}</strong></div><div class="summary-card"><span>Media</span><strong>${media}</strong></div><div class="summary-card"><span>Written post</span><strong>${show.publishBlog ? 'Included' : 'Not included'}</strong></div><div class="summary-card"><span>Links</span><strong>${(show.links || []).length + (show.mentions || []).filter(item => item.verifiedUrl).length} ready</strong></div>`;
+  $('#release-summary').innerHTML = `<div class="summary-card"><span>Release</span><strong>${esc(show.episodeTitle || show.title || 'Untitled')}</strong></div><div class="summary-card"><span>Media</span><strong>${media}</strong></div><div class="summary-card"><span>Separate Blog post</span><strong>${show.publishBlog ? 'Included' : 'Not included'}</strong></div><div class="summary-card"><span>Links</span><strong>${(show.links || []).length + (show.mentions || []).filter(item => item.verifiedUrl).length} ready</strong></div>`;
 }
 
 function collect() {

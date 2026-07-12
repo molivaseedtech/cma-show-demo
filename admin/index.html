@@ -49,7 +49,7 @@
             <span class="start-icon">◉</span><span><strong>Today’s Twitch show</strong><small>Choose the replay after the stream ends</small></span><b>Start →</b>
           </button>
           <button class="start-card post" data-new="Article">
-            <span class="start-icon">✎</span><span><strong>Write a quick post</strong><small>No episode needed—just write and publish</small></span><b>Start →</b>
+            <span class="start-icon">✎</span><span><strong>Write a blog post</strong><small>No episode needed—just write and publish to the Blog</small></span><b>Start →</b>
           </button>
         </div>
 
@@ -108,7 +108,7 @@
           <div class="field-row episode-fields" id="episode-fields"><label>Episode title<input id="episode-title" type="text"></label><label>Length<input id="duration" type="text" placeholder="22 min"></label></div>
 
           <div class="choice-banner">
-            <div><strong>Should this episode have a written post?</strong><p>Most episodes do not need one. Turn this on when a topic, product, or how-to deserves its own page.</p></div>
+            <div><strong>Publish a separate Blog post too?</strong><p>The episode already has show notes. Turn this on only when a topic, product, or how-to deserves its own Blog article.</p></div>
             <label class="switch"><input id="publish-blog" type="checkbox"><span></span><b id="blog-choice-label">No post</b></label>
           </div>
 
@@ -179,7 +179,7 @@
     <form id="alert-form" class="alert-form">
       <div class="dialog-header"><div><span class="eyebrow">Listener notification</span><h2>Send a quick alert</h2></div><button type="button" id="close-alert" aria-label="Close">×</button></div>
       <p>Keep it short. It will appear in the CMA PWA and become a Web Push notification for subscribed listeners.</p>
-      <label>What is this about?<select id="alert-category"><option value="announcement">Announcement</option><option value="podcast">New podcast</option><option value="twitch">Twitch / replay</option><option value="blog">Show notes</option><option value="merch">Merch</option><option value="support">Patreon / support</option></select></label>
+      <label>What is this about?<select id="alert-category"><option value="announcement">Announcement</option><option value="podcast">New podcast</option><option value="twitch">Twitch / replay</option><option value="blog">Blog post</option><option value="merch">Merch</option><option value="support">Patreon / support</option></select></label>
       <label>Notification title<input id="alert-title" maxlength="80" placeholder="New YLG merch just dropped" required></label>
       <label>Message<textarea id="alert-body" maxlength="180" class="short" placeholder="Tap to see the new collection." required></textarea></label>
       <label>Optional link<input id="alert-url" type="url" placeholder="https://..."></label>

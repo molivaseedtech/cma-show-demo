@@ -216,7 +216,7 @@ function applyGenerated(show, result) {
 
 function showAlert(show) {
   if (show.format === 'Livestream') return { title: 'The Twitch replay is ready', body: show.episodeTitle || show.title, category: 'twitch', url: show.media?.twitchUrl || '/' };
-  if (show.format === 'Article') return { title: 'New show notes are up', body: show.title, category: 'blog', url: '/' };
+  if (show.format === 'Article') return { title: 'A new CMA Blog post is up', body: show.title, category: 'blog', url: '/' };
   return { title: 'A new podcast episode is ready', body: show.episodeTitle || show.title, category: show.publishBlog ? 'blog' : 'podcast', url: show.media?.podcastUrl || '/' };
 }
 

@@ -325,7 +325,7 @@
     <nav class="links">
       <a data-nav="home">Home</a>
       <a data-nav="episodes">Episodes</a>
-      <a data-nav="blog">Show Notes</a>
+      <a data-nav="blog">Blog</a>
       <a data-nav="about">About</a>
       <a href="https://youlookgreat.co/" target="_blank" rel="noopener">YLG Apparel</a>
     </nav>
@@ -346,7 +346,7 @@
         <p class="lede">The news you need, the news you don't need but want, dumb games, and zero BS — every weekday in under 25 minutes with Carla Marie &amp; Anthony.</p>
         <div class="hero-actions">
           <a class="btn coral" data-nav="episodes">▶ Listen to today's show</a>
-          <a class="btn ghost" data-nav="blog">Read show notes</a>
+          <a class="btn ghost" data-nav="blog">Read the blog</a>
         </div>
         <div class="listen-on">
           <span>Catch us on</span>
@@ -395,7 +395,7 @@
   <section class="block" style="padding-top:0">
     <div class="wrap">
       <div class="sec-head">
-        <div><span class="eyebrow" style="color:var(--teal)">Read</span><h2>From the show</h2><p>When a story, product, or how-to needs more detail, CMA can publish an AI-assisted post that they reviewed themselves.</p></div>
+        <div><span class="eyebrow" style="color:var(--teal)">The CMA Blog</span><h2>From the blog</h2><p>When a story, product, or how-to needs more detail, CMA can publish an AI-assisted post that they reviewed themselves.</p></div>
         <a class="btn ghost sm" data-nav="blog">Read all posts →</a>
       </div>
       <div class="post-list" id="home-posts"></div>
@@ -452,8 +452,8 @@
         <div>
           <span class="eyebrow">Get the app</span>
           <h2>Add the show to your home screen.</h2>
-          <p>Install the CM&amp;A app in one tap—no app store. The launch version will support alerts when the show goes live, a new episode drops, or new show notes are posted.</p>
-          <div class="feats"><div><b>◉</b> We're live</div><div><b>▶</b> New episode</div><div><b>✎</b> New show notes</div></div>
+          <p>Install the CM&amp;A app in one tap—no app store. The launch version will support alerts when the show goes live, a new episode drops, or a new blog post is published.</p>
+          <div class="feats"><div><b>◉</b> We're live</div><div><b>▶</b> New episode</div><div><b>✎</b> New blog post</div></div>
         </div>
         <div class="appactions">
           <button class="btn coral" id="install-btn">⬇ Install the app</button>
@@ -531,7 +531,7 @@
 <div id="blog" class="view">
   <section class="block">
     <div class="wrap">
-      <div class="sec-head"><div><span class="eyebrow" style="color:var(--teal)">Read</span><h2>Show Notes &amp; Stories</h2><p>Optional written companions for the episodes that deserve more detail. Here is how CMA can make one without starting from a blank page:</p></div></div>
+      <div class="sec-head"><div><span class="eyebrow" style="color:var(--teal)">Read</span><h2>The CMA Blog</h2><p>Standalone stories, useful deep dives, and optional written companions—created and approved from the CMA admin page.</p></div></div>
 
       <!-- AI workflow strip -->
       <div class="process">
@@ -626,6 +626,31 @@
     </div>
   </section>
 </div>
+
+<!-- ============ DEDICATED BLOG ARTICLE ============ -->
+<div id="blogpost" class="view">
+  <section class="detail">
+    <div class="wrap">
+      <span class="back" data-nav="blog">← The CMA Blog</span>
+      <div class="detail-grid">
+        <article class="article">
+          <div class="kicker"><span class="chip-cat" id="b-cat"></span><span class="engine-tag" style="margin:0">✦ Published by CMA</span></div>
+          <h1 id="b-title"></h1>
+          <div class="by"><span id="b-date"></span> · <span id="b-read"></span> · The Carla Marie &amp; Anthony Show</div>
+          <div class="lead-img photo" id="b-img"><span class="cam">📷 CMA blog</span></div>
+          <div class="post-body" id="b-body"></div>
+          <div class="quote-card" id="b-quote-card"><div class="qt" id="b-quote"></div><div class="qmeta"><span class="qby"><b>The Carla Marie &amp; Anthony Show</b></span><button class="qshare" id="share-blog-quote">⤴ Share card</button></div></div>
+          <div class="crosslink" id="b-related"><div><div class="cl-t">🎧 This story came from an episode</div><div class="cl-s">Open the player, chapters, show notes, and conversation.</div></div><button class="btn coral sm" id="b-to-episode">View the full episode →</button></div>
+        </article>
+        <aside>
+          <div class="aside-card links-card"><span class="engine-tag">Useful links</span><h4>Links mentioned</h4><ul id="b-links"></ul></div>
+          <div class="aside-card links-card" id="b-mentions-card"><span class="engine-tag">From the story</span><h4>People, products &amp; places</h4><ul id="b-mentions"></ul></div>
+          <div class="aside-card"><h4>Never miss a post</h4><form onsubmit="event.preventDefault();this.querySelector('input').value='';alert('Prototype: newsletter signup would post here.');"><input type="email" placeholder="you@email.com" required style="width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);margin-bottom:10px;font-family:Inter"><button class="btn coral sm" style="width:100%;justify-content:center" type="submit">Sign up</button></form></div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</div>
 </main>
 
 <footer class="site">
@@ -635,7 +660,7 @@
         <a class="logo" data-nav="home" style="color:var(--cream)"><img class="brand-logo" src="assets/cma-logo.webp" alt="The Carla Marie and Anthony Show" /></a>
         <p style="color:#c9c0b4;font-size:14px;margin-top:14px;max-width:24em">A daily dose of audio to make your day a little better.</p>
       </div>
-      <div><h5>Show</h5><a data-nav="home">Home</a><a data-nav="episodes">Episodes</a><a data-nav="blog">Show Notes</a><a data-nav="about">About</a></div>
+      <div><h5>Show</h5><a data-nav="home">Home</a><a data-nav="episodes">Episodes</a><a data-nav="blog">Blog</a><a data-nav="about">About</a></div>
       <div><h5>Listen</h5>
         <a href="https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN" target="_blank" rel="noopener">Spotify</a>
         <a href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener">Apple Podcasts</a>
@@ -747,7 +772,7 @@ let QUOTES = {
 const CATCOLOR = {"News":"#ED207C","Pop Culture":"#1B9A8B","Games":"#20243D","Life":"#A54D98"};
 
 const $ = s=>document.querySelector(s);
-const views = ['home','episodes','blog','about','post'];
+const views = ['home','episodes','blog','about','post','blogpost'];
 let current = 0;
 const COMMENT_KEY='cma-episode-comments';
 const DEMO_COMMENTS=[
@@ -853,7 +878,14 @@ function openUnified(i){
   show('post');
 }
 function openEpisode(i){openUnified(i)}
-function openPost(i){openUnified(i)}
+function openBlogPost(i){
+  current=i;const it=ITEMS[i];const c=CATCOLOR[it.cat]||'#171410';const quote=QUOTES[i]||'';
+  const cat=$('#b-cat');cat.textContent=it.cat;cat.style.background=c;$('#b-title').textContent=it.postTitle;$('#b-date').textContent=it.date;$('#b-read').textContent=it.read;$('#b-img').style.background=it.grad;$('#b-body').innerHTML=it.body;$('#b-quote').textContent=quote;$('#b-quote-card').style.display=quote?'block':'none';
+  $('#b-links').innerHTML=(LINKS[i]||[]).map(link=>`<li><span>${link[0]}</span><a href="${link[1]}" target="_blank" rel="noopener">Open →</a></li>`).join('')||'<li><span>No extra links for this post.</span></li>';
+  const mentions=it.mentions||[];$('#b-mentions-card').style.display=mentions.length?'block':'none';$('#b-mentions').innerHTML=mentions.map(m=>`<li><span><strong>${m.name}</strong><br><small>${m.context||m.type}</small></span>${m.verifiedUrl?`<a href="${m.verifiedUrl}" target="_blank" rel="noopener">Open →</a>`:'<span style="color:var(--ink-soft);font-size:11px">Mentioned</span>'}</li>`).join('');
+  $('#b-related').style.display=it.fmt==='Article'?'none':'flex';show('blogpost');
+}
+function openPost(i){openBlogPost(i)}
 function show(id){
   views.forEach(v=>document.getElementById(v).classList.toggle('active', v===id));
   document.querySelectorAll('nav.links a[data-nav]').forEach(a=>a.classList.toggle('active', a.dataset.nav===id));
@@ -868,6 +900,8 @@ document.addEventListener('click',e=>{
 });
 $('#u-chapters').addEventListener('click',event=>{const row=event.target.closest('[data-chapter-url]');if(row?.dataset.chapterUrl)window.open(row.dataset.chapterUrl,'_blank','noopener');});
 $('#share-quote').addEventListener('click',async()=>{const item=ITEMS[current];const text=`“${$('#p-quote').textContent}” — The Carla Marie & Anthony Show`;try{if(navigator.share)await navigator.share({title:item.postTitle,text,url:location.href});else{await navigator.clipboard.writeText(`${text}\n${location.href}`);alert('Quote and episode link copied.');}}catch{}});
+$('#share-blog-quote').addEventListener('click',async()=>{const item=ITEMS[current];const text=`“${$('#b-quote').textContent}” — The Carla Marie & Anthony Show`;try{if(navigator.share)await navigator.share({title:item.postTitle,text,url:location.href});else{await navigator.clipboard.writeText(`${text}\n${location.href}`);alert('Quote and blog link copied.');}}catch{}});
+$('#b-to-episode').addEventListener('click',()=>openUnified(current));
 $('#comment-form').addEventListener('submit',async event=>{event.preventDefault();const item=ITEMS[current];const key=item.id||`${item.date}-${item.epSub}`;const form=new FormData(event.currentTarget);const input={episodeId:key,episodeTitle:item.postTitle,name:form.get('name').trim(),comment:form.get('comment').trim()};let submitted;try{const response=await fetch('/api/public/comments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)});if(!response.ok)throw new Error();submitted=(await response.json()).comment;}catch{submitted={...input,id:`local-${Date.now()}`};}const saved=JSON.parse(localStorage.getItem(COMMENT_KEY)||'{}');saved[key]=[...(saved[key]||[]),{...submitted,time:'Submitted just now',pending:true}];localStorage.setItem(COMMENT_KEY,JSON.stringify(saved));event.currentTarget.reset();$('#comment-status').textContent='✓ Submitted. CMA can approve it before it appears publicly.';renderEpisodeComments(item);});
 
 // episodes filters/search

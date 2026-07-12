@@ -5,6 +5,8 @@ This repository now contains two connected products:
 - `/` — the listener-facing PWA, hydrated from published content.
 - `/admin` — CMA's editorial control room for Twitch/audio ingest, transcription, AI drafting, editing, review, synchronized scheduling, and publishing.
 
+The listener site intentionally separates **episode show notes** from the **Blog**. Every podcast/livestream can have one unified episode page with its player, chapters, highlights, quote, useful links, and conversation. The Blog is a separate index and article experience populated only when CMA creates a standalone blog post or turns on **Add to Blog** for an episode in `/admin`.
+
 The original static demo remains embedded in `index.html` as an offline fallback. When the Node server is running, published records from `data/content.json` replace that fallback.
 
 ## Brand direction
