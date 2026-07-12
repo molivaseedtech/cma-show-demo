@@ -292,8 +292,13 @@
   .hosts{gap:16px}.host{min-height:240px;border:0;box-shadow:none}.host:first-child{background:#f9eaf2}.host:last-child{background:#e4f5f2}.host .ph{width:46%;background-size:cover!important;background-position:center!important}.host .info{align-self:center}.host h3{font-size:25px}.host .role{color:var(--coral)}
   .brand-area{display:grid;grid-template-columns:190px 1fr;gap:26px;align-items:center}.brands-art{width:170px;margin:auto}.brands span{border-radius:3px;border-color:var(--ink);color:var(--ink);font-family:'termina','Archivo';font-size:11px}
   footer.site{background:var(--ink);border-top:10px solid var(--coral)}footer.site .brand-logo{filter:none;width:190px;background:#fff;padding:8px}
+  .support-strip{background:var(--ink);color:#fff;padding:11px 20px;display:flex;justify-content:center;align-items:center;gap:18px;flex-wrap:wrap;font:700 11px 'termina','Archivo';text-transform:uppercase;letter-spacing:.04em}
+  .support-strip .coming{color:#f7b6d2}.support-strip a{color:#fff;border-bottom:1px solid rgba(255,255,255,.55)}
+  .coming-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.coming-card{min-height:190px;border:1px solid var(--line);border-top:6px solid var(--coral);background:#fff;padding:24px;border-radius:8px}.coming-card:nth-child(2){border-top-color:var(--teal)}.coming-card:nth-child(3){border-top-color:var(--purple)}.coming-card .soon{display:inline-block;background:var(--ink);color:#fff;padding:4px 7px;border-radius:3px;font:800 9px Archivo;text-transform:uppercase;letter-spacing:.09em}.coming-card h3{font-size:18px;margin:16px 0 8px}.coming-card p{font-size:13px;color:var(--ink-soft)}
+  .community-placeholder{border:1px dashed var(--purple);background:#f8f1f8}.community-placeholder p{font-size:13px;color:var(--ink-soft);margin-bottom:0}
   @media(max-width:940px){.nav>.logo{min-width:0}.brand-logo{width:170px}.listen-strip{gap:13px;font-size:10px;overflow:auto;justify-content:flex-start}.hero::before{mask-image:linear-gradient(#000,transparent)}.brand-area{grid-template-columns:1fr}.brands-art{display:none}}
-  @media(max-width:600px){.hero{padding-top:42px}.stream{box-shadow:7px 7px 0 var(--coral)}.host .ph{width:42%}.listen-strip span{display:none}}
+  @media(max-width:760px){.coming-grid{grid-template-columns:1fr}}
+  @media(max-width:600px){.hero{padding-top:42px}.stream{box-shadow:7px 7px 0 var(--coral)}.host .ph{width:42%}.listen-strip span{display:none}.support-strip{justify-content:flex-start}}
 </style>
 </head>
 <body>
@@ -304,7 +309,7 @@
     <nav class="links">
       <a data-nav="home">Home</a>
       <a data-nav="episodes">Episodes</a>
-      <a data-nav="blog">Daily Blog</a>
+      <a data-nav="blog">Show Notes</a>
       <a data-nav="about">About</a>
       <a href="https://youlookgreat.co/" target="_blank" rel="noopener">YLG Apparel</a>
     </nav>
@@ -313,6 +318,7 @@
 </header>
 
 <div class="listen-strip"><span>Catch us on</span><a href="https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN" target="_blank" rel="noopener">Spotify</a><a href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener">Apple</a><a href="https://www.iheart.com/podcast/269-the-morning-show-podcast-92979375/" target="_blank" rel="noopener">iHeartRadio</a><a href="https://www.twitch.tv/CarlaMarieandAnthony" target="_blank" rel="noopener">Twitch</a></div>
+<div class="support-strip"><span class="coming">Coming with launch: support the show</span><span>One place for membership, bonus perks, and merch</span><a href="https://youlookgreat.co/" target="_blank" rel="noopener">Shop YLG now</a></div>
 
 <main>
 <!-- ============ HOME ============ -->
@@ -325,7 +331,7 @@
         <p class="lede">The news you need, the news you don't need but want, dumb games, and zero BS — every weekday in under 25 minutes with Carla Marie &amp; Anthony.</p>
         <div class="hero-actions">
           <a class="btn coral" data-nav="episodes">▶ Listen to today's show</a>
-          <a class="btn ghost" data-nav="blog">Read the daily blog</a>
+          <a class="btn ghost" data-nav="blog">Read show notes</a>
         </div>
         <div class="listen-on">
           <span>Catch us on</span>
@@ -361,14 +367,26 @@
     </div>
   </section>
 
-  <!-- From the daily blog (editorial) — deliberately different look -->
+  <!-- Optional written companions — deliberately different from episode cards -->
   <section class="block" style="padding-top:0">
     <div class="wrap">
       <div class="sec-head">
-        <div><span class="eyebrow" style="color:var(--teal)">Read</span><h2>From the daily blog</h2><p>Every episode, written up — recap, the links, the receipts. Drafted by AI from the show, polished by the team.</p></div>
+        <div><span class="eyebrow" style="color:var(--teal)">Read</span><h2>From the show</h2><p>When a story, product, or how-to needs more detail, CMA can publish an AI-assisted post that they reviewed themselves.</p></div>
         <a class="btn ghost sm" data-nav="blog">Read all posts →</a>
       </div>
       <div class="post-list" id="home-posts"></div>
+    </div>
+  </section>
+
+  <!-- Clearly labeled future community concepts from the planning transcript -->
+  <section class="block" style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head"><div><span class="eyebrow">What’s next</span><h2>More ways to be part of the show</h2><p>These are visible concept placeholders while the final services and moderation rules are selected.</p></div></div>
+      <div class="coming-grid">
+        <article class="coming-card"><span class="soon">Coming soon</span><h3>Support the show</h3><p>An optional membership area for listeners who want to contribute, unlock future extras, or jump to YLG merch.</p></article>
+        <article class="coming-card"><span class="soon">Future Twitch feature</span><h3>Where are you listening?</h3><p>A live check-in map for city and state during streams, built from listener-submitted locations—not precise tracking.</p></article>
+        <article class="coming-card"><span class="soon">Community pilot</span><h3>Keep the conversation going</h3><p>A moderated home for episode comments and listener interaction, including people who do not use Spotify or Instagram.</p></article>
+      </div>
     </div>
   </section>
 
@@ -379,8 +397,8 @@
         <div>
           <span class="eyebrow">Get the app</span>
           <h2>Add the show to your home screen.</h2>
-          <p>Install the CM&amp;A app in one tap — no app store. Turn on notifications and we'll ping you the second we go live, drop an episode, or post the daily blog.</p>
-          <div class="feats"><div><b>◉</b> We're live</div><div><b>▶</b> New episode</div><div><b>✎</b> Daily blog posted</div></div>
+          <p>Install the CM&amp;A app in one tap—no app store. The launch version will support alerts when the show goes live, a new episode drops, or new show notes are posted.</p>
+          <div class="feats"><div><b>◉</b> We're live</div><div><b>▶</b> New episode</div><div><b>✎</b> New show notes</div></div>
         </div>
         <div class="appactions">
           <button class="btn coral" id="install-btn">⬇ Install the app</button>
@@ -412,7 +430,7 @@
   <section class="block" style="padding-top:0">
     <div class="wrap">
       <div class="news">
-        <div><span class="eyebrow" style="color:#fff">Don't miss a morning</span><h2>Get the show in your inbox.</h2><p>The daily recap and the links we talked about — straight to you.</p></div>
+        <div><span class="eyebrow" style="color:#fff">Don't miss a morning</span><h2>Get the show in your inbox.</h2><p>Episode updates and the useful links CMA chooses to share—straight to you.</p></div>
         <form onsubmit="event.preventDefault();this.querySelector('input').value='';alert('Prototype: newsletter signup would post here.');">
           <input type="email" placeholder="you@email.com" required />
           <button class="btn light" type="submit">Sign up</button>
@@ -454,11 +472,11 @@
   </section>
 </div>
 
-<!-- ============ DAILY BLOG (editorial) ============ -->
+<!-- ============ OPTIONAL SHOW NOTES (editorial) ============ -->
 <div id="blog" class="view">
   <section class="block">
     <div class="wrap">
-      <div class="sec-head"><div><span class="eyebrow" style="color:var(--teal)">Read</span><h2>The Daily Blog</h2><p>The written companion to every episode. Here's how each post gets made — almost on autopilot:</p></div></div>
+      <div class="sec-head"><div><span class="eyebrow" style="color:var(--teal)">Read</span><h2>Show Notes &amp; Stories</h2><p>Optional written companions for the episodes that deserve more detail. Here is how CMA can make one without starting from a blank page:</p></div></div>
 
       <!-- AI workflow strip -->
       <div class="process">
@@ -536,6 +554,7 @@
             <a class="platform" href="https://www.twitch.tv/CarlaMarieandAnthony" target="_blank" rel="noopener">Twitch</a>
             <a class="platform" href="https://www.youtube.com/channel/UCOevkSiHvkmZKV2NC9J_8rQ" target="_blank" rel="noopener">YouTube Live</a>
           </div>
+          <div class="aside-card community-placeholder"><span class="engine-tag">Community pilot</span><h4>Episode conversation</h4><p>Listener comments will live here after moderation, sign-in, and Spotify-sharing options are finalized.</p></div>
         </div>
       </div>
     </div>
@@ -546,7 +565,7 @@
 <div id="post" class="view">
   <section class="detail">
     <div class="wrap">
-      <span class="back" data-nav="blog">← The Daily Blog</span>
+      <span class="back" data-nav="blog">← Show Notes</span>
       <div class="detail-grid">
         <div class="article">
           <div class="kicker"><span class="chip-cat" id="p-cat"></span><span class="engine-tag" style="margin:0">✦ Auto-drafted from the episode, reviewed by the team</span></div>
@@ -586,7 +605,7 @@
         <a class="logo" data-nav="home" style="color:var(--cream)"><img class="brand-logo" src="assets/cma-logo.webp" alt="The Carla Marie and Anthony Show" /></a>
         <p style="color:#c9c0b4;font-size:14px;margin-top:14px;max-width:24em">A daily dose of audio to make your day a little better.</p>
       </div>
-      <div><h5>Show</h5><a data-nav="home">Home</a><a data-nav="episodes">Episodes</a><a data-nav="blog">Daily Blog</a><a data-nav="about">About</a></div>
+      <div><h5>Show</h5><a data-nav="home">Home</a><a data-nav="episodes">Episodes</a><a data-nav="blog">Show Notes</a><a data-nav="about">About</a></div>
       <div><h5>Listen</h5>
         <a href="https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN" target="_blank" rel="noopener">Spotify</a>
         <a href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener">Apple Podcasts</a>
@@ -604,7 +623,7 @@
 </footer>
 
 <script>
-/* One dataset, two facets: each daily show has an EPISODE (listen/watch) and a POST (read). */
+/* One dataset with episodes plus optional CMA-reviewed written posts. */
 let ITEMS = [
   { date:"Monday, June 8, 2026", short:"Mon · Jun 8", dur:"22 min", read:"4 min read", fmt:"Livestream", cat:"News",
     grad:"linear-gradient(135deg,#ED207C,#A54D98 55%,#1B9A8B)",
@@ -733,15 +752,17 @@ function featPost(it,i){
 /* ---- list rendering ---- */
 function renderHome(){
   $('#home-eps').innerHTML = ITEMS.slice(0,3).map(epCard).join('');
-  $('#home-posts').innerHTML = ITEMS.slice(0,3).map(postRow).join('');
+  const posts = ITEMS.map((it,i)=>({it,i})).filter(({it})=>it.publishBlog!==false).slice(0,3);
+  $('#home-posts').innerHTML = posts.length ? posts.map(({it,i})=>postRow(it,i)).join('') : '<p style="color:var(--ink-soft)">New written posts will appear here when a show needs one.</p>';
 }
 function renderEpisodes(fmt='all',q=''){
   q=q.trim().toLowerCase();
+  const featuredPostButton = ITEMS[0].publishBlog!==false ? '<button class="btn ghost" data-post="0">Read the recap</button>' : '';
   $('#ep-feature').innerHTML = `
     <div class="cv photo" style="background:${ITEMS[0].grad}"><div class="play" data-ep="0"></div><span class="cam">📷 Live / branding photo</span></div>
     <div class="info"><span class="eyebrow">▶ Latest episode · ${ITEMS[0].short}</span><h3>${ITEMS[0].epSub}</h3>
       <p>Listen to today's podcast or watch the full livestream replay — chapters, links, and the written recap all on the episode page.</p>
-      <div class="hero-actions"><button class="btn coral" data-ep="0">▶ Play episode</button><button class="btn ghost" data-post="0">Read the recap</button></div>
+      <div class="hero-actions"><button class="btn coral" data-ep="0">▶ Play episode</button>${featuredPostButton}</div>
     </div>`;
   const cards = ITEMS.map((it,i)=>({it,i}))
     .filter(({it})=> (fmt==='all'||it.fmt===fmt) && (!q || (it.epSub+it.body+it.date+(it.mentions||[]).map(m=>m.name+' '+m.context).join(' ')).toLowerCase().includes(q)))
@@ -750,8 +771,14 @@ function renderEpisodes(fmt='all',q=''){
 }
 function renderBlog(cat='all',q=''){
   q=q.trim().toLowerCase();
-  $('#blog-feature').innerHTML = featPost(ITEMS[0],0);
-  const rows = ITEMS.map((it,i)=>({it,i})).slice(1)
+  const posts = ITEMS.map((it,i)=>({it,i})).filter(({it})=>it.publishBlog!==false);
+  if(!posts.length){
+    $('#blog-feature').innerHTML = '<p style="color:var(--ink-soft);padding:30px 0">New written posts will appear here when a show topic deserves more detail.</p>';
+    $('#all-posts').innerHTML = '';
+    return;
+  }
+  $('#blog-feature').innerHTML = featPost(posts[0].it,posts[0].i);
+  const rows = posts.slice(1)
     .filter(({it})=> (cat==='all'||it.cat===cat) && (!q || (it.postTitle+it.excerpt+it.body+(it.mentions||[]).map(m=>m.name+' '+m.context).join(' ')).toLowerCase().includes(q)))
     .map(({it,i})=>postRow(it,i)).join('');
   $('#all-posts').innerHTML = rows || `<p style="color:var(--ink-soft);padding:20px 0">No posts match — try another word or category.</p>`;
@@ -767,6 +794,7 @@ function openEpisode(i){
   $('#e-chapters').innerHTML = (CHAPTERS[i]||CHAPTERS[0]).map(c=>`<div class="chap-row"><span class="ts">${c[0]}</span><span class="ct">${c[1]}</span></div>`).join('');
   const watchUrl=it.media?.twitchUrl||it.media?.youtubeUrl;
   const listenUrl=it.media?.podcastUrl;
+  $('#e-to-post').style.display=it.publishBlog===false?'none':'';
   const watchButton=$('#e-screen .play');
   const listenButton=$('.player .pbtn');
   watchButton.title=watchUrl?'Open the full replay':'Replay link coming soon';
@@ -838,6 +866,7 @@ async function hydratePublished(){
         id:show.id,date:date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}),
         short:date.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}).replace(',',' ·'),
         dur:show.duration||'Listen now',read:show.readTime||'4 min read',fmt:show.format||'Podcast',cat:show.category||'News',
+        publishBlog:show.publishBlog!==false,
         grad:show.media?.imageUrl?`linear-gradient(rgba(23,20,16,.12),rgba(23,20,16,.12)),url("${show.media.imageUrl}") center/cover`:gradients[show.category]||gradients.News,
         epSub:show.episodeTitle||show.title,postTitle:show.title,excerpt:show.excerpt||'',body:show.bodyHtml||'<p>Full recap coming soon.</p>',media:show.media||{},mentions:show.mentions||[]
       };

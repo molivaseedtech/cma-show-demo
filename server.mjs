@@ -11,18 +11,22 @@ import { generatePackage, runLocalProcess, transcribeFile } from './lib/ai.mjs';
 import { listTwitchVideos } from './lib/twitch.mjs';
 
 const ROOT = process.cwd();
-const UPLOADS = path.join(ROOT, 'uploads');
 loadEnv(ROOT);
+const UPLOADS = process.env.CMA_UPLOAD_DIR || path.join(ROOT, 'uploads');
 
 const PORT = Number(process.env.PORT || 4173);
 const HOST = process.env.HOST || '127.0.0.1';
 const JSON_LIMIT = 12 * 1024 * 1024;
 const UPLOAD_LIMIT = 500 * 1024 * 1024;
+const SESSION_COOKIE = 'cma_admin_session';
+const SESSION_KEY = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
+const loginAttempts = new Map();
 
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8',
   '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8', '.svg': 'image/svg+xml',
   '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp', '.avif': 'image/avif', '.gif': 'image/gif',
   '.mp3': 'audio/mpeg', '.m4a': 'audio/mp4', '.wav': 'audio/wav', '.mp4': 'video/mp4'
 };
 
@@ -54,9 +58,65 @@ function isLocal(req) {
   return address === '127.0.0.1' || address === '::1' || address === '::ffff:127.0.0.1';
 }
 
+function adminUsers() {
+  const users = {};
+  if (process.env.CMA_CARLA_PASSWORD) users.carla = { name: 'Carla Marie', password: process.env.CMA_CARLA_PASSWORD };
+  if (process.env.CMA_ANTHONY_PASSWORD) users.anthony = { name: 'Anthony', password: process.env.CMA_ANTHONY_PASSWORD };
+  if (process.env.CMA_ADMIN_USERS) {
+    try {
+      for (const [id, password] of Object.entries(JSON.parse(process.env.CMA_ADMIN_USERS))) {
+        if (typeof password === 'string' && password) users[id.toLowerCase()] = { name: id, password };
+      }
+    } catch { console.warn('CMA_ADMIN_USERS must be a JSON object.'); }
+  }
+  return users;
+}
+
+function parseCookies(req) {
+  return Object.fromEntries(String(req.headers.cookie || '').split(';').map(value => value.trim()).filter(Boolean).map(value => {
+    const index = value.indexOf('=');
+    return [decodeURIComponent(index < 0 ? value : value.slice(0, index)), decodeURIComponent(index < 0 ? '' : value.slice(index + 1))];
+  }));
+}
+
+function sessionToken(userId, expires = Date.now() + 12 * 60 * 60 * 1000) {
+  const payload = Buffer.from(JSON.stringify({ userId, expires })).toString('base64url');
+  const signature = crypto.createHmac('sha256', SESSION_KEY).update(payload).digest('base64url');
+  return `${payload}.${signature}`;
+}
+
+function sessionUser(req) {
+  const token = parseCookies(req)[SESSION_COOKIE];
+  if (!token) return null;
+  const [payload, supplied] = token.split('.');
+  if (!payload || !supplied) return null;
+  const expected = crypto.createHmac('sha256', SESSION_KEY).update(payload).digest('base64url');
+  const left = Buffer.from(supplied); const right = Buffer.from(expected);
+  if (left.length !== right.length || !crypto.timingSafeEqual(left, right)) return null;
+  try {
+    const value = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    const user = adminUsers()[value.userId];
+    return user && value.expires > Date.now() ? { id: value.userId, name: user.name } : null;
+  } catch { return null; }
+}
+
+function passwordMatches(expected, supplied) {
+  const left = Buffer.from(String(expected)); const right = Buffer.from(String(supplied));
+  return left.length === right.length && crypto.timingSafeEqual(left, right);
+}
+
+function loginAllowed(req) {
+  const key = req.socket.remoteAddress || 'unknown';
+  const now = Date.now();
+  const recent = (loginAttempts.get(key) || []).filter(time => now - time < 15 * 60 * 1000);
+  loginAttempts.set(key, recent);
+  return { key, allowed: recent.length < 8 };
+}
+
 function authorized(req) {
+  if (sessionUser(req)) return true;
   const configured = process.env.ADMIN_TOKEN;
-  if (!configured) return isLocal(req);
+  if (!configured) return Object.keys(adminUsers()).length === 0 && isLocal(req);
   const supplied = req.headers['x-admin-token'] || req.headers.authorization?.replace(/^Bearer\s+/i, '');
   if (!supplied) return false;
   const left = Buffer.from(String(configured));
@@ -105,12 +165,12 @@ function zonedLocalToDate(value, timeZone) {
 
 function readyProblems(show) {
   const problems = [];
-  if (!show.title?.trim()) problems.push('Blog title');
-  if (!show.episodeTitle?.trim()) problems.push('Episode title');
-  if (!show.bodyHtml?.trim()) problems.push('Blog body');
-  if (!show.transcript?.trim()) problems.push('Transcript');
-  if (!show.review?.blog) problems.push('Blog review');
-  if (!show.review?.chapters) problems.push('Chapter review');
+  if (show.publishBlog && !show.title?.trim()) problems.push('Blog title');
+  if (show.format !== 'Article' && !show.episodeTitle?.trim()) problems.push('Episode title');
+  if (show.publishBlog && !show.bodyHtml?.trim()) problems.push('Blog body');
+  if (show.format !== 'Article' && !show.transcript?.trim()) problems.push('Transcript');
+  if (show.publishBlog && !show.review?.blog) problems.push('Blog review');
+  if (show.format !== 'Article' && !show.review?.chapters) problems.push('Chapter review');
   if (!show.review?.links) problems.push('Links/mentions review');
   if (!show.review?.media) problems.push('Media review');
   return problems;
@@ -175,12 +235,54 @@ async function api(req, res, url) {
     return json(res, 200, { shows, generatedAt: new Date().toISOString() });
   }
 
+  if (pathname === '/api/health' && req.method === 'GET') {
+    return json(res, 200, { ok: true, service: 'cma-show-platform', time: new Date().toISOString() });
+  }
+
+  if (pathname === '/api/auth/session' && req.method === 'GET') {
+    const user = sessionUser(req);
+    const users = adminUsers();
+    return json(res, 200, {
+      loggedIn: Boolean(user) || (Object.keys(users).length === 0 && isLocal(req)),
+      user: user || (Object.keys(users).length === 0 && isLocal(req) ? { id: 'local', name: 'CMA' } : null),
+      localSetup: Object.keys(users).length === 0 && isLocal(req),
+      choices: Object.entries(users).map(([id, value]) => ({ id, name: value.name }))
+    });
+  }
+
+  if (pathname === '/api/auth/login' && req.method === 'POST') {
+    const attempt = loginAllowed(req);
+    if (!attempt.allowed) return errorJson(res, 429, 'Too many attempts. Wait 15 minutes and try again.');
+    const body = await readJson(req);
+    const users = adminUsers();
+    if (Object.keys(users).length === 0 && isLocal(req)) {
+      const token = sessionToken('local');
+      res.setHeader('Set-Cookie', `${SESSION_COOKIE}=${encodeURIComponent(token)}; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200`);
+      return json(res, 200, { user: { id: 'local', name: 'CMA' } });
+    }
+    const id = String(body.user || '').toLowerCase();
+    if (!users[id] || !passwordMatches(users[id].password, body.password || '')) {
+      loginAttempts.set(attempt.key, [...(loginAttempts.get(attempt.key) || []), Date.now()]);
+      return errorJson(res, 401, 'That name and password do not match.');
+    }
+    const token = sessionToken(id);
+    const secure = req.socket.encrypted || req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : '';
+    res.setHeader('Set-Cookie', `${SESSION_COOKIE}=${encodeURIComponent(token)}; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200${secure}`);
+    return json(res, 200, { user: { id, name: users[id].name } });
+  }
+
+  if (pathname === '/api/auth/logout' && req.method === 'POST') {
+    res.setHeader('Set-Cookie', `${SESSION_COOKIE}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0`);
+    return json(res, 200, { ok: true });
+  }
+
   const isAdminApi = pathname.startsWith('/api/admin/') || pathname === '/api/shortcuts/ingest';
   if (isAdminApi && !authorized(req)) return errorJson(res, 401, 'Admin access denied. Use localhost or provide the configured admin token.');
 
   if (pathname === '/api/admin/status' && req.method === 'GET') {
     return json(res, 200, {
-      authRequired: Boolean(process.env.ADMIN_TOKEN),
+      authRequired: Boolean(process.env.ADMIN_TOKEN || Object.keys(adminUsers()).length),
+      user: sessionUser(req),
       timezone: process.env.CMA_TIMEZONE || 'America/New_York',
       providers: {
         openai: { ready: envFlag('OPENAI_API_KEY'), model: process.env.OPENAI_TEXT_MODEL || 'gpt-5.4-mini' },
@@ -272,6 +374,9 @@ async function staticFile(req, res, url) {
   if (pathname === '/') pathname = '/index.html';
   if (pathname === '/admin' || pathname === '/admin/') pathname = '/admin/index.html';
   const relative = pathname.replace(/^\/+/, '');
+  const publicRootFiles = new Set(['index.html', 'manifest.webmanifest', 'sw.js', 'icon.svg']);
+  const publicAdminFiles = new Set(['admin/index.html', 'admin/admin.css', 'admin/admin.js']);
+  if (!publicRootFiles.has(relative) && !publicAdminFiles.has(relative) && !relative.startsWith('assets/')) return false;
   const file = path.resolve(ROOT, relative);
   if (!file.startsWith(`${ROOT}${path.sep}`)) return false;
   try {
@@ -291,6 +396,13 @@ async function staticFile(req, res, url) {
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   try {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    if (req.socket.encrypted || req.headers['x-forwarded-proto'] === 'https') {
+      res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    }
     if (url.pathname.startsWith('/api/')) {
       const handled = await api(req, res, url);
       if (handled !== false) return;

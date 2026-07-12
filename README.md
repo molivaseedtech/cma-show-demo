@@ -17,21 +17,46 @@ The public site and control room now inherit the current CMA website's core pale
 npm start
 ```
 
-Open `http://127.0.0.1:4173/admin`. The server has no runtime package dependencies and requires Node 22 or newer.
+Open `http://127.0.0.1:4173/admin`. The server has no runtime package dependencies and requires Node 22 or newer. Localhost works without a password during development.
 
-On localhost, admin access works without a token. Before exposing the server to another device or the internet, set a strong `ADMIN_TOKEN`; remote admin requests are rejected when no token is configured.
+## Private online admin
+
+`/admin` is designed to work from a phone or computer anywhere in the world, but it must be deployed with the Node server—not as static GitHub Pages. A real hosted setup requires HTTPS, a persistent volume, and these server-side secrets:
+
+```dotenv
+HOST=0.0.0.0
+CMA_CARLA_PASSWORD=<separate strong password>
+CMA_ANTHONY_PASSWORD=<separate strong password>
+SESSION_SECRET=<long random secret>
+CMA_DATA_DIR=/data/content
+CMA_UPLOAD_DIR=/data/uploads
+```
+
+The included `Dockerfile` is ready for a single-instance container host. Mount `/data` as a persistent volume so drafts, published content, and private uploads survive a deployment. Point either `admin.carlamarieandanthonyshow.com` at this service or use `/admin` on the same Node-hosted domain. The login page itself can be reached publicly; all CMA records, uploads, publishing actions, and AI keys are protected by the authenticated server API.
+
+For a production pilot, use one running instance. Moving to multiple instances requires a shared database and durable job queue rather than the included file store.
 
 ## Editorial workflow
 
 1. Create one **show package** the night before.
-2. Attach a Twitch VOD, upload media, link a source, or paste a transcript from an Apple Shortcut.
-3. Transcribe in `Auto` mode. It tries the M4 first and OpenAI second.
+2. Attach a Twitch VOD, upload media, link a source, or upload/paste a transcript created on the M4.
+3. If there is no transcript, transcribe in `Auto` mode. It tries the M4 first and OpenAI second.
 4. Generate the editorial package. `Auto` tries local Ollama, OpenAI, then Gemini.
 5. Edit the blog, episode title, excerpt, chapters, links, named mentions, quote, and media destinations.
 6. Complete all four human-review checks.
 7. Set 4:00 AM once. The blog, episode page, chapters, links, mentions, and media references become public in one atomic publish operation.
 
-AI never publishes by itself. A draft cannot be scheduled until the blog, chapters, links/mentions, and media destinations are separately approved.
+AI never publishes by itself. A draft cannot be scheduled until the parts CMA chose to include are reviewed.
+
+### Lowest-cost M4 workflow
+
+1. Anthony exports the final audio from Adobe Audition.
+2. A local Mac tool or Apple Shortcut creates a TXT, VTT, or SRT transcript. The audio remains on the Mac.
+3. In the online `/admin`, choose **Upload a transcript from the Mac**.
+4. The server sends only transcript text and CMA's focus note to the selected writing model, then returns editable titles, chapters, links, mentions, quotes, and the optional post.
+5. CMA reviews and schedules the selected website pieces for the same 4:00 AM Eastern release as Megaphone.
+
+If CMA is traveling or needs the quickest path, uploading the audio to `/admin` uses local transcription when the server is running on the M4 and OpenAI transcription as the hosted fallback.
 
 ## M4 on-device setup
 
@@ -155,4 +180,4 @@ A practical Shortcut is: receive a Voice Memo or file → run a local transcript
 
 ## Production hardening still required
 
-The current persistence and scheduler are deliberately suited to one always-on M4 Mac. Before multi-instance cloud deployment, replace the JSON store and in-process timer with a transactional database and durable job queue, put `/admin` behind managed identity/MFA, add backups, configure HTTPS, connect Megaphone RSS/API release confirmation, and add Web Push subscription storage. The content model and API boundaries are designed so those swaps do not require rebuilding the admin UI.
+Before the final public launch, add managed identity/MFA, automated volume backups, Megaphone RSS/API release confirmation, and Web Push subscription storage. Before multi-instance deployment, replace the JSON store and in-process timer with a transactional database and durable job queue. The content model and API boundaries are designed so those swaps do not require rebuilding the admin UI.

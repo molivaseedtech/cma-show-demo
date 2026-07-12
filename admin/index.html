@@ -3,169 +3,172 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#171410">
-  <title>CMA Control Room</title>
+  <meta name="theme-color" content="#20243d">
+  <title>CMA Show Desk</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-  <div class="shell">
-    <aside class="sidebar">
-      <a class="brand" href="../"><img class="admin-brand-logo" src="../assets/cma-logo.webp" alt="The Carla Marie and Anthony Show"><span>Control Room<small>Editorial + AI operations</small></span></a>
-      <button class="new-btn" id="new-show">＋ New show package</button>
-      <div class="side-title"><span>Show packages</span><button id="refresh" title="Refresh">↻</button></div>
-      <div class="filter-row" id="filters">
-        <button class="on" data-filter="active">Active</button><button data-filter="published">Published</button><button data-filter="all">All</button>
-      </div>
-      <div id="show-list" class="show-list"></div>
-      <div class="side-foot">
-        <a href="../" target="_blank">View public site ↗</a>
-        <span id="timezone">America/New_York</span>
-      </div>
-    </aside>
+  <section class="login-screen hidden" id="login-screen">
+    <div class="login-card">
+      <img src="../assets/cma-logo.webp" alt="The Carla Marie and Anthony Show">
+      <span class="eyebrow">Private show desk</span>
+      <h1>Welcome back.</h1>
+      <p>Sign in to prepare tonight’s episode and tomorrow morning’s site.</p>
+      <form id="login-form">
+        <label>Who are you?<select id="login-user"></select></label>
+        <label>Password<input id="login-password" type="password" autocomplete="current-password" required></label>
+        <button class="button primary full" type="submit">Open the show desk</button>
+        <p class="form-error" id="login-error"></p>
+      </form>
+    </div>
+  </section>
 
-    <main class="main">
-      <header class="topbar">
-        <button class="mobile-menu" id="mobile-menu">☰</button>
-        <div>
-          <span class="overline">CMA publishing desk</span>
-          <h1 id="page-title">Production overview</h1>
+  <div class="app hidden" id="app">
+    <header class="app-header">
+      <button class="logo-button" id="go-home" aria-label="Show desk home"><img src="../assets/cma-logo.webp" alt="The Carla Marie and Anthony Show"></button>
+      <div class="header-center"><span class="eyebrow">Private show desk</span><strong id="header-title">Tonight’s work</strong></div>
+      <div class="header-actions"><span class="save-status" id="save-status">Saved</span><button class="text-button" id="logout">Sign out</button></div>
+    </header>
+
+    <main>
+      <section class="dashboard" id="dashboard">
+        <div class="welcome">
+          <div><span class="eyebrow">Good evening</span><h1 id="welcome-name">What are we working on?</h1><p>Choose one. The show desk will walk you through the rest.</p></div>
+          <div class="deadline"><span>Podcast target</span><strong>4:00 AM ET</strong><small>Ready before 5:00 AM</small></div>
         </div>
-        <div class="top-actions">
-          <span class="save-state" id="save-state">All changes saved</span>
-          <button class="btn ghost" id="save" disabled>Save draft</button>
+
+        <div class="start-grid">
+          <button class="start-card podcast" data-new="Podcast">
+            <span class="start-icon">🎙</span><span><strong>Tonight’s podcast</strong><small>Upload the final audio from Adobe Audition</small></span><b>Start →</b>
+          </button>
+          <button class="start-card twitch" data-new="Livestream">
+            <span class="start-icon">◉</span><span><strong>Today’s Twitch show</strong><small>Choose the replay after the stream ends</small></span><b>Start →</b>
+          </button>
+          <button class="start-card post" data-new="Article">
+            <span class="start-icon">✎</span><span><strong>Write a quick post</strong><small>No episode needed—just write and publish</small></span><b>Start →</b>
+          </button>
         </div>
-      </header>
 
-      <section class="provider-strip" id="provider-strip"></section>
+        <section class="work-section">
+          <div class="section-heading"><div><h2>In progress</h2><p>Pick up where you left off.</p></div><button class="text-button" id="refresh">Refresh</button></div>
+          <div class="episode-list" id="active-list"></div>
+        </section>
 
-      <section class="empty-state" id="empty-state">
-        <span class="empty-icon">✦</span>
-        <h2>One package. Everything in sync.</h2>
-        <p>Bring in a Twitch replay, audio file, transcript, or Apple Shortcut. Generate the recap, review every mention, then release the podcast page, chapters, and blog together.</p>
-        <button class="btn coral" id="empty-new">Create tonight’s show</button>
+        <details class="recent-box"><summary>Past episodes and posts</summary><div class="episode-list compact" id="past-list"></div></details>
+        <details class="connections"><summary>Connections and setup</summary><div class="connection-grid" id="connections"></div></details>
       </section>
 
-      <section class="workspace hidden" id="workspace">
-        <div class="status-rail">
-          <div class="package-status"><span class="status-dot" id="status-dot"></span><strong id="status-label">Draft</strong><span id="status-detail"></span></div>
-          <div class="rail-actions">
-            <button class="btn tiny ghost" id="archive">Archive</button>
-            <button class="btn tiny" id="publish">Publish now</button>
-          </div>
-        </div>
+      <section class="editor hidden" id="editor">
+        <button class="back-button" id="back-home">← Back to tonight’s work</button>
+        <div class="editor-title"><div><span class="type-badge" id="type-badge">Podcast</span><h1 id="episode-heading">Tonight’s episode</h1><p id="episode-subtitle">Nothing goes live until you say so.</p></div><button class="text-button danger" id="archive">Archive</button></div>
 
-        <nav class="tabs" id="tabs">
-          <button class="on" data-tab="source">1. Source</button>
-          <button data-tab="draft">2. AI draft</button>
-          <button data-tab="edit">3. Edit package</button>
-          <button data-tab="publish">4. Review & publish</button>
+        <nav class="steps" id="steps" aria-label="Episode preparation steps">
+          <button class="active" data-step="source"><span>1</span><b>Add the show</b><small>Audio or replay</small></button>
+          <button data-step="review"><span>2</span><b>Review</b><small>Text and links</small></button>
+          <button data-step="release"><span>3</span><b>Release</b><small>Time and publish</small></button>
         </nav>
 
-        <div class="tab-panel" data-panel="source">
-          <div class="section-head"><div><span class="overline coral-text">Ingest</span><h2>Bring in the show</h2><p>Use the stream replay, upload the final audio, paste a transcript, or send one from Apple Shortcuts.</p></div></div>
-          <div class="source-grid">
-            <article class="card source-card featured">
-              <span class="card-icon">◉</span><div><h3>Twitch replay</h3><p>Pull the latest VODs from CMA’s channel and attach one to this package.</p></div>
-              <button class="btn ghost small" id="browse-twitch">Browse VODs</button>
-            </article>
-            <article class="card source-card">
-              <span class="card-icon">↑</span><div><h3>Upload media</h3><p>MP3, M4A, WAV, or MP4. Files stay on this server.</p></div>
-              <label class="btn ghost small file-btn"><span>Choose file</span><input id="media-file" type="file" accept="audio/*,video/*"></label>
-            </article>
-            <article class="card source-card">
-              <span class="card-icon">↗</span><div><h3>Media URL</h3><p>Twitch, YouTube, or direct podcast media URL.</p></div>
-              <button class="btn ghost small" id="download-source">Download audio</button>
-            </article>
+        <section class="step-panel" data-panel="source">
+          <div class="plain-heading"><span class="eyebrow">Step 1 of 3</span><h2 id="source-heading">Add tonight’s final audio</h2><p id="source-help">Use the file Anthony finished in Adobe Audition. We’ll handle the transcript and first draft.</p></div>
+
+          <div class="source-options" id="source-options">
+            <label class="drop-zone" id="drop-zone">
+              <input id="media-file" type="file" accept="audio/*,video/*">
+              <span class="drop-icon">↑</span><strong>Choose the final audio file</strong><small>MP3, M4A, WAV, or MP4</small>
+            </label>
+            <label class="drop-zone transcript-choice">
+              <input id="transcript-file" type="file" accept=".txt,.md,.vtt,.srt,.json,text/plain,text/vtt,application/json">
+              <span class="drop-icon">T</span><strong>Upload a transcript from the Mac</strong><small>TXT, VTT, SRT, MD, or JSON—created locally to save transcription cost</small>
+            </label>
+            <button class="source-choice" id="browse-twitch"><span>◉</span><strong>Choose a recent Twitch replay</strong><small>Usually available about 15 minutes after the show</small></button>
           </div>
 
-          <div class="form-grid two">
-            <label>Source type<select id="source-type"><option value="upload">Upload</option><option value="twitch">Twitch</option><option value="podcast">Podcast</option><option value="youtube">YouTube</option><option value="shortcut">Apple Shortcut</option></select></label>
-            <label>Source URL<input id="source-url" type="url" placeholder="https://..."></label>
-          </div>
-          <div class="attached" id="attached-source"></div>
+          <div class="source-ready" id="source-ready">No audio or replay added yet.</div>
+          <div class="or-line"><span>or</span></div>
+          <label>Paste a media link<input id="source-url" type="url" placeholder="Twitch, YouTube, or podcast link"></label>
+          <button class="button secondary" id="download-source">Use this link</button>
 
-          <div class="section-split">
-            <div><span class="overline teal-text">Transcript</span><h2>Words become the source of truth</h2></div>
-            <div class="inline-actions"><select id="transcribe-provider"><option value="auto">Auto: M4 → OpenAI</option><option value="local">On-device whisper.cpp</option><option value="openai">OpenAI cloud</option></select><button class="btn" id="transcribe">Transcribe media</button></div>
-          </div>
-          <label class="full">Transcript<textarea id="transcript" class="transcript" placeholder="Paste the transcript here, or transcribe the attached file…"></textarea></label>
-          <p class="helper"><strong>Apple Shortcut:</strong> POST JSON to <code>/api/shortcuts/ingest</code> with <code>title</code>, <code>transcript</code>, and optional <code>generate: true</code>. Use the admin token header when configured.</p>
-        </div>
+          <div class="focus-note"><span>✦</span><label>Anything the assistant should focus on?<textarea id="editor-notes" placeholder="Example: Make the phone-settings story the main post. Keep the wedding voicemail out."></textarea></label></div>
 
-        <div class="tab-panel hidden" data-panel="draft">
-          <div class="ai-hero">
-            <div><span class="overline">AI producer</span><h2>Turn the transcript into the complete package.</h2><p>The draft includes the blog, podcast title, chapters, links, named mentions, and a quote. Nothing publishes until CMA reviews it.</p></div>
-            <div class="ai-action"><select id="generate-provider"><option value="auto">Auto: M4 → OpenAI → Gemini</option><option value="ollama">On-device Ollama</option><option value="openai">OpenAI cloud</option><option value="gemini">Gemini backup</option></select><button class="btn coral" id="generate">✦ Generate full draft</button></div>
-          </div>
-          <div class="ai-output" id="ai-output"><span>✦</span><p>Attach a transcript, then generate a synchronized editorial package.</p></div>
-          <label>Notes for the AI<textarea id="editor-notes" placeholder="Pronunciation, must-include segment, sponsor language, tone notes…"></textarea></label>
-        </div>
+          <details class="optional-details" id="transcript-details"><summary>Or paste a transcript</summary><label>Transcript<textarea id="transcript" class="transcript" placeholder="Paste transcript…"></textarea></label></details>
 
-        <div class="tab-panel hidden" data-panel="edit">
-          <div class="section-head"><div><span class="overline purple-text">Editorial</span><h2>Edit every public detail</h2><p>This is the single source that feeds the episode page and daily blog.</p></div></div>
-          <div class="form-grid two">
-            <label>Blog headline<input id="title" type="text"></label>
-            <label>Podcast episode title<input id="episode-title" type="text"></label>
-            <label>Category<select id="category"><option>News</option><option>Pop Culture</option><option>Games</option><option>Life</option></select></label>
-            <label>Format<select id="format"><option>Livestream</option><option>Podcast</option></select></label>
-            <label>Air date & time<input id="air-date" type="datetime-local"></label>
-            <label>Duration<input id="duration" type="text" placeholder="22 min"></label>
-            <label class="span-two">Homepage summary<textarea id="excerpt" class="short"></textarea></label>
-          </div>
-          <div class="editor-grid">
-            <label>Blog body (safe HTML)<textarea id="body-html" class="article-editor"></textarea></label>
-            <div><span class="field-label">Live preview</span><article class="article-preview" id="body-preview"></article></div>
+          <div class="step-actions"><span></span><button class="button primary large" id="make-draft">✦ Prepare my draft</button></div>
+        </section>
+
+        <section class="step-panel hidden" data-panel="review">
+          <div class="plain-heading"><span class="eyebrow">Step 2 of 3</span><h2>Review what was prepared</h2><p>Change anything in plain language. Your edits save automatically.</p></div>
+
+          <div class="field-row episode-fields" id="episode-fields"><label>Episode title<input id="episode-title" type="text"></label><label>Length<input id="duration" type="text" placeholder="22 min"></label></div>
+
+          <div class="choice-banner">
+            <div><strong>Should this episode have a written post?</strong><p>Most episodes do not need one. Turn this on when a topic, product, or how-to deserves its own page.</p></div>
+            <label class="switch"><input id="publish-blog" type="checkbox"><span></span><b id="blog-choice-label">No post</b></label>
           </div>
 
-          <div class="repeat-head"><div><h3>Chapters</h3><p>Clicking one on the public page will eventually seek the player.</p></div><button class="btn tiny ghost" data-add="chapter">＋ Add chapter</button></div>
-          <div class="repeat-list" id="chapters-list"></div>
-
-          <div class="repeat-head"><div><h3>Links mentioned</h3><p>Only publish URLs CMA has verified.</p></div><button class="btn tiny ghost" data-add="link">＋ Add link</button></div>
-          <div class="repeat-list" id="links-list"></div>
-
-          <div class="repeat-head"><div><h3>Things mentioned</h3><p>Brands, people, products, places, shows, and stories detected in the transcript.</p></div><button class="btn tiny ghost" data-add="mention">＋ Add mention</button></div>
-          <div class="repeat-list" id="mentions-list"></div>
-
-          <label>Quote card<input id="quote" type="text"></label>
-          <h3 class="subhead">Media destinations</h3>
-          <div class="form-grid two">
-            <label>Podcast URL<input id="podcast-url" type="url" placeholder="https://..."></label>
-            <label>Twitch replay URL<input id="twitch-url" type="url" placeholder="https://twitch.tv/videos/..."></label>
-            <label>YouTube URL<input id="youtube-url" type="url" placeholder="https://youtube.com/..."></label>
-            <label>Hero image URL<input id="image-url" type="url" placeholder="https://..."></label>
+          <div class="blog-fields hidden" id="blog-fields">
+            <div class="field-row"><label>Post headline<input id="title" type="text"></label><label>Short description<textarea id="excerpt" class="short"></textarea></label></div>
+            <label>Post text<div class="visual-editor" id="body-editor" contenteditable="true" data-placeholder="The post will appear here…"></div></label>
           </div>
-        </div>
 
-        <div class="tab-panel hidden" data-panel="publish">
-          <div class="publish-grid">
+          <section class="review-block">
+            <div class="review-heading"><div><h3>Links ready to share</h3><p>Check the destinations. Remove anything you don’t want included.</p></div><button class="small-button" data-add="link">＋ Add link</button></div>
+            <div class="simple-list" id="links-list"></div>
+          </section>
+
+          <section class="review-block">
+            <div class="review-heading"><div><h3>People, products, and places mentioned</h3><p>Add a verified link only when it is useful to listeners.</p></div><button class="small-button" data-add="mention">＋ Add item</button></div>
+            <div class="simple-list" id="mentions-list"></div>
+          </section>
+
+          <details class="optional-details"><summary>Optional: chapters, quote, and transcript</summary>
+            <div class="review-heading"><div><h3>Chapters</h3><p>Listeners can jump to these moments.</p></div><button class="small-button" data-add="chapter">＋ Add chapter</button></div>
+            <div class="simple-list" id="chapters-list"></div>
+            <label>Shareable quote<input id="quote" type="text" placeholder="A real quote from the show"></label>
+            <label>Transcript<textarea id="review-transcript" class="transcript"></textarea></label>
+          </details>
+
+          <div class="step-actions"><button class="button secondary" data-go="source">Back</button><button class="button primary large" data-go="release">Looks good—continue</button></div>
+        </section>
+
+        <section class="step-panel hidden" data-panel="release">
+          <div class="plain-heading"><span class="eyebrow">Step 3 of 3</span><h2>Release everything together</h2><p>One last check. The episode, optional post, chapters, and links will update as one release.</p></div>
+
+          <div class="release-grid">
             <div>
-              <span class="overline coral-text">Final check</span><h2>Approve the whole package</h2><p class="publish-lede">These four checks are required so a blog can’t go live with unreviewed links or a missing player.</p>
-              <div class="checklist">
-                <label><input type="checkbox" id="review-blog"><span><strong>Blog copy reviewed</strong><small>Headline, excerpt, facts, spelling, and article body</small></span></label>
-                <label><input type="checkbox" id="review-chapters"><span><strong>Chapters reviewed</strong><small>Timestamps and segment names</small></span></label>
-                <label><input type="checkbox" id="review-links"><span><strong>Links and mentions verified</strong><small>No hallucinated URLs or incorrect names</small></span></label>
-                <label><input type="checkbox" id="review-media"><span><strong>Media destinations confirmed</strong><small>Podcast, Twitch, YouTube, and artwork as applicable</small></span></label>
+              <div class="release-summary" id="release-summary"></div>
+              <h3 class="check-title">Final check</h3>
+              <div class="friendly-checks">
+                <label id="check-blog-row"><input type="checkbox" id="review-blog"><span><strong>I read the post</strong><small>Headline, description, and text look right</small></span></label>
+                <label><input type="checkbox" id="review-chapters"><span><strong>I checked the chapter names</strong><small>Timestamps do not have to be perfect</small></span></label>
+                <label><input type="checkbox" id="review-links"><span><strong>I opened the important links</strong><small>Products, partners, and names go to the right place</small></span></label>
+                <label><input type="checkbox" id="review-media"><span><strong>The episode destination is ready</strong><small>Megaphone, Twitch, or the media link is correct</small></span></label>
               </div>
             </div>
-            <aside class="schedule-card">
-              <span class="schedule-icon">◷</span><h3>Release everything together</h3><p>Set the 4:00 AM release once. The episode page, chapters, blog, mentions, and public feed switch live in one transaction.</p>
-              <label>Publish date & time<input id="publish-at" type="datetime-local"></label>
-              <button class="btn coral full-btn" id="schedule">Schedule package</button>
-              <button class="btn ghost full-btn" id="publish-secondary">Publish immediately</button>
-              <small id="schedule-zone">Times use this browser’s timezone.</small>
+
+            <aside class="release-card">
+              <span class="clock">◷</span><h3>When should it appear?</h3>
+              <p>Podcast nights default to 4:00 AM Eastern so everything is ready before 5:00 AM.</p>
+              <label>Release date and time<input id="publish-at" type="datetime-local"></label>
+              <small>Always interpreted as Eastern Time—even while traveling.</small>
+              <button class="button primary full large" id="schedule">Schedule everything</button>
+              <button class="button secondary full" id="publish-now">Publish now instead</button>
+              <p class="release-message" id="release-message"></p>
             </aside>
           </div>
-        </div>
+
+          <details class="optional-details destinations"><summary>Optional: player and image links</summary><div class="field-row"><label>Podcast/Megaphone link<input id="podcast-url" type="url"></label><label>Twitch replay link<input id="twitch-url" type="url"></label><label>YouTube link<input id="youtube-url" type="url"></label><label>Cover image link<input id="image-url" type="url"></label></div></details>
+          <div class="step-actions"><button class="button secondary" data-go="review">Back to review</button><span></span></div>
+        </section>
       </section>
     </main>
   </div>
 
   <dialog id="twitch-dialog">
-    <div class="dialog-head"><div><span class="overline">Twitch channel</span><h2>Choose a recent replay</h2></div><button id="close-twitch">×</button></div>
-    <div id="twitch-videos" class="vod-list"><div class="loading">Loading Twitch VODs…</div></div>
+    <div class="dialog-header"><div><span class="eyebrow">CMA on Twitch</span><h2>Choose the replay</h2></div><button id="close-twitch" aria-label="Close">×</button></div>
+    <div class="vod-list" id="twitch-videos"><p>Looking for recent shows…</p></div>
   </dialog>
 
   <div class="toast" id="toast"></div>

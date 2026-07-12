@@ -1,440 +1,338 @@
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
-const state = { status: null, shows: [], active: null, filter: 'active', dirty: false };
-const tokenKey = 'cma-admin-token';
-const hostedPreview = location.hostname.endsWith('github.io') || new URLSearchParams(location.search).has('staticPreview');
-const previewStorageKey = 'cma-hosted-preview-content';
-
-async function previewShows() {
-  const stored = localStorage.getItem(previewStorageKey);
-  if (stored) return JSON.parse(stored);
-  const response = await fetch(new URL('../data/content.json', location.href));
-  const payload = await response.json();
-  localStorage.setItem(previewStorageKey, JSON.stringify(payload.shows || []));
-  return payload.shows || [];
-}
-
-function storePreviewShows(shows) {
-  localStorage.setItem(previewStorageKey, JSON.stringify(shows));
-}
-
-async function previewApi(url, options = {}) {
-  if (url === '/api/admin/status') return {
-    demoMode: true, authRequired: false, timezone: 'America/New_York', providers: {
-      openai: { ready: false, model: 'Connect backend to test' },
-      localTranscription: { ready: false, model: '' }, localGeneration: { ready: false, model: '' },
-      gemini: { ready: false, model: '' }, megaphone: { ready: false, mode: 'Setup next week' },
-      twitch: { ready: false, channel: 'CarlaMarieandAnthony' }
-    }
-  };
-  let shows = await previewShows();
-  if (url === '/api/admin/shows' && (!options.method || options.method === 'GET')) return { shows };
-  if (url === '/api/admin/shows' && options.method === 'POST') {
-    const input = JSON.parse(options.body || '{}');
-    const now = new Date().toISOString();
-    const show = {
-      id: crypto.randomUUID(), slug: `preview-${now.slice(0, 10)}`, status: 'draft', title: input.title || 'Untitled show', episodeTitle: '', excerpt: '',
-      category: 'News', format: input.format || 'Livestream', duration: '', readTime: '', airDate: input.airDate || now, publishAt: null, publishedAt: null,
-      source: { type: 'upload', url: '', assetId: '', twitchVideoId: '' }, media: { podcastUrl: '', twitchUrl: '', youtubeUrl: '', imageUrl: '' },
-      transcript: '', bodyHtml: '', chapters: [], links: [], mentions: [], quote: '', ai: { provider: '', model: '', generatedAt: null },
-      review: { blog: false, chapters: false, links: false, media: false }, createdAt: now, updatedAt: now
-    };
-    shows.unshift(show); storePreviewShows(shows); return { show };
-  }
-  const match = url.match(/^\/api\/admin\/shows\/([^/]+)(?:\/(publish|schedule|archive|generate|transcribe|download))?$/);
-  if (match) {
-    const index = shows.findIndex(show => show.id === match[1]);
-    if (index < 0) throw new Error('Show not found in this preview.');
-    if (!match[2] && options.method === 'PATCH') shows[index] = { ...shows[index], ...JSON.parse(options.body || '{}'), updatedAt: new Date().toISOString() };
-    else if (match[2] === 'archive') shows[index] = { ...shows[index], status: 'archived', publishAt: null };
-    else if (match[2] === 'publish') shows[index] = { ...shows[index], status: 'published', publishAt: null, publishedAt: new Date().toISOString() };
-    else if (match[2] === 'schedule') {
-      const body = JSON.parse(options.body || '{}');
-      shows[index] = { ...shows[index], status: 'scheduled', publishAt: body.localPublishAt ? `${body.localPublishAt}:00-04:00` : body.publishAt };
-    } else throw new Error('This action needs the secure CMA backend. The hosted demo keeps edits only in this browser.');
-    storePreviewShows(shows); return { show: shows[index] };
-  }
-  if (url.startsWith('/api/admin/twitch/') || url.startsWith('/api/admin/uploads')) throw new Error('This action needs the secure CMA backend.');
-  throw new Error('This preview action is not available.');
-}
+const state = { status: null, user: null, shows: [], current: null, step: 'source', saveTimer: null, saving: false };
 
 function esc(value = '') {
   return String(value).replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
 }
 
-function authHeaders() {
-  const token = sessionStorage.getItem(tokenKey);
-  return token ? { 'x-admin-token': token } : {};
-}
-
-async function api(url, options = {}) {
-  if (hostedPreview) return previewApi(url, options);
+async function request(url, options = {}) {
   const response = await fetch(url, {
-    ...options,
-    headers: { ...authHeaders(), ...(options.body && !(options.body instanceof Blob) ? { 'Content-Type': 'application/json' } : {}), ...(options.headers || {}) }
+    credentials: 'same-origin', ...options,
+    headers: { ...(options.body && !(options.body instanceof Blob) ? { 'Content-Type': 'application/json' } : {}), ...(options.headers || {}) }
   });
-  const payload = await response.json().catch(() => ({ error: `Request failed (${response.status}).` }));
-  if (response.status === 401) {
-    const token = window.prompt('Enter the CMA admin token:');
-    if (token) { sessionStorage.setItem(tokenKey, token); return api(url, options); }
-  }
+  const payload = await response.json().catch(() => ({ error: `Something went wrong (${response.status}).` }));
+  if (response.status === 401 && !url.startsWith('/api/auth/')) showLogin();
   if (!response.ok) {
-    const details = Array.isArray(payload.details) ? ` Missing: ${payload.details.join(', ')}.` : '';
-    throw new Error((payload.error || `Request failed (${response.status}).`) + details);
+    const missing = Array.isArray(payload.details) ? ` Still needed: ${payload.details.join(', ')}.` : '';
+    throw new Error((payload.error || 'Something went wrong.') + missing);
   }
   return payload;
 }
 
 let toastTimer;
 function toast(message, kind = '') {
-  const el = $('#toast');
-  el.textContent = message;
-  el.className = `toast show ${kind}`;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { el.className = 'toast'; }, 4200);
+  const el = $('#toast'); el.textContent = message; el.className = `toast show ${kind}`;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.className = 'toast'; }, 4300);
 }
 
-function markDirty() {
-  if (!state.active) return;
-  state.dirty = true;
-  $('#save').disabled = false;
-  $('#save-state').textContent = 'Unsaved changes';
+function saveMessage(message, kind = '') {
+  const el = $('#save-status'); el.textContent = message; el.className = `save-status ${kind}`;
 }
 
-function markSaved() {
-  state.dirty = false;
-  $('#save').disabled = true;
-  $('#save-state').textContent = 'All changes saved';
+function showLogin(session = {}) {
+  $('#app').classList.add('hidden'); $('#login-screen').classList.remove('hidden');
+  const choices = session.choices || [];
+  $('#login-user').innerHTML = choices.length
+    ? choices.map(user => `<option value="${esc(user.id)}">${esc(user.name)}</option>`).join('')
+    : '<option value="local">CMA on this Mac</option>';
+  $('#login-password').required = choices.length > 0;
+  $('#login-password').closest('label').classList.toggle('hidden', choices.length === 0);
 }
 
-function toCmaInput(iso) {
+async function startApp(user) {
+  state.user = user || { name: 'CMA' };
+  $('#login-screen').classList.add('hidden'); $('#app').classList.remove('hidden');
+  await loadData(); showDashboard();
+}
+
+async function boot() {
+  try {
+    const session = await request('/api/auth/session');
+    if (!session.loggedIn) return showLogin(session);
+    await startApp(session.user);
+  } catch (error) {
+    showLogin(); $('#login-error').textContent = error.message;
+  }
+}
+
+async function loadData() {
+  const [status, content] = await Promise.all([request('/api/admin/status'), request('/api/admin/shows')]);
+  state.status = status; state.shows = content.shows;
+  if (state.current) state.current = state.shows.find(show => show.id === state.current.id) || null;
+  renderConnections(); renderDashboard();
+}
+
+function showDashboard() {
+  clearTimeout(state.saveTimer);
+  $('#editor').classList.add('hidden'); $('#dashboard').classList.remove('hidden');
+  $('#header-title').textContent = 'Tonight’s work';
+  const firstName = (state.user?.name || 'CMA').split(' ')[0];
+  $('#welcome-name').textContent = `${firstName}, what are we working on?`;
+  renderDashboard();
+}
+
+function iconFor(show) { return show.format === 'Livestream' ? '◉' : show.format === 'Article' ? '✎' : '🎙'; }
+function dateLabel(show) { return new Date(show.airDate || show.createdAt).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }); }
+
+function row(show) {
+  const status = show.status === 'scheduled' && show.publishAt ? `Scheduled ${new Date(show.publishAt).toLocaleString([], { timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })} ET` : show.status;
+  return `<button class="episode-row" data-open="${show.id}"><span class="row-icon">${iconFor(show)}</span><span><strong>${esc(show.title || show.episodeTitle || 'Untitled')}</strong><small>${dateLabel(show)} · ${show.format === 'Livestream' ? 'Twitch show' : show.format === 'Article' ? 'Post' : 'Podcast'}</small></span><span class="row-status ${show.status}">${esc(status)}</span></button>`;
+}
+
+function renderDashboard() {
+  const active = state.shows.filter(show => ['draft', 'scheduled'].includes(show.status));
+  const past = state.shows.filter(show => ['published', 'archived'].includes(show.status));
+  $('#active-list').innerHTML = active.length ? active.map(row).join('') : '<div class="empty-row">Nothing waiting—start tonight’s show above.</div>';
+  $('#past-list').innerHTML = past.length ? past.map(row).join('') : '<div class="empty-row">Past releases will appear here.</div>';
+}
+
+function renderConnections() {
+  const labels = { localTranscription: 'On-Mac transcription', localGeneration: 'On-Mac writing help', openai: 'OpenAI backup', gemini: 'Gemini backup', megaphone: 'Megaphone feed', twitch: 'Twitch replays' };
+  const providers = state.status?.providers || {};
+  $('#connections').innerHTML = Object.entries(labels).map(([key, label]) => {
+    const provider = providers[key] || {};
+    return `<div class="connection ${provider.ready ? 'ready' : ''}"><i></i><strong>${label}</strong><br>${provider.ready ? 'Ready' : 'Not connected yet'}</div>`;
+  }).join('');
+}
+
+async function createNew(format) {
+  const now = new Date();
+  const names = { Podcast: `Morning Show Podcast — ${now.toLocaleDateString([], { month: 'long', day: 'numeric' })}`, Livestream: `CMA Live — ${now.toLocaleDateString([], { month: 'long', day: 'numeric' })}`, Article: 'New post' };
+  const payload = await request('/api/admin/shows', { method: 'POST', body: JSON.stringify({
+    title: names[format], episodeTitle: format === 'Article' ? '' : names[format], airDate: now.toISOString(), format,
+    sourceType: format === 'Livestream' ? 'twitch' : format === 'Article' ? 'manual' : 'upload', publishBlog: format === 'Article'
+  }) });
+  state.shows.unshift(payload.show); openShow(payload.show, format === 'Article' ? 'review' : 'source');
+}
+
+function openShow(show, step = 'source') {
+  state.current = structuredClone(show); state.step = step;
+  $('#dashboard').classList.add('hidden'); $('#editor').classList.remove('hidden');
+  renderEditor(); goStep(step, false); window.scrollTo({ top: 0 });
+}
+
+function easternInput(iso) {
   if (!iso) return '';
-  const date = new Date(iso);
-  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
-    timeZone: state.status?.timezone || 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit',
-    hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
-  }).formatToParts(date).filter(part => part.type !== 'literal').map(part => [part.type, part.value]));
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(iso)).filter(part => part.type !== 'literal').map(part => [part.type, part.value]));
   return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
 }
 
-function tomorrowAtFour() {
-  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
-    timeZone: state.status?.timezone || 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit'
-  }).formatToParts(new Date()).filter(part => part.type !== 'literal').map(part => [part.type, Number(part.value)]));
-  const tomorrow = new Date(Date.UTC(parts.year, parts.month - 1, parts.day + 1));
-  return `${tomorrow.toISOString().slice(0, 10)}T04:00`;
+function nextFourEastern() {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).filter(part => part.type !== 'literal').map(part => [part.type, Number(part.value)]));
+  const afterTonightRelease = parts.hour >= 4;
+  const next = new Date(Date.UTC(parts.year, parts.month - 1, parts.day + (afterTonightRelease ? 1 : 0)));
+  return `${next.toISOString().slice(0, 10)}T04:00`;
 }
 
-function renderProviders() {
-  const labels = {
-    localTranscription: 'M4 transcription', localGeneration: 'M4 writing', openai: 'OpenAI cloud', gemini: 'Gemini backup', megaphone: 'Megaphone feed', twitch: 'Twitch VODs'
-  };
-  const providers = state.status?.providers || {};
-  $('#provider-strip').innerHTML = Object.entries(labels).map(([key, label]) => {
-    const item = providers[key] || {};
-    return `<span class="provider-chip ${item.ready ? 'ready' : ''}" title="${esc(item.model || item.channel || item.mode || 'Not configured')}"><i></i><b>${label}</b>${item.ready ? ' ready' : ' setup needed'}</span>`;
-  }).join('') + `<span class="provider-note">${state.status?.demoMode ? 'Hosted preview · edits stay in this browser' : 'Auto mode keeps source media private on the M4 whenever local tools are ready.'}</span>`;
-  $('#timezone').textContent = state.status?.timezone || 'America/New_York';
+function setValue(selector, value) { const element = $(selector); if (element) element.value = value ?? ''; }
+
+function renderEditor() {
+  const show = state.current;
+  const type = show.format === 'Livestream' ? 'Twitch show' : show.format === 'Article' ? 'Quick post' : 'Podcast';
+  $('#header-title').textContent = show.title || show.episodeTitle || type;
+  $('#type-badge').textContent = type; $('#type-badge').className = `type-badge ${show.format === 'Livestream' ? 'twitch' : show.format === 'Article' ? 'article' : ''}`;
+  $('#episode-heading').textContent = show.title || show.episodeTitle || type;
+  $('#episode-subtitle').textContent = show.status === 'scheduled' && show.publishAt ? `Scheduled for ${new Date(show.publishAt).toLocaleString([], { timeZone: 'America/New_York', dateStyle: 'medium', timeStyle: 'short' })} Eastern` : 'Nothing goes live until you say so.';
+  $('#episode-fields').classList.toggle('hidden', show.format === 'Article');
+  $('#source-options').classList.toggle('hidden', show.format === 'Article');
+  $('#source-heading').textContent = show.format === 'Livestream' ? 'Choose today’s Twitch replay' : show.format === 'Article' ? 'Start writing' : 'Add tonight’s final audio';
+  $('#source-help').textContent = show.format === 'Livestream' ? 'The replay is usually available about 15 minutes after the stream ends.' : show.format === 'Article' ? 'No episode is needed for a quick post.' : 'Use the file Anthony finished in Adobe Audition. We’ll handle the transcript and first draft.';
+  setValue('#source-url', show.source?.url); setValue('#editor-notes', show.editorNotes); setValue('#transcript', show.transcript); setValue('#review-transcript', show.transcript);
+  setValue('#episode-title', show.episodeTitle); setValue('#duration', show.duration); setValue('#title', show.title); setValue('#excerpt', show.excerpt);
+  $('#body-editor').innerHTML = show.bodyHtml || '';
+  $('#publish-blog').checked = Boolean(show.publishBlog); updateBlogChoice();
+  setValue('#quote', show.quote); setValue('#podcast-url', show.media?.podcastUrl); setValue('#twitch-url', show.media?.twitchUrl); setValue('#youtube-url', show.media?.youtubeUrl); setValue('#image-url', show.media?.imageUrl);
+  setValue('#publish-at', show.publishAt ? easternInput(show.publishAt) : nextFourEastern());
+  $('#review-blog').checked = Boolean(show.review?.blog); $('#review-chapters').checked = Boolean(show.review?.chapters); $('#review-links').checked = Boolean(show.review?.links); $('#review-media').checked = Boolean(show.review?.media);
+  renderSource(); renderRepeats(); renderReleaseSummary(); saveMessage('Saved');
 }
 
-function filteredShows() {
-  if (state.filter === 'all') return state.shows;
-  if (state.filter === 'published') return state.shows.filter(show => show.status === 'published');
-  return state.shows.filter(show => ['draft', 'scheduled'].includes(show.status));
+function renderSource() {
+  const source = state.current.source || {};
+  const hasTranscript = Boolean(state.current.transcript?.trim());
+  const ready = Boolean(source.assetId || source.url || hasTranscript || state.current.format === 'Article');
+  const text = hasTranscript && !source.assetId && !source.url
+    ? `✓ Transcript ready${source.transcriptFilename ? `: ${source.transcriptFilename}` : ''} — no audio upload needed`
+    : source.assetId ? `✓ File attached: ${source.filename || source.assetId.split('-').pop()}`
+      : source.url ? `✓ Linked: ${source.url}`
+        : state.current.format === 'Article' ? 'No episode needed for this post.' : 'No audio, transcript, or replay added yet.';
+  $('#source-ready').textContent = text; $('#source-ready').classList.toggle('ready', ready);
 }
 
-function renderList() {
-  const shows = filteredShows();
-  $('#show-list').innerHTML = shows.length ? shows.map(show => `
-    <button class="show-item ${state.active?.id === show.id ? 'on' : ''}" data-id="${show.id}">
-      <span class="show-meta"><span class="status ${show.status}">${esc(show.status)}</span><small>${new Date(show.airDate || show.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}</small></span>
-      <strong>${esc(show.title || show.episodeTitle || 'Untitled show')}</strong>
-      <small>${esc(show.ai?.provider ? `${show.ai.provider} draft` : 'Waiting for transcript')}</small>
-    </button>`).join('') : '<div class="loading">No packages here yet.</div>';
-}
-
-function setValue(id, value) {
-  const el = $(id);
-  if (el) el.value = value ?? '';
+function updateBlogChoice() {
+  const on = $('#publish-blog').checked;
+  $('#blog-fields').classList.toggle('hidden', !on); $('#blog-choice-label').textContent = on ? 'Include post' : 'No post';
+  $('#check-blog-row').classList.toggle('hidden', !on);
 }
 
 function renderRepeats() {
-  const show = state.active;
-  $('#chapters-list').innerHTML = (show.chapters || []).map((item, index) => `<div class="repeat-row">
-    <input aria-label="Timestamp" value="${esc(item.time)}" data-kind="chapters" data-index="${index}" data-field="time">
-    <input aria-label="Chapter title" value="${esc(item.title)}" data-kind="chapters" data-index="${index}" data-field="title">
-    <span></span><button class="icon-btn" data-remove="chapters" data-index="${index}" title="Remove">×</button></div>`).join('') || '<div class="attached">No chapters yet.</div>';
-  $('#links-list').innerHTML = (show.links || []).map((item, index) => `<div class="repeat-row link">
-    <input aria-label="Label" value="${esc(item.label)}" data-kind="links" data-index="${index}" data-field="label" placeholder="Label">
-    <input aria-label="URL" value="${esc(item.url)}" data-kind="links" data-index="${index}" data-field="url" placeholder="https://...">
-    <input aria-label="Context" value="${esc(item.context)}" data-kind="links" data-index="${index}" data-field="context" placeholder="Why it came up">
-    <button class="icon-btn" data-remove="links" data-index="${index}" title="Remove">×</button></div>`).join('') || '<div class="attached">No verified links yet.</div>';
-  $('#mentions-list').innerHTML = (show.mentions || []).map((item, index) => `<div class="repeat-row mention">
-    <input aria-label="Name" value="${esc(item.name)}" data-kind="mentions" data-index="${index}" data-field="name" placeholder="Name">
-    <select aria-label="Type" data-kind="mentions" data-index="${index}" data-field="type">${['person','brand','product','place','show','story','other'].map(type => `<option ${item.type === type ? 'selected' : ''}>${type}</option>`).join('')}</select>
-    <input aria-label="Context" value="${esc(item.context)}" data-kind="mentions" data-index="${index}" data-field="context" placeholder="Context">
-    <input aria-label="Verified URL" value="${esc(item.verifiedUrl)}" data-kind="mentions" data-index="${index}" data-field="verifiedUrl" placeholder="Verified URL">
-    <button class="icon-btn" data-remove="mentions" data-index="${index}" title="Remove">×</button></div>`).join('') || '<div class="attached">No detected mentions yet.</div>';
+  const show = state.current;
+  $('#links-list').innerHTML = (show.links || []).map((item, index) => `<div class="simple-row"><input aria-label="Link name" value="${esc(item.label)}" data-kind="links" data-index="${index}" data-field="label" placeholder="What it is"><input aria-label="Link URL" value="${esc(item.url)}" data-kind="links" data-index="${index}" data-field="url" placeholder="https://..."><button class="remove-button" data-remove="links" data-index="${index}" aria-label="Remove link">×</button></div>`).join('') || '<div class="empty-row">No links found. That’s okay.</div>';
+  $('#mentions-list').innerHTML = (show.mentions || []).map((item, index) => `<div class="simple-row"><input aria-label="Mention name" value="${esc(item.name)}" data-kind="mentions" data-index="${index}" data-field="name" placeholder="Name or product"><input aria-label="Verified link" value="${esc(item.verifiedUrl)}" data-kind="mentions" data-index="${index}" data-field="verifiedUrl" placeholder="Optional verified link"><button class="remove-button" data-remove="mentions" data-index="${index}" aria-label="Remove item">×</button></div>`).join('') || '<div class="empty-row">No extra names or products to check.</div>';
+  $('#chapters-list').innerHTML = (show.chapters || []).map((item, index) => `<div class="simple-row chapter"><input aria-label="Chapter time" value="${esc(item.time)}" data-kind="chapters" data-index="${index}" data-field="time" placeholder="00:00"><input aria-label="Chapter name" value="${esc(item.title)}" data-kind="chapters" data-index="${index}" data-field="title" placeholder="What happens here"><button class="remove-button" data-remove="chapters" data-index="${index}" aria-label="Remove chapter">×</button></div>`).join('') || '<div class="empty-row">Chapters will appear after the draft is prepared.</div>';
 }
 
-function renderAiOutput() {
-  const show = state.active;
-  const output = $('#ai-output');
-  if (!show.ai?.generatedAt) {
-    output.className = 'ai-output';
-    output.innerHTML = '<span>✦</span><p>Attach a transcript, then generate a synchronized editorial package.</p>';
-    return;
-  }
-  output.className = 'ai-output ready';
-  output.innerHTML = `
-    <div class="metric"><strong>${(show.chapters || []).length}</strong><small>Chapters</small></div>
-    <div class="metric"><strong>${(show.links || []).length}</strong><small>Verified URLs found</small></div>
-    <div class="metric"><strong>${(show.mentions || []).length}</strong><small>Things mentioned</small></div>
-    <div class="metric"><strong>${esc(show.ai.provider)}</strong><small>${esc(show.ai.model)}</small></div>`;
+function renderReleaseSummary() {
+  const show = state.current;
+  const media = show.format === 'Livestream' ? 'Twitch replay' : show.format === 'Article' ? 'No episode' : 'Megaphone podcast';
+  $('#release-summary').innerHTML = `<div class="summary-card"><span>Release</span><strong>${esc(show.episodeTitle || show.title || 'Untitled')}</strong></div><div class="summary-card"><span>Media</span><strong>${media}</strong></div><div class="summary-card"><span>Written post</span><strong>${show.publishBlog ? 'Included' : 'Not included'}</strong></div><div class="summary-card"><span>Links</span><strong>${(show.links || []).length + (show.mentions || []).filter(item => item.verifiedUrl).length} ready</strong></div>`;
 }
 
-function renderActive() {
-  const show = state.active;
-  $('#empty-state').classList.toggle('hidden', Boolean(show));
-  $('#workspace').classList.toggle('hidden', !show);
-  if (!show) { $('#page-title').textContent = 'Production overview'; renderList(); return; }
-  $('#page-title').textContent = show.title || show.episodeTitle || 'Untitled show';
-  const status = show.status || 'draft';
-  $('#status-label').textContent = status[0].toUpperCase() + status.slice(1);
-  $('#status-dot').className = `status-dot ${status}`;
-  $('#status-detail').textContent = status === 'scheduled' && show.publishAt ? `for ${new Date(show.publishAt).toLocaleString()}` : show.publishedAt ? `since ${new Date(show.publishedAt).toLocaleString()}` : '— private to CMA';
-
-  setValue('#source-type', show.source?.type);
-  setValue('#source-url', show.source?.url);
-  setValue('#transcript', show.transcript);
-  setValue('#editor-notes', show.editorNotes);
-  setValue('#title', show.title);
-  setValue('#episode-title', show.episodeTitle);
-  setValue('#category', show.category);
-  setValue('#format', show.format);
-  setValue('#air-date', toCmaInput(show.airDate));
-  setValue('#duration', show.duration);
-  setValue('#excerpt', show.excerpt);
-  setValue('#body-html', show.bodyHtml);
-  $('#body-preview').innerHTML = show.bodyHtml || '<p style="color:#6d655b">The article preview will appear here.</p>';
-  setValue('#quote', show.quote);
-  setValue('#podcast-url', show.media?.podcastUrl);
-  setValue('#twitch-url', show.media?.twitchUrl);
-  setValue('#youtube-url', show.media?.youtubeUrl);
-  setValue('#image-url', show.media?.imageUrl);
-  setValue('#publish-at', show.publishAt ? toCmaInput(show.publishAt) : tomorrowAtFour());
-  $('#review-blog').checked = Boolean(show.review?.blog);
-  $('#review-chapters').checked = Boolean(show.review?.chapters);
-  $('#review-links').checked = Boolean(show.review?.links);
-  $('#review-media').checked = Boolean(show.review?.media);
-  $('#attached-source').innerHTML = show.source?.assetId
-    ? `<strong>Attached:</strong> ${esc(show.source.assetId)} · ready to transcribe`
-    : show.source?.url ? `<strong>Linked:</strong> ${esc(show.source.url)}` : 'No source media attached yet.';
-  renderRepeats();
-  renderAiOutput();
-  renderList();
-  markSaved();
-}
-
-function collectForm() {
-  const show = state.active;
+function collect() {
+  const show = state.current;
   return {
-    source: { ...(show.source || {}), type: $('#source-type').value, url: $('#source-url').value.trim() },
-    transcript: $('#transcript').value,
-    editorNotes: $('#editor-notes').value,
-    title: $('#title').value.trim(),
-    episodeTitle: $('#episode-title').value.trim(),
-    category: $('#category').value,
-    format: $('#format').value,
-    airDate: $('#air-date').value ? new Date($('#air-date').value).toISOString() : show.airDate,
-    duration: $('#duration').value.trim(),
-    excerpt: $('#excerpt').value.trim(),
-    bodyHtml: $('#body-html').value,
-    chapters: show.chapters || [], links: show.links || [], mentions: show.mentions || [],
-    quote: $('#quote').value.trim(),
+    source: { ...(show.source || {}), url: $('#source-url').value.trim() }, editorNotes: $('#editor-notes').value,
+    transcript: $('#review-transcript').value || $('#transcript').value, episodeTitle: $('#episode-title').value.trim(), duration: $('#duration').value.trim(),
+    publishBlog: $('#publish-blog').checked, title: $('#title').value.trim(), excerpt: $('#excerpt').value.trim(), bodyHtml: $('#body-editor').innerHTML,
+    chapters: show.chapters || [], links: show.links || [], mentions: show.mentions || [], quote: $('#quote').value.trim(),
     media: { podcastUrl: $('#podcast-url').value.trim(), twitchUrl: $('#twitch-url').value.trim(), youtubeUrl: $('#youtube-url').value.trim(), imageUrl: $('#image-url').value.trim() },
-    review: { blog: $('#review-blog').checked, chapters: $('#review-chapters').checked, links: $('#review-links').checked, media: $('#review-media').checked }
+    review: { blog: !$('#publish-blog').checked || $('#review-blog').checked, chapters: show.format === 'Article' || $('#review-chapters').checked, links: $('#review-links').checked, media: show.format === 'Article' || $('#review-media').checked }
   };
 }
 
-async function save(silent = false) {
-  if (!state.active) return;
-  const payload = await api(`/api/admin/shows/${state.active.id}`, { method: 'PATCH', body: JSON.stringify(collectForm()) });
-  state.active = payload.show;
-  const index = state.shows.findIndex(show => show.id === state.active.id);
-  if (index >= 0) state.shows[index] = state.active;
-  renderActive();
-  if (!silent) toast('Draft saved.');
-  return state.active;
+function queueSave() {
+  if (!state.current) return;
+  saveMessage('Saving…', 'saving'); clearTimeout(state.saveTimer);
+  state.saveTimer = setTimeout(() => saveDraft(true).catch(error => { saveMessage('Not saved', 'error'); toast(error.message, 'error'); }), 750);
 }
 
-async function load() {
-  state.status = await api('/api/admin/status');
-  const payload = await api('/api/admin/shows');
-  state.shows = payload.shows;
-  if (state.active) state.active = state.shows.find(show => show.id === state.active.id) || null;
-  renderProviders();
-  renderActive();
-  if (state.status?.demoMode) toast('Hosted preview: edits stay in this browser. Secure integrations run from the CMA backend.');
+async function saveDraft(silent = false) {
+  if (!state.current || state.saving) return state.current;
+  state.saving = true; clearTimeout(state.saveTimer);
+  try {
+    const payload = await request(`/api/admin/shows/${state.current.id}`, { method: 'PATCH', body: JSON.stringify(collect()) });
+    state.current = payload.show;
+    const index = state.shows.findIndex(show => show.id === payload.show.id); if (index >= 0) state.shows[index] = payload.show;
+    saveMessage('Saved'); renderSource(); renderReleaseSummary();
+    if (!silent) toast('Saved.');
+    return payload.show;
+  } finally { state.saving = false; }
 }
 
-async function createNew() {
-  const now = new Date();
-  const payload = await api('/api/admin/shows', { method: 'POST', body: JSON.stringify({ title: `CMA Show — ${now.toLocaleDateString([], { month: 'long', day: 'numeric' })}`, airDate: now.toISOString(), format: 'Livestream' }) });
-  state.shows.unshift(payload.show);
-  state.active = payload.show;
-  renderActive();
-  switchTab('source');
-  toast('New show package created.');
+async function episodeAction(action, body = {}) {
+  await saveDraft(true);
+  const payload = await request(`/api/admin/shows/${state.current.id}/${action}`, { method: 'POST', body: JSON.stringify(body) });
+  state.current = payload.show;
+  const index = state.shows.findIndex(show => show.id === payload.show.id); if (index >= 0) state.shows[index] = payload.show;
+  renderEditor(); return payload.show;
 }
 
-function switchTab(tab) {
-  $$('#tabs button').forEach(button => button.classList.toggle('on', button.dataset.tab === tab));
-  $$('.tab-panel').forEach(panel => panel.classList.toggle('hidden', panel.dataset.panel !== tab));
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+function goStep(step, scroll = true) {
+  state.step = step;
+  $$('#steps button').forEach(button => {
+    const order = ['source', 'review', 'release']; const current = order.indexOf(step); const index = order.indexOf(button.dataset.step);
+    button.classList.toggle('active', button.dataset.step === step); button.classList.toggle('done', index < current);
+  });
+  $$('.step-panel').forEach(panel => panel.classList.toggle('hidden', panel.dataset.panel !== step));
+  if (step === 'release') { renderReleaseSummary(); saveDraft(true).catch(() => {}); }
+  if (scroll) window.scrollTo({ top: 100, behavior: 'smooth' });
 }
 
-async function busy(button, label, task) {
-  const previous = button.textContent;
-  button.disabled = true;
-  button.textContent = label;
-  try { return await task(); }
-  catch (error) { toast(error.message, 'error'); throw error; }
-  finally { button.disabled = false; button.textContent = previous; }
+async function withBusy(button, message, task) {
+  const old = button.textContent; button.disabled = true; button.textContent = message;
+  try { return await task(); } catch (error) { toast(error.message, 'error'); throw error; } finally { button.disabled = false; button.textContent = old; }
 }
 
-async function action(endpoint, body = {}) {
-  await save(true);
-  const payload = await api(`/api/admin/shows/${state.active.id}/${endpoint}`, { method: 'POST', body: JSON.stringify(body) });
-  state.active = payload.show;
-  const index = state.shows.findIndex(show => show.id === state.active.id);
-  if (index >= 0) state.shows[index] = state.active;
-  renderActive();
-  return state.active;
-}
-
-$('#new-show').addEventListener('click', createNew);
-$('#empty-new').addEventListener('click', createNew);
-$('#refresh').addEventListener('click', () => load().catch(error => toast(error.message, 'error')));
-$('#save').addEventListener('click', () => save().catch(error => toast(error.message, 'error')));
-$('#show-list').addEventListener('click', event => {
-  const item = event.target.closest('[data-id]');
-  if (!item) return;
-  state.active = state.shows.find(show => show.id === item.dataset.id) || null;
-  renderActive();
-  $('.sidebar').classList.remove('open');
+$('#login-form').addEventListener('submit', async event => {
+  event.preventDefault(); $('#login-error').textContent = '';
+  try {
+    const result = await request('/api/auth/login', { method: 'POST', body: JSON.stringify({ user: $('#login-user').value, password: $('#login-password').value }) });
+    $('#login-password').value = ''; await startApp(result.user);
+  } catch (error) { $('#login-error').textContent = error.message; }
 });
-$('#filters').addEventListener('click', event => {
-  const button = event.target.closest('button'); if (!button) return;
-  state.filter = button.dataset.filter;
-  $$('#filters button').forEach(item => item.classList.toggle('on', item === button));
-  renderList();
-});
-$('#tabs').addEventListener('click', event => { const button = event.target.closest('button'); if (button) switchTab(button.dataset.tab); });
-$('#mobile-menu').addEventListener('click', () => $('.sidebar').classList.toggle('open'));
 
-$('#workspace').addEventListener('input', event => {
+$('#logout').addEventListener('click', async () => { await request('/api/auth/logout', { method: 'POST', body: '{}' }); const session = await request('/api/auth/session'); showLogin(session); });
+$('#go-home').addEventListener('click', showDashboard); $('#back-home').addEventListener('click', showDashboard);
+$('#refresh').addEventListener('click', () => loadData().catch(error => toast(error.message, 'error')));
+document.addEventListener('click', event => {
+  const starter = event.target.closest('[data-new]'); if (starter) createNew(starter.dataset.new).catch(error => toast(error.message, 'error'));
+  const opener = event.target.closest('[data-open]'); if (opener) { const show = state.shows.find(item => item.id === opener.dataset.open); if (show) openShow(show, show.status === 'scheduled' ? 'release' : 'review'); }
+  const go = event.target.closest('[data-go]'); if (go) goStep(go.dataset.go);
+  const step = event.target.closest('#steps [data-step]'); if (step) goStep(step.dataset.step);
+  const add = event.target.closest('[data-add]'); if (add && state.current) {
+    if (add.dataset.add === 'link') state.current.links.push({ label: '', url: '', context: '' });
+    if (add.dataset.add === 'mention') state.current.mentions.push({ name: '', type: 'other', context: '', searchQuery: '', verifiedUrl: '' });
+    if (add.dataset.add === 'chapter') state.current.chapters.push({ time: '00:00', title: '' });
+    renderRepeats(); queueSave();
+  }
+  const remove = event.target.closest('[data-remove]'); if (remove && state.current) { state.current[remove.dataset.remove].splice(Number(remove.dataset.index), 1); renderRepeats(); queueSave(); }
+});
+
+$('#editor').addEventListener('input', event => {
   const target = event.target;
-  if (target.dataset.kind) {
-    state.active[target.dataset.kind][Number(target.dataset.index)][target.dataset.field] = target.value;
-  }
-  if (target.id === 'body-html') $('#body-preview').innerHTML = target.value;
-  markDirty();
+  if (target.dataset.kind) state.current[target.dataset.kind][Number(target.dataset.index)][target.dataset.field] = target.value;
+  if (target.id === 'transcript') $('#review-transcript').value = target.value;
+  if (target.id === 'review-transcript') $('#transcript').value = target.value;
+  if (target.id === 'publish-blog') { state.current.publishBlog = target.checked; updateBlogChoice(); renderReleaseSummary(); }
+  queueSave();
 });
-$('#workspace').addEventListener('change', markDirty);
-$('#workspace').addEventListener('click', event => {
-  const add = event.target.closest('[data-add]');
-  if (add) {
-    const kind = add.dataset.add;
-    if (kind === 'chapter') state.active.chapters.push({ time: '00:00', title: '' });
-    if (kind === 'link') state.active.links.push({ label: '', url: '', context: '' });
-    if (kind === 'mention') state.active.mentions.push({ name: '', type: 'other', context: '', searchQuery: '', verifiedUrl: '' });
-    renderRepeats(); markDirty(); return;
-  }
-  const remove = event.target.closest('[data-remove]');
-  if (remove) { state.active[remove.dataset.remove].splice(Number(remove.dataset.index), 1); renderRepeats(); markDirty(); }
-});
+$('#editor').addEventListener('change', queueSave);
 
 $('#media-file').addEventListener('change', event => {
-  const file = event.target.files?.[0]; if (!file || !state.active) return;
-  const label = $('.file-btn');
-  const labelText = label.querySelector('span');
-  label.style.pointerEvents = 'none';
-  labelText.textContent = 'Uploading…';
-  (async () => {
-    const response = await fetch(`/api/admin/uploads?filename=${encodeURIComponent(file.name)}`, { method: 'POST', headers: { ...authHeaders(), 'Content-Type': file.type || 'application/octet-stream' }, body: file });
-    const payload = await response.json();
-    if (!response.ok) throw new Error(payload.error || 'Upload failed.');
-    state.active.source = { ...state.active.source, type: 'upload', assetId: payload.assetId, mimeType: payload.mimeType };
-    $('#source-type').value = 'upload';
-    await save(true);
-    toast('Media attached and ready to transcribe.');
-  })().catch(error => toast(error.message, 'error')).finally(() => {
-    label.style.pointerEvents = '';
-    labelText.textContent = 'Choose file';
-    event.target.value = '';
-  });
+  const file = event.target.files?.[0]; if (!file || !state.current) return;
+  withBusy($('#make-draft'), 'Uploading audio…', async () => {
+    const response = await fetch(`/api/admin/uploads?filename=${encodeURIComponent(file.name)}`, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': file.type || 'application/octet-stream' }, body: file });
+    const payload = await response.json(); if (!response.ok) throw new Error(payload.error || 'The upload did not finish.');
+    state.current.source = { ...state.current.source, type: 'upload', assetId: payload.assetId, filename: file.name, mimeType: payload.mimeType };
+    await saveDraft(true); renderSource(); toast('Audio added.');
+  }).catch(() => {});
 });
 
-$('#download-source').addEventListener('click', event => busy(event.currentTarget, 'Downloading…', async () => {
-  await action('download');
-  toast('Source audio downloaded to the private server workspace.');
+$('#transcript-file').addEventListener('change', async event => {
+  const file = event.target.files?.[0]; if (!file || !state.current) return;
+  try {
+    const transcript = await file.text();
+    if (!transcript.trim()) throw new Error('That transcript file is empty.');
+    $('#transcript').value = transcript; $('#review-transcript').value = transcript;
+    state.current.transcript = transcript;
+    state.current.source = { ...state.current.source, type: 'local-transcript', transcriptFilename: file.name };
+    await saveDraft(true); renderSource();
+    toast('Transcript added. The audio will stay on this Mac.');
+  } catch (error) { toast(error.message || 'The transcript could not be read.', 'error'); }
+  finally { event.target.value = ''; }
+});
+
+$('#download-source').addEventListener('click', event => withBusy(event.currentTarget, 'Getting audio…', async () => { await episodeAction('download'); toast('Audio is ready.'); }).catch(() => {}));
+
+$('#make-draft').addEventListener('click', event => withBusy(event.currentTarget, 'Preparing your draft…', async () => {
+  if (state.current.format === 'Article') { $('#publish-blog').checked = true; updateBlogChoice(); return goStep('review'); }
+  await saveDraft(true);
+  if (!state.current.transcript?.trim()) {
+    if (!state.current.source?.assetId && state.current.source?.url) await episodeAction('download');
+    if (!state.current.source?.assetId) throw new Error('Add the final audio, upload a transcript, or choose a Twitch replay first.');
+    await episodeAction('transcribe', { provider: 'auto' });
+  }
+  await episodeAction('generate', { provider: 'auto' });
+  goStep('review'); toast('Your draft is ready. Review only what you want to use.');
 }).catch(() => {}));
 
-$('#transcribe').addEventListener('click', event => busy(event.currentTarget, 'Transcribing…', async () => {
-  await action('transcribe', { provider: $('#transcribe-provider').value });
-  toast('Transcript ready. Review it before drafting.');
+$('#archive').addEventListener('click', event => withBusy(event.currentTarget, 'Archiving…', async () => { await episodeAction('archive'); showDashboard(); toast('Moved to past work.'); }).catch(() => {}));
+
+$('#schedule').addEventListener('click', event => withBusy(event.currentTarget, 'Scheduling…', async () => {
+  const value = $('#publish-at').value; if (!value) throw new Error('Choose a release date and time.');
+  await episodeAction('schedule', { localPublishAt: value });
+  $('#release-message').textContent = `✓ Scheduled for ${value.slice(5,10).replace('-', '/')} at ${value.slice(11)} Eastern`; $('#release-message').className = 'release-message success';
+  toast('Everything is scheduled together.');
 }).catch(() => {}));
 
-$('#generate').addEventListener('click', event => busy(event.currentTarget, 'Generating package…', async () => {
-  await action('generate', { provider: $('#generate-provider').value });
-  switchTab('edit');
-  toast('Full editorial package drafted. Nothing has been published.');
-}).catch(() => {}));
-
-async function publish(button) {
-  return busy(button, 'Publishing…', async () => {
-    await action('publish');
-    toast('The episode page, chapters, blog, and mentions are live together.');
-  }).catch(() => {});
-}
-$('#publish').addEventListener('click', event => publish(event.currentTarget));
-$('#publish-secondary').addEventListener('click', event => publish(event.currentTarget));
-$('#schedule').addEventListener('click', event => busy(event.currentTarget, 'Scheduling…', async () => {
-  const value = $('#publish-at').value;
-  if (!value) throw new Error('Choose a publish date and time.');
-  await action('schedule', { localPublishAt: value, timezone: state.status?.timezone || 'America/New_York' });
-  toast(`Package scheduled for ${value.replace('T', ' ')} Eastern.`);
-}).catch(() => {}));
-$('#archive').addEventListener('click', event => busy(event.currentTarget, 'Archiving…', async () => {
-  await action('archive'); toast('Package archived.');
-}).catch(() => {}));
+$('#publish-now').addEventListener('click', event => withBusy(event.currentTarget, 'Publishing…', async () => { await episodeAction('publish'); $('#release-message').textContent = '✓ Live now'; $('#release-message').className = 'release-message success'; toast('The release is live.'); }).catch(() => {}));
 
 $('#browse-twitch').addEventListener('click', async () => {
-  const dialog = $('#twitch-dialog'); dialog.showModal();
-  $('#twitch-videos').innerHTML = '<div class="loading">Loading Twitch VODs…</div>';
+  $('#twitch-dialog').showModal(); $('#twitch-videos').innerHTML = '<p>Looking for recent shows…</p>';
   try {
-    const payload = await api('/api/admin/twitch/videos?limit=12');
-    $('#twitch-videos').innerHTML = payload.videos.length ? payload.videos.map(video => `<article class="vod">
-      <img src="${esc(video.thumbnailUrl)}" alt=""><div><h3>${esc(video.title)}</h3><p>${new Date(video.createdAt).toLocaleString()} · ${esc(video.duration)} · ${Number(video.views).toLocaleString()} views</p></div>
-      <button class="btn tiny" data-vod='${esc(JSON.stringify(video))}'>Attach</button></article>`).join('') : '<div class="loading">No recent archived streams found.</div>';
-  } catch (error) { $('#twitch-videos').innerHTML = `<div class="loading">${esc(error.message)}</div>`; }
+    const payload = await request('/api/admin/twitch/videos?limit=12');
+    $('#twitch-videos').innerHTML = payload.videos.length ? payload.videos.map(video => `<article class="vod"><img src="${esc(video.thumbnailUrl)}" alt=""><span><strong>${esc(video.title)}</strong><small>${new Date(video.createdAt).toLocaleString()} · ${esc(video.duration)}</small></span><button class="button secondary" data-vod='${esc(JSON.stringify(video))}'>Choose</button></article>`).join('') : '<p>No recent replays were found.</p>';
+  } catch (error) { $('#twitch-videos').innerHTML = `<p>${esc(error.message)}</p>`; }
 });
 $('#close-twitch').addEventListener('click', () => $('#twitch-dialog').close());
 $('#twitch-videos').addEventListener('click', event => {
   const button = event.target.closest('[data-vod]'); if (!button) return;
   const video = JSON.parse(button.dataset.vod);
-  state.active.source = { ...state.active.source, type: 'twitch', url: video.url, twitchVideoId: video.id };
-  state.active.media = { ...state.active.media, twitchUrl: video.url, imageUrl: video.thumbnailUrl || state.active.media?.imageUrl };
-  if (!state.active.episodeTitle) state.active.episodeTitle = video.title;
-  renderActive(); markDirty();
-  $('#twitch-dialog').close();
-  toast('Twitch replay attached. Save, then download audio to transcribe it.');
+  state.current.source = { ...state.current.source, type: 'twitch', url: video.url, twitchVideoId: video.id };
+  state.current.media = { ...state.current.media, twitchUrl: video.url, imageUrl: video.thumbnailUrl || '' };
+  if (!state.current.episodeTitle) state.current.episodeTitle = video.title;
+  $('#source-url').value = video.url; $('#twitch-dialog').close(); renderSource(); queueSave(); toast('Replay selected.');
 });
 
-$('#schedule-zone').textContent = 'Times are interpreted in America/New_York, even when CMA is traveling.';
-
-load().catch(error => {
-  toast(error.message, 'error');
-  $('#empty-state').innerHTML = `<span class="empty-icon">!</span><h2>Control room unavailable</h2><p>${esc(error.message)}</p><button class="btn coral" onclick="location.reload()">Try again</button>`;
-});
+boot();
