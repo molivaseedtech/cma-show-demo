@@ -9,6 +9,7 @@ import { loadEnv, envFlag } from './lib/env.mjs';
 import { createShow, getShow, listShows, publishDueShows, publishShow, publicShape, updateShow } from './lib/store.mjs';
 import { generatePackage, runLocalProcess, transcribeFile } from './lib/ai.mjs';
 import { listTwitchVideos } from './lib/twitch.mjs';
+import { addCheckin, createAlert, publicCommunity } from './lib/community.mjs';
 
 const ROOT = process.cwd();
 loadEnv(ROOT);
@@ -21,6 +22,7 @@ const UPLOAD_LIMIT = 500 * 1024 * 1024;
 const SESSION_COOKIE = 'cma_admin_session';
 const SESSION_KEY = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
 const loginAttempts = new Map();
+const checkinAttempts = new Map();
 
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8',
@@ -113,6 +115,15 @@ function loginAllowed(req) {
   return { key, allowed: recent.length < 8 };
 }
 
+function checkinAllowed(req) {
+  const key = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
+  const now = Date.now();
+  const recent = (checkinAttempts.get(key) || []).filter(time => now - time < 60 * 60 * 1000);
+  if (recent.length >= 5) return false;
+  checkinAttempts.set(key, [...recent, now]);
+  return true;
+}
+
 function authorized(req) {
   if (sessionUser(req)) return true;
   const configured = process.env.ADMIN_TOKEN;
@@ -195,6 +206,18 @@ function applyGenerated(show, result) {
   };
 }
 
+function showAlert(show) {
+  if (show.format === 'Livestream') return { title: 'The Twitch replay is ready', body: show.episodeTitle || show.title, category: 'twitch', url: show.media?.twitchUrl || '/' };
+  if (show.format === 'Article') return { title: 'New show notes are up', body: show.title, category: 'blog', url: '/' };
+  return { title: 'A new podcast episode is ready', body: show.episodeTitle || show.title, category: show.publishBlog ? 'blog' : 'podcast', url: show.media?.podcastUrl || '/' };
+}
+
+async function publishDueAndNotify() {
+  const shows = await publishDueShows();
+  await Promise.all(shows.map(show => createAlert({ ...showAlert(show), source: 'automatic' })));
+  return shows;
+}
+
 async function saveUpload(req, url) {
   const rawName = url.searchParams.get('filename') || 'source-audio';
   const safeName = path.basename(rawName).replace(/[^A-Za-z0-9._-]+/g, '-').slice(-120);
@@ -230,9 +253,18 @@ async function downloadSource(show) {
 async function api(req, res, url) {
   const pathname = url.pathname;
   if (pathname === '/api/public/content' && req.method === 'GET') {
-    await publishDueShows();
+    await publishDueAndNotify();
     const shows = (await listShows()).filter(show => show.status === 'published').map(publicShape);
     return json(res, 200, { shows, generatedAt: new Date().toISOString() });
+  }
+
+  if (pathname === '/api/public/community' && req.method === 'GET') {
+    return json(res, 200, { ...(await publicCommunity()), discordInviteUrl: process.env.CMA_DISCORD_INVITE_URL || '' });
+  }
+
+  if (pathname === '/api/public/checkins' && req.method === 'POST') {
+    if (!checkinAllowed(req)) return errorJson(res, 429, 'That is enough check-ins for now. Try again later.');
+    return json(res, 201, { checkin: await addCheckin(await readJson(req)) });
   }
 
   if (pathname === '/api/health' && req.method === 'GET') {
@@ -301,6 +333,7 @@ async function api(req, res, url) {
 
   if (pathname === '/api/admin/shows' && req.method === 'GET') return json(res, 200, { shows: await listShows() });
   if (pathname === '/api/admin/shows' && req.method === 'POST') return json(res, 201, { show: await createShow(await readJson(req)) });
+  if (pathname === '/api/admin/alerts' && req.method === 'POST') return json(res, 201, { alert: await createAlert({ ...(await readJson(req)), source: sessionUser(req)?.name || 'CMA' }) });
   if (pathname === '/api/admin/uploads' && req.method === 'POST') return json(res, 201, await saveUpload(req, url));
   if (pathname === '/api/admin/twitch/videos' && req.method === 'GET') return json(res, 200, { videos: await listTwitchVideos(Number(url.searchParams.get('limit') || 10)) });
 
@@ -336,7 +369,9 @@ async function api(req, res, url) {
     if (action === 'publish' && req.method === 'POST') {
       const problems = readyProblems(show);
       if (problems.length) return errorJson(res, 422, 'Complete the publish checklist first.', problems);
-      return json(res, 200, { show: await publishShow(id) });
+      const published = await publishShow(id);
+      await createAlert({ ...showAlert(published), source: 'automatic' });
+      return json(res, 200, { show: published });
     }
 
     if (action === 'schedule' && req.method === 'POST') {
@@ -374,7 +409,7 @@ async function staticFile(req, res, url) {
   if (pathname === '/') pathname = '/index.html';
   if (pathname === '/admin' || pathname === '/admin/') pathname = '/admin/index.html';
   const relative = pathname.replace(/^\/+/, '');
-  const publicRootFiles = new Set(['index.html', 'manifest.webmanifest', 'sw.js', 'icon.svg']);
+  const publicRootFiles = new Set(['index.html', 'manifest.webmanifest', 'sw.js', 'icon.svg', 'icon-192.png', 'icon-512.png']);
   const publicAdminFiles = new Set(['admin/index.html', 'admin/admin.css', 'admin/admin.js']);
   if (!publicRootFiles.has(relative) && !publicAdminFiles.has(relative) && !relative.startsWith('assets/')) return false;
   const file = path.resolve(ROOT, relative);
@@ -417,7 +452,7 @@ const server = http.createServer(async (req, res) => {
 });
 
 export function startServer() {
-  const scheduler = setInterval(() => publishDueShows().catch(error => console.error('Scheduler:', error)), 30_000);
+  const scheduler = setInterval(() => publishDueAndNotify().catch(error => console.error('Scheduler:', error)), 30_000);
   scheduler.unref();
   return server.listen(PORT, HOST, () => {
     console.log(`CMA platform running at http://${HOST}:${PORT}`);

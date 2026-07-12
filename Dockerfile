@@ -13,7 +13,7 @@ COPY lib ./lib
 COPY admin ./admin
 COPY assets ./assets
 COPY data ./data
-COPY index.html manifest.webmanifest sw.js icon.svg ./
+COPY index.html manifest.webmanifest sw.js icon.svg icon-192.png icon-512.png ./
 
 RUN mkdir -p /data/content /data/uploads && chown -R node:node /app /data
 USER node

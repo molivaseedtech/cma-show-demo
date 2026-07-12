@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "checkins": [
+    { "id": "demo-seattle", "name": "PNW Morning Crew", "city": "Seattle", "region": "WA", "platforms": ["twitch", "spotify"], "createdAt": "2026-07-12T14:30:00.000Z" },
+    { "id": "demo-jersey", "name": "Jersey Jen", "city": "Hoboken", "region": "NJ", "platforms": ["apple"], "createdAt": "2026-07-12T14:22:00.000Z" },
+    { "id": "demo-austin", "name": "ATX Listener", "city": "Austin", "region": "TX", "platforms": ["spotify", "youtube"], "createdAt": "2026-07-12T14:12:00.000Z" },
+    { "id": "demo-chicago", "name": "Morning Mike", "city": "Chicago", "region": "IL", "platforms": ["iheart"], "createdAt": "2026-07-12T14:02:00.000Z" },
+    { "id": "demo-la", "name": "West Coast Wakeup", "city": "Los Angeles", "region": "CA", "platforms": ["twitch", "apple", "spotify"], "createdAt": "2026-07-12T13:48:00.000Z" }
+  ],
+  "alerts": []
+}

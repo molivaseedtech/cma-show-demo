@@ -19,6 +19,10 @@ npm start
 
 Open `http://127.0.0.1:4173/admin`. The server has no runtime package dependencies and requires Node 22 or newer. Localhost works without a password during development.
 
+### Preview the admin on the Vercel demo
+
+Open `/admin/?staticPreview=1` on the Vercel demo domain. This intentionally uses sample records and browser-local storage so the redesigned workflow can be clicked without exposing CMA passwords, drafts, uploads, or the OpenAI key. A yellow **Demo preview** banner distinguishes it from the real authenticated admin. Resetting site data resets the preview.
+
 ## Private online admin
 
 `/admin` is designed to work from a phone or computer anywhere in the world, but it must be deployed with the Node server—not as static GitHub Pages. A real hosted setup requires HTTPS, a persistent volume, and these server-side secrets:
@@ -164,12 +168,29 @@ X-Admin-Token: <ADMIN_TOKEN when configured>
 
 A practical Shortcut is: receive a Voice Memo or file → run a local transcription step → “Get Contents of URL” with the JSON above → open `/admin` for review. Keep `generate` false if CMA wants to clean the transcript first.
 
+## Listener map, Discord, and PWA alerts
+
+The public site includes a website-first listener check-in map. A check-in stores only the submitted display name, city/town, state/region, selected platforms, and time. It never asks for a street address or stores precise GPS coordinates. Pins change color by listening platform and use a gradient for multi-platform listeners. The same community feed can later power a Twitch overlay.
+
+Set the official Discord invite when CMA provides it:
+
+```dotenv
+CMA_DISCORD_INVITE_URL=https://discord.gg/...
+```
+
+The admin includes a plain-language alert composer. New published podcasts and Twitch replays also create automatic alert records. The installed PWA checks the alert feed while open and can show browser notifications after permission is granted. True closed-app Web Push still requires durable subscription storage plus VAPID delivery configuration on the production Vercel project.
+
+Android and supported desktop browsers can use the browser's one-tap install prompt. Apple does not expose an equivalent web API on iPhone/iPad, so the app shows a short Safari Share → Add to Home Screen guide. Once installed, iOS/iPadOS Home Screen web apps can receive standards-based Web Push on supported OS versions.
+
 ## API map
 
 - `GET /api/public/content` — published packages only.
+- `GET /api/public/community` — listener pins, recent alerts, and the configured Discord invite.
+- `POST /api/public/checkins` — privacy-limited city/state listener check-in.
 - `GET/POST /api/admin/shows` — list/create packages.
 - `PATCH /api/admin/shows/:id` — edit the complete package.
 - `POST /api/admin/uploads` — private raw media upload.
+- `POST /api/admin/alerts` — create a custom listener announcement.
 - `POST /api/admin/shows/:id/download` — download linked media locally.
 - `POST /api/admin/shows/:id/transcribe` — local/OpenAI transcription.
 - `POST /api/admin/shows/:id/generate` — local/OpenAI/Gemini editorial draft.

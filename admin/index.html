@@ -27,6 +27,7 @@
   </section>
 
   <div class="app hidden" id="app">
+    <div class="preview-banner hidden" id="preview-banner"><strong>Demo preview</strong> Changes stay in this browser. Real CMA content and passwords are not connected here.</div>
     <header class="app-header">
       <button class="logo-button" id="go-home" aria-label="Show desk home"><img src="../assets/cma-logo.webp" alt="The Carla Marie and Anthony Show"></button>
       <div class="header-center"><span class="eyebrow">Private show desk</span><strong id="header-title">Tonight’s work</strong></div>
@@ -51,6 +52,8 @@
             <span class="start-icon">✎</span><span><strong>Write a quick post</strong><small>No episode needed—just write and publish</small></span><b>Start →</b>
           </button>
         </div>
+
+        <div class="announcement-strip"><span class="start-icon">🔔</span><span><strong>Need to tell listeners something?</strong><small>Send a merch, show, Patreon, or quick announcement alert.</small></span><button class="button secondary" id="open-alert">Send an alert</button></div>
 
         <section class="work-section">
           <div class="section-heading"><div><h2>In progress</h2><p>Pick up where you left off.</p></div><button class="text-button" id="refresh">Refresh</button></div>
@@ -169,6 +172,20 @@
   <dialog id="twitch-dialog">
     <div class="dialog-header"><div><span class="eyebrow">CMA on Twitch</span><h2>Choose the replay</h2></div><button id="close-twitch" aria-label="Close">×</button></div>
     <div class="vod-list" id="twitch-videos"><p>Looking for recent shows…</p></div>
+  </dialog>
+
+  <dialog id="alert-dialog">
+    <form id="alert-form" class="alert-form">
+      <div class="dialog-header"><div><span class="eyebrow">Listener notification</span><h2>Send a quick alert</h2></div><button type="button" id="close-alert" aria-label="Close">×</button></div>
+      <p>Keep it short. It will appear in the CMA PWA and become a Web Push notification for subscribed listeners.</p>
+      <label>What is this about?<select id="alert-category"><option value="announcement">Announcement</option><option value="podcast">New podcast</option><option value="twitch">Twitch / replay</option><option value="blog">Show notes</option><option value="merch">Merch</option><option value="support">Patreon / support</option></select></label>
+      <label>Notification title<input id="alert-title" maxlength="80" placeholder="New YLG merch just dropped" required></label>
+      <label>Message<textarea id="alert-body" maxlength="180" class="short" placeholder="Tap to see the new collection." required></textarea></label>
+      <label>Optional link<input id="alert-url" type="url" placeholder="https://..."></label>
+      <div class="alert-preview"><span>CMA</span><strong id="alert-preview-title">Your title</strong><p id="alert-preview-body">Your message will preview here.</p></div>
+      <button class="button primary full large" type="submit">Send to listeners</button>
+      <small>Publishing a podcast or Twitch replay also creates its own automatic alert.</small>
+    </form>
   </dialog>
 
   <div class="toast" id="toast"></div>

@@ -1,17 +1,38 @@
 {
   "name": "The Carla Marie & Anthony Show",
   "short_name": "CM&A Show",
+  "id": "/",
   "description": "A daily dose of audio to make your day a little better.",
-  "start_url": "./index.html",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "portrait-primary",
   "background_color": "#FFFFFF",
   "theme_color": "#ED207C",
+  "categories": ["entertainment", "music", "news"],
   "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
     {
       "src": "./icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
+  ],
+  "shortcuts": [
+    { "name": "Latest episode", "short_name": "Listen", "url": "/?view=episodes", "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }] },
+    { "name": "Listener check-in", "short_name": "Check in", "url": "/?checkin=1#listener-map-section", "icons": [{ "src": "./icon-192.png", "sizes": "192x192" }] }
   ]
 }
