@@ -1,0 +1,269 @@
+{
+  "version": 1,
+  "shows": [
+    {
+      "id": "demo-2026-06-08",
+      "slug": "shoes-stay-on-costco-feud",
+      "status": "published",
+      "title": "Shoes Stay On at Security — Plus the Costco Feud Nobody Saw Coming",
+      "episodeTitle": "Shoes stay on at security, the Costco feud, and the game that broke Anthony",
+      "excerpt": "TSA's big change, a pettier-than-ever retail rivalry, and a recall worth your 30 seconds.",
+      "category": "News",
+      "format": "Livestream",
+      "duration": "22 min",
+      "readTime": "4 min read",
+      "airDate": "2026-06-08T08:00:00.000Z",
+      "publishAt": null,
+      "publishedAt": "2026-06-08T08:00:00.000Z",
+      "source": {
+        "type": "twitch",
+        "url": "https://www.twitch.tv/CarlaMarieandAnthony",
+        "assetId": "",
+        "twitchVideoId": ""
+      },
+      "media": {
+        "podcastUrl": "https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN",
+        "twitchUrl": "https://www.twitch.tv/CarlaMarieandAnthony",
+        "youtubeUrl": "https://www.youtube.com/channel/UCOevkSiHvkmZKV2NC9J_8rQ",
+        "imageUrl": ""
+      },
+      "transcript": "[Demo transcript placeholder] Carla Marie and Anthony discuss the change to airport security shoe rules, the Costco and Lululemon story, a kitchen recall, and play Real or Fake Headline.",
+      "bodyHtml": "<p>Happy Monday! We made it. Here's everything you need to know before you walk out the door today.</p><h2>The news you need</h2><ul><li>TSA is changing the take-your-shoes-off rule at security.</li><li>The Costco and Lululemon dupe feud has another chapter.</li><li>There is a kitchen recall worth checking.</li></ul><h2>The part you'll text a friend about</h2><p>Carla Marie rented her weekend outfit. Anthony went elbow-deep in a garbage can for content.</p>",
+      "chapters": [
+        {
+          "time": "00:00",
+          "title": "Cold open: the garbage can saga"
+        },
+        {
+          "time": "02:15",
+          "title": "TSA ends shoes-off — what changes"
+        },
+        {
+          "time": "08:40",
+          "title": "Costco vs. Lululemon, round two"
+        },
+        {
+          "time": "14:05",
+          "title": "A kitchen recall worth hearing"
+        },
+        {
+          "time": "18:30",
+          "title": "Game: Real or Fake Headline"
+        }
+      ],
+      "links": [
+        {
+          "label": "YLG Apparel",
+          "url": "https://youlookgreat.co/",
+          "context": "CMA apparel"
+        },
+        {
+          "label": "Twitch stream",
+          "url": "https://www.twitch.tv/CarlaMarieandAnthony",
+          "context": "Watch CMA live"
+        }
+      ],
+      "mentions": [
+        {
+          "name": "TSA",
+          "type": "brand",
+          "context": "Airport security policy",
+          "searchQuery": "TSA airport shoe rule",
+          "verifiedUrl": ""
+        },
+        {
+          "name": "Costco",
+          "type": "brand",
+          "context": "Retail story",
+          "searchQuery": "Costco Lululemon dupe",
+          "verifiedUrl": ""
+        },
+        {
+          "name": "Lululemon",
+          "type": "brand",
+          "context": "Retail story",
+          "searchQuery": "Costco Lululemon dupe",
+          "verifiedUrl": ""
+        }
+      ],
+      "quote": "You can lift 3,000 pounds and a TSA line will still humble you before 9am.",
+      "ai": {
+        "provider": "demo",
+        "model": "concept-data",
+        "generatedAt": "2026-06-07T23:00:00.000Z"
+      },
+      "review": {
+        "blog": true,
+        "chapters": true,
+        "links": true,
+        "media": true
+      },
+      "createdAt": "2026-06-07T22:00:00.000Z",
+      "updatedAt": "2026-06-08T08:00:00.000Z"
+    },
+    {
+      "id": "demo-2026-06-04",
+      "slug": "cheapest-week-to-fly",
+      "status": "published",
+      "title": "The Cheapest Week to Fly This Summer (and a Voicemail We Couldn't Let Go)",
+      "episodeTitle": "A summer travel hack, the AI feature everyone's arguing about, and listener drama",
+      "excerpt": "Book your flights the right week, turn off the new phone feature you'll hate, and pick a side in the wedding saga.",
+      "category": "Life",
+      "format": "Podcast",
+      "duration": "24 min",
+      "readTime": "5 min read",
+      "airDate": "2026-06-04T08:00:00.000Z",
+      "publishAt": null,
+      "publishedAt": "2026-06-04T08:00:00.000Z",
+      "source": {
+        "type": "podcast",
+        "url": "https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032",
+        "assetId": "",
+        "twitchVideoId": ""
+      },
+      "media": {
+        "podcastUrl": "https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032",
+        "twitchUrl": "",
+        "youtubeUrl": "",
+        "imageUrl": ""
+      },
+      "transcript": "[Demo transcript placeholder] The show covers a summer travel booking tip, a new AI phone feature, and a listener voicemail about a wedding.",
+      "bodyHtml": "<p>Happy Thursday! Two more sleeps until the weekend. Let's get into it.</p><h2>The news you need</h2><ul><li>The data on the cheapest week to book summer flights.</li><li>The new AI feature rolling out on your phone and how to turn it off.</li></ul><h2>The part you'll text a friend about</h2><p>A listener left a voicemail about her sister's wedding and we have officially picked a side.</p>",
+      "chapters": [
+        {
+          "time": "00:00",
+          "title": "Good morning + weekend countdown"
+        },
+        {
+          "time": "01:50",
+          "title": "Cheapest week to fly this summer"
+        },
+        {
+          "time": "07:30",
+          "title": "The new phone AI feature"
+        },
+        {
+          "time": "13:10",
+          "title": "Listener voicemail: the wedding"
+        }
+      ],
+      "links": [
+        {
+          "label": "Apple Podcasts",
+          "url": "https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032",
+          "context": "Listen to the show"
+        },
+        {
+          "label": "Newsletter",
+          "url": "https://view.flodesk.com/pages/5f516ae62c60490027b9ec20",
+          "context": "CMA email list"
+        }
+      ],
+      "mentions": [
+        {
+          "name": "Apple",
+          "type": "brand",
+          "context": "Phone AI feature",
+          "searchQuery": "Apple AI feature",
+          "verifiedUrl": ""
+        }
+      ],
+      "quote": "There is no off switch for a listener voicemail this good. We picked a side.",
+      "ai": {
+        "provider": "demo",
+        "model": "concept-data",
+        "generatedAt": "2026-06-03T23:00:00.000Z"
+      },
+      "review": {
+        "blog": true,
+        "chapters": true,
+        "links": true,
+        "media": true
+      },
+      "createdAt": "2026-06-03T22:00:00.000Z",
+      "updatedAt": "2026-06-04T08:00:00.000Z"
+    },
+    {
+      "id": "demo-2026-06-02",
+      "slug": "recall-season-good-story",
+      "status": "published",
+      "title": "Recall Season Isn't Over — But We Brought a Good Story Too",
+      "episodeTitle": "Recall season continues, a feel-good story, and the honeymoon recap",
+      "excerpt": "Three things to check in your house, an update on the saga we're following, and Italy photos.",
+      "category": "Pop Culture",
+      "format": "Livestream",
+      "duration": "21 min",
+      "readTime": "4 min read",
+      "airDate": "2026-06-02T08:00:00.000Z",
+      "publishAt": null,
+      "publishedAt": "2026-06-02T08:00:00.000Z",
+      "source": {
+        "type": "twitch",
+        "url": "https://www.twitch.tv/CarlaMarieandAnthony",
+        "assetId": "",
+        "twitchVideoId": ""
+      },
+      "media": {
+        "podcastUrl": "https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN",
+        "twitchUrl": "https://www.twitch.tv/CarlaMarieandAnthony",
+        "youtubeUrl": "",
+        "imageUrl": ""
+      },
+      "transcript": "[Demo transcript placeholder] Recall updates, a story update, and Carla Marie's Italy honeymoon recap.",
+      "bodyHtml": "<p>Happy Tuesday! Big show today. Grab your coffee.</p><h2>The news you need</h2><ul><li>The recall list got longer this week.</li><li>An update on the story we've been following all month.</li></ul><h2>The good stuff</h2><p>Carla Marie visited the two towns where her great-grandparents were born.</p>",
+      "chapters": [
+        {
+          "time": "00:00",
+          "title": "Big show, grab your coffee"
+        },
+        {
+          "time": "02:40",
+          "title": "The recall list got longer"
+        },
+        {
+          "time": "09:15",
+          "title": "Update on the story we're following"
+        },
+        {
+          "time": "15:20",
+          "title": "Honeymoon recap: Italy edition"
+        }
+      ],
+      "links": [
+        {
+          "label": "armoire.style",
+          "url": "https://armoire.style",
+          "context": "Clothing rental mention"
+        },
+        {
+          "label": "YLG Apparel",
+          "url": "https://youlookgreat.co/",
+          "context": "CMA apparel"
+        }
+      ],
+      "mentions": [
+        {
+          "name": "Italy",
+          "type": "place",
+          "context": "Honeymoon recap",
+          "searchQuery": "Italy",
+          "verifiedUrl": ""
+        }
+      ],
+      "quote": "We went to the towns where my great-grandparents were born and I am not emotionally okay.",
+      "ai": {
+        "provider": "demo",
+        "model": "concept-data",
+        "generatedAt": "2026-06-01T23:00:00.000Z"
+      },
+      "review": {
+        "blog": true,
+        "chapters": true,
+        "links": true,
+        "media": true
+      },
+      "createdAt": "2026-06-01T22:00:00.000Z",
+      "updatedAt": "2026-06-02T08:00:00.000Z"
+    }
+  ]
+}

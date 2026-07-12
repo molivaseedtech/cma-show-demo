@@ -4,8 +4,8 @@
   "description": "A daily dose of audio to make your day a little better.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#FBF7F0",
-  "theme_color": "#F0463C",
+  "background_color": "#FFFFFF",
+  "theme_color": "#ED207C",
   "icons": [
     {
       "src": "./icon.svg",

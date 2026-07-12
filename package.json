@@ -1,0 +1,15 @@
+{
+  "name": "cma-show-platform",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "CMA public show site and AI-assisted editorial control room",
+  "scripts": {
+    "dev": "node --watch server.mjs",
+    "start": "node server.mjs",
+    "check": "node --check server.mjs && node --check lib/ai.mjs && node --check lib/store.mjs && node --check lib/twitch.mjs && node --check admin/admin.js"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

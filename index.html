@@ -3,30 +3,31 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>The Carla Marie & Anthony Show — Concept Demo</title>
+<title>The Carla Marie & Anthony Show</title>
 <link rel="manifest" href="manifest.webmanifest" />
-<meta name="theme-color" content="#F0463C" />
+<meta name="theme-color" content="#ED207C" />
 <link rel="apple-touch-icon" href="icon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://use.typekit.net/wqj6dqq.css" />
 <style>
   :root{
-    --cream:#FBF7F0; --ink:#171410; --ink-soft:#4b443c;
-    --coral:#F0463C; --coral-dark:#d83a30; --sun:#FFC24B; --teal:#16A99A; --purple:#6B5BD2;
-    --line:#e7ddcf; --card:#fff; --radius:18px;
-    --shadow:0 18px 50px -24px rgba(23,20,16,.45); --maxw:1180px;
+    --cream:#FFFFFF; --ink:#20243D; --ink-soft:#4f5262;
+    --coral:#ED207C; --coral-dark:#cc3366; --sun:#F7B6D2; --teal:#1B9A8B; --purple:#A54D98;
+    --line:#e8e3ea; --card:#fff; --radius:10px;
+    --shadow:0 18px 50px -28px rgba(32,36,61,.42); --maxw:1180px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
   body{font-family:'Inter',system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
-  h1,h2,h3,h4{font-family:'Archivo',system-ui,sans-serif;letter-spacing:-.02em;line-height:1.04}
+  h1,h2,h3,h4{font-family:'termina','Archivo',system-ui,sans-serif;letter-spacing:-.025em;line-height:1.04}
   a{color:inherit;text-decoration:none}
   img{max-width:100%;display:block}
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
   .eyebrow{font-family:'Archivo';font-weight:800;text-transform:uppercase;letter-spacing:.18em;font-size:12px;color:var(--coral)}
   .serif{font-family:'Fraunces',Georgia,serif;letter-spacing:0}
-  .btn{display:inline-flex;align-items:center;gap:9px;font-family:'Archivo';font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.04em;padding:13px 22px;border-radius:999px;border:2px solid var(--ink);background:var(--ink);color:var(--cream);cursor:pointer;transition:.15s transform,.15s background}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-family:'termina','Archivo';font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.04em;padding:13px 22px;border-radius:4px;border:2px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer;transition:.15s transform,.15s background}
   .btn:hover{transform:translateY(-2px)}
   .btn.coral{background:var(--coral);border-color:var(--coral)}
   .btn.coral:hover{background:var(--coral-dark);border-color:var(--coral-dark)}
@@ -263,16 +264,43 @@
   .foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:22px;font-size:13px;color:#9a9286;flex-wrap:wrap;gap:10px}
   .proto-note{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:80;background:var(--ink);color:var(--cream);font-family:'Archivo';font-weight:700;font-size:12px;padding:9px 16px;border-radius:999px;box-shadow:var(--shadow);opacity:.94}
   .proto-note b{color:var(--sun)}
+
+  /* ===== CMA brand refresh, drawn from the current live site ===== */
+  .brand-logo{width:210px;height:auto;display:block}
+  header.site{background:#fff;border-bottom:1px solid #eee;box-shadow:0 8px 22px -22px rgba(32,36,61,.45);backdrop-filter:none}
+  .nav{height:78px}.nav>.logo{min-width:220px}.nav>.logo .mark,.nav>.logo>span:not(.mark){display:none}
+  .listen-strip{background:var(--coral);color:#fff;padding:10px 20px;display:flex;align-items:center;justify-content:center;gap:22px;font-family:'termina','Archivo';font-size:12px}
+  .listen-strip span{font-weight:400}.listen-strip a{font-weight:800}.listen-strip a:hover{text-decoration:underline}
+  nav.links a{font-family:'termina','Archivo';font-size:12px;border-radius:2px;color:#111}
+  nav.links a:hover,nav.links a.active{background:var(--coral);color:#fff}
+  .hero{position:relative;overflow:hidden;padding:64px 0 52px;background:#fff}
+  .hero::before{content:"";position:absolute;inset:0;opacity:.38;pointer-events:none;background-image:linear-gradient(90deg,transparent 44%,rgba(237,32,124,.12) 44% 56%,transparent 56%),linear-gradient(0deg,transparent 44%,rgba(237,32,124,.12) 44% 56%,transparent 56%);background-size:58px 58px;mask-image:linear-gradient(90deg,#000,transparent 58%)}
+  .hero-grid{position:relative;z-index:1}.hero h1{text-transform:uppercase;font-size:clamp(42px,5.5vw,72px)}.hero h1 .hl{display:block;color:var(--coral)}
+  .live-pill{border:0;background:var(--ink);color:#fff;border-radius:3px}.live-dot{background:var(--coral)}
+  .stream{border-radius:10px;background:var(--teal);border:8px solid var(--ink);box-shadow:14px 14px 0 var(--coral)}
+  .stream .screen{background:var(--teal)!important;overflow:hidden}.stream .screen::before{content:"";position:absolute;inset:0;opacity:.24;background-image:linear-gradient(90deg,transparent 44%,rgba(255,255,255,.35) 44% 56%,transparent 56%),linear-gradient(0deg,transparent 44%,rgba(255,255,255,.35) 44% 56%,transparent 56%);background-size:68px 68px}
+  .hero-people{position:absolute;z-index:1;inset:auto 0 0 0;width:100%;height:96%;object-fit:contain;object-position:center bottom}.stream .live-badge,.stream .play,.stream .screen .cam{z-index:3}.stream .screen .cam{display:none}.stream .bar{background:var(--ink)}
+  .platform,.chips button,.live-pill{border-radius:3px}.platform{border-color:var(--ink);color:var(--ink)}
+  section.block{position:relative}.sec-head h2{text-transform:uppercase}.eyebrow{font-family:'termina','Archivo';color:var(--coral)}
+  #home>section.block:nth-of-type(3){background:rgba(27,154,139,.09);padding-top:56px!important}
+  .ep-card,.ep-feature,.feat,.pstep,.host,.aside-card,.chap,.crosslink,.article .lead-img{border-radius:8px}
+  .ep-card:hover,.feat:hover{box-shadow:9px 9px 0 rgba(165,77,152,.25)}
+  .ep-cover .play,.ep-feature .cv .play,.watch .screen .play{border-radius:3px}
+  .process .pstep:nth-child(1){border-top:6px solid var(--coral)}.process .pstep:nth-child(2){border-top:6px solid var(--purple)}.process .pstep:nth-child(3){border-top:6px solid var(--teal)}.process .pstep:nth-child(4){border-top:6px solid var(--ink)}
+  .appband{border-radius:10px;background:linear-gradient(135deg,var(--ink),#343958);box-shadow:12px 12px 0 var(--teal)}
+  .news{position:relative;overflow:hidden;border-radius:8px;background:var(--coral)}.news::before{content:"+";position:absolute;right:20px;top:-40px;font-family:'termina';font-size:190px;font-weight:900;color:rgba(255,255,255,.12)}.news>*{position:relative;z-index:1}
+  .hosts{gap:16px}.host{min-height:240px;border:0;box-shadow:none}.host:first-child{background:#f9eaf2}.host:last-child{background:#e4f5f2}.host .ph{width:46%;background-size:cover!important;background-position:center!important}.host .info{align-self:center}.host h3{font-size:25px}.host .role{color:var(--coral)}
+  .brand-area{display:grid;grid-template-columns:190px 1fr;gap:26px;align-items:center}.brands-art{width:170px;margin:auto}.brands span{border-radius:3px;border-color:var(--ink);color:var(--ink);font-family:'termina','Archivo';font-size:11px}
+  footer.site{background:var(--ink);border-top:10px solid var(--coral)}footer.site .brand-logo{filter:none;width:190px;background:#fff;padding:8px}
+  @media(max-width:940px){.nav>.logo{min-width:0}.brand-logo{width:170px}.listen-strip{gap:13px;font-size:10px;overflow:auto;justify-content:flex-start}.hero::before{mask-image:linear-gradient(#000,transparent)}.brand-area{grid-template-columns:1fr}.brands-art{display:none}}
+  @media(max-width:600px){.hero{padding-top:42px}.stream{box-shadow:7px 7px 0 var(--coral)}.host .ph{width:42%}.listen-strip span{display:none}}
 </style>
 </head>
 <body>
 
 <header class="site">
   <div class="wrap nav">
-    <a class="logo" data-nav="home">
-      <span class="mark">CM<br>A</span>
-      <span>The Carla Marie<br>& Anthony Show<small>The Morning Show Podcast</small></span>
-    </a>
+    <a class="logo" data-nav="home"><img class="brand-logo" src="assets/cma-logo.webp" alt="The Carla Marie and Anthony Show" /></a>
     <nav class="links">
       <a data-nav="home">Home</a>
       <a data-nav="episodes">Episodes</a>
@@ -283,6 +311,8 @@
     <div class="cta"><a class="btn coral sm" data-nav="episodes">▶ <span class="hide">Listen</span></a></div>
   </div>
 </header>
+
+<div class="listen-strip"><span>Catch us on</span><a href="https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN" target="_blank" rel="noopener">Spotify</a><a href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener">Apple</a><a href="https://www.iheart.com/podcast/269-the-morning-show-podcast-92979375/" target="_blank" rel="noopener">iHeartRadio</a><a href="https://www.twitch.tv/CarlaMarieandAnthony" target="_blank" rel="noopener">Twitch</a></div>
 
 <main>
 <!-- ============ HOME ============ -->
@@ -307,6 +337,7 @@
       </div>
       <div class="stream">
         <div class="screen photo" style="background:linear-gradient(135deg,#F0463C,#ff7a4d 55%,#FFC24B)">
+          <img class="hero-people" src="assets/cma-hero.webp" alt="Carla Marie and Anthony" />
           <span class="live-badge"><span class="d"></span> Live</span>
           <div class="play" data-ep="0"></div>
           <span class="cam">📷 New branding photo / live feed</span>
@@ -366,11 +397,11 @@
       <div class="sec-head"><div><span class="eyebrow">Who we are</span><h2>The hosts</h2></div></div>
       <div class="hosts">
         <div class="host">
-          <div class="ph photo" style="background:linear-gradient(160deg,var(--sun),var(--coral))"><span class="cam">📷 Carla Marie</span></div>
+          <div class="ph photo" style="background-image:url('assets/carla-marie.webp')"></div>
           <div class="info"><h3>Carla Marie</h3><div class="role">Host · Co-founder</div><p>Seattle-based, Jersey-raised. Brings the energy, the pop-culture takes, and the "you look great!" of it all.</p></div>
         </div>
         <div class="host">
-          <div class="ph photo" style="background:linear-gradient(160deg,var(--teal),var(--ink))"><span class="cam">📷 Anthony</span></div>
+          <div class="ph photo" style="background-image:url('assets/anthony.webp')"></div>
           <div class="info"><h3>Anthony</h3><div class="role">Host · Co-founder</div><p>The news guy, the game master, the worst (his words). Keeps the show under 25 and on the rails.</p></div>
         </div>
       </div>
@@ -394,7 +425,7 @@
   <section class="block" style="padding-top:0">
     <div class="wrap">
       <div class="sec-head"><div><span class="eyebrow">Trusted by</span><h2>Brands we've worked with</h2></div></div>
-      <div class="brands"><span>AG1</span><span>Macy's</span><span>Samsung</span><span>Casper</span><span>T-Mobile</span><span>Delta Airlines</span><span>Orangetheory</span><span>LA Fitness</span><span>Ideal Image</span><span>Deep Eddy Vodka</span><span>ZipCar</span><span>Emergen-C</span><span>Visit Bend</span><span>+ more</span></div>
+      <div class="brand-area"><img class="brands-art" src="assets/brands.webp" alt="Brand partnerships" /><div class="brands"><span>AG1</span><span>Macy's</span><span>Samsung</span><span>Casper</span><span>T-Mobile</span><span>Delta Airlines</span><span>Orangetheory</span><span>LA Fitness</span><span>Ideal Image</span><span>Deep Eddy Vodka</span><span>ZipCar</span><span>Emergen-C</span><span>Visit Bend</span><span>+ more</span></div></div>
     </div>
   </section>
 </div>
@@ -534,6 +565,7 @@
         </div>
         <div>
           <div class="aside-card links-card"><span class="engine-tag">✦ Auto-extracted</span><h4>Links mentioned</h4><ul id="p-links"></ul></div>
+          <div class="aside-card links-card" id="mentions-card"><span class="engine-tag">✦ Detected in the transcript</span><h4>Things mentioned</h4><ul id="p-mentions"></ul></div>
           <div class="aside-card"><h4>Never miss a morning</h4>
             <form onsubmit="event.preventDefault();this.querySelector('input').value='';alert('Prototype: newsletter signup would post here.');">
               <input type="email" placeholder="you@email.com" required style="width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);margin-bottom:10px;font-family:Inter" />
@@ -551,7 +583,7 @@
   <div class="wrap">
     <div class="foot-grid">
       <div>
-        <a class="logo" data-nav="home" style="color:var(--cream)"><span class="mark">CM<br>A</span><span style="color:var(--cream)">The Carla Marie<br>& Anthony Show</span></a>
+        <a class="logo" data-nav="home" style="color:var(--cream)"><img class="brand-logo" src="assets/cma-logo.webp" alt="The Carla Marie and Anthony Show" /></a>
         <p style="color:#c9c0b4;font-size:14px;margin-top:14px;max-width:24em">A daily dose of audio to make your day a little better.</p>
       </div>
       <div><h5>Show</h5><a data-nav="home">Home</a><a data-nav="episodes">Episodes</a><a data-nav="blog">Daily Blog</a><a data-nav="about">About</a></div>
@@ -571,13 +603,11 @@
   </div>
 </footer>
 
-<div class="proto-note">Concept preview — <b>layout &amp; ideas only.</b> Not final, and not yet functional.</div>
-
 <script>
 /* One dataset, two facets: each daily show has an EPISODE (listen/watch) and a POST (read). */
-const ITEMS = [
+let ITEMS = [
   { date:"Monday, June 8, 2026", short:"Mon · Jun 8", dur:"22 min", read:"4 min read", fmt:"Livestream", cat:"News",
-    grad:"linear-gradient(135deg,#F0463C,#ff7a4d 55%,#FFC24B)",
+    grad:"linear-gradient(135deg,#ED207C,#A54D98 55%,#1B9A8B)",
     epSub:"Shoes stay on at security, the Costco feud, and the game that broke Anthony",
     postTitle:"Shoes Stay On at Security — Plus the Costco Feud Nobody Saw Coming",
     excerpt:"TSA's big change, a pettier-than-ever retail rivalry, and a recall worth your 30 seconds.",
@@ -589,7 +619,7 @@ const ITEMS = [
     <h2>The part you'll text a friend about</h2>
     <p>Carla Marie rented her entire weekend outfit and has thoughts. Anthony went elbow-deep in a garbage can for content and would do it again.</p>` },
   { date:"Thursday, June 4, 2026", short:"Thu · Jun 4", dur:"24 min", read:"5 min read", fmt:"Podcast", cat:"Life",
-    grad:"linear-gradient(135deg,#16A99A,#34c0b2 55%,#FFC24B)",
+    grad:"linear-gradient(135deg,#1B9A8B,#20243D 62%,#ED207C)",
     epSub:"A summer travel hack, the AI feature everyone's arguing about, and listener drama",
     postTitle:"The Cheapest Week to Fly This Summer (and a Voicemail We Couldn't Let Go)",
     excerpt:"Book your flights the right week, turn off the new phone feature you'll hate, and pick a side in the wedding saga.",
@@ -600,7 +630,7 @@ const ITEMS = [
     <h2>The part you'll text a friend about</h2>
     <p>A listener left a voicemail about her sister's wedding and we have officially picked a side.</p>` },
   { date:"Tuesday, June 2, 2026", short:"Tue · Jun 2", dur:"21 min", read:"4 min read", fmt:"Livestream", cat:"Pop Culture",
-    grad:"linear-gradient(135deg,#6B5BD2,#9b6bd2 55%,#F0463C)",
+    grad:"linear-gradient(135deg,#A54D98,#ED207C 58%,#20243D)",
     epSub:"Recall season continues, a feel-good story, and the honeymoon recap",
     postTitle:"Recall Season Isn't Over — But We Brought a Good Story Too",
     excerpt:"Three things to check in your house, an update on the saga we're following, and Italy photos.",
@@ -611,7 +641,7 @@ const ITEMS = [
     <h2>The good stuff</h2>
     <p>Carla Marie visited the two towns where her great-grandparents were born and we are not emotionally okay.</p>` },
   { date:"Monday, June 1, 2026", short:"Mon · Jun 1", dur:"23 min", read:"3 min read", fmt:"Livestream", cat:"News",
-    grad:"linear-gradient(135deg,#FFC24B,#ff9a4d 55%,#F0463C)",
+    grad:"linear-gradient(135deg,#20243D,#A54D98 58%,#ED207C)",
     epSub:"New month, the headlines, and a workout review nobody asked for",
     postTitle:"New Month, Same Us: The Headlines and a Brutally Honest Workout Review",
     excerpt:"The economic story everyone's misreading, a weather warning, and a fitness class that humbled us.",
@@ -621,7 +651,7 @@ const ITEMS = [
     <h2>The part you'll text a friend about</h2>
     <p>Carla Marie tried a new workout studio and laughed out loud editing the recap. You can lift 3,000 lbs and still get humbled.</p>` },
   { date:"Thursday, May 28, 2026", short:"Thu · May 28", dur:"20 min", read:"3 min read", fmt:"Podcast", cat:"Pop Culture",
-    grad:"linear-gradient(135deg,#F0463C,#16A99A 70%)",
+    grad:"linear-gradient(135deg,#ED207C,#1B9A8B 70%)",
     epSub:"A wild closet-sale tip, sports-fan Carla Marie, and a quick game",
     postTitle:"Shop Thousands of Styles for Cheap — and Carla Marie Goes Full Fan",
     excerpt:"A closet-sale tip you'll want, pitch-side seats, and a fast round of the game.",
@@ -629,7 +659,7 @@ const ITEMS = [
     <h2>The news you need</h2><ul><li>The two headlines that'll come up at brunch this weekend.</li></ul>
     <h2>The fun stuff</h2><p>Carla Marie got to be a fan instead of working the game for once. Pitch-side seats, rented outfit, full report inside.</p>` },
   { date:"Tuesday, May 26, 2026", short:"Tue · May 26", dur:"22 min", read:"4 min read", fmt:"Livestream", cat:"Games",
-    grad:"linear-gradient(135deg,#3a342c,#16A99A 65%,#FFC24B)",
+    grad:"linear-gradient(135deg,#20243D,#1B9A8B 65%,#ED207C)",
     epSub:"Post-holiday catch-up and the cookout poll that got heated",
     postTitle:"Everything You Missed Over the Long Weekend (Plus a Very Divisive Poll)",
     excerpt:"The stories that broke while you were grilling, a wallet update, and a cookout debate gone wild.",
@@ -638,7 +668,7 @@ const ITEMS = [
     <li>One thing changing this week that affects your wallet.</li></ul>
     <h2>The game</h2><p>We asked the community the most divisive cookout question and it got heated. Results inside.</p>` }
 ];
-const CHAPTERS = {
+let CHAPTERS = {
   0:[["00:00","Cold open: the garbage can saga"],["02:15","TSA ends shoes-off — what changes"],["08:40","Costco vs. Lululemon, round two"],["14:05","A kitchen recall worth hearing"],["18:30","Game: Real or Fake Headline"]],
   1:[["00:00","Good morning + weekend countdown"],["01:50","Cheapest week to fly this summer"],["07:30","The new phone AI feature (and the off switch)"],["13:10","Listener voicemail: the wedding"]],
   2:[["00:00","Big show, grab your coffee"],["02:40","The recall list got longer"],["09:15","Update on the story we're following"],["15:20","Honeymoon recap: Italy edition"]],
@@ -646,7 +676,7 @@ const CHAPTERS = {
   4:[["00:00","Short and sweet today"],["01:30","Two headlines for brunch"],["06:10","Closet-sale tip: thousands of styles, cheap"],["11:00","Pitch-side seats & a quick game"]],
   5:[["00:00","Long-weekend catch-up"],["02:20","What broke while you were grilling"],["08:50","One thing changing your wallet this week"],["14:30","The cookout poll that got heated"]]
 };
-const LINKS = {
+let LINKS = {
   0:[["YLG Apparel","https://youlookgreat.co/"],["Twitch stream","https://www.twitch.tv/CarlaMarieandAnthony"]],
   1:[["Apple Podcasts","https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032"],["Newsletter","https://view.flodesk.com/pages/5f516ae62c60490027b9ec20"]],
   2:[["armoire.style","https://armoire.style"],["YLG Apparel","https://youlookgreat.co/"]],
@@ -654,7 +684,7 @@ const LINKS = {
   4:[["armoire.style","https://armoire.style"],["Twitch stream","https://www.twitch.tv/CarlaMarieandAnthony"]],
   5:[["Newsletter","https://view.flodesk.com/pages/5f516ae62c60490027b9ec20"],["YLG Apparel","https://youlookgreat.co/"]]
 };
-const QUOTES = {
+let QUOTES = {
   0:"You can lift 3,000 pounds and a TSA line will still humble you before 9am.",
   1:"There is no off switch for a listener voicemail this good. We picked a side.",
   2:"We went to the towns where my great-grandparents were born and I am not emotionally okay.",
@@ -662,7 +692,7 @@ const QUOTES = {
   4:"Pitch-side seats, a fully rented outfit, zero chill. Best day.",
   5:"We asked the most divisive cookout question on earth and the group chat has not recovered."
 };
-const CATCOLOR = {"News":"#F0463C","Pop Culture":"#16A99A","Games":"#FFC24B","Life":"#6B5BD2"};
+const CATCOLOR = {"News":"#ED207C","Pop Culture":"#1B9A8B","Games":"#20243D","Life":"#A54D98"};
 
 const $ = s=>document.querySelector(s);
 const views = ['home','episodes','blog','about','episode','post'];
@@ -714,7 +744,7 @@ function renderEpisodes(fmt='all',q=''){
       <div class="hero-actions"><button class="btn coral" data-ep="0">▶ Play episode</button><button class="btn ghost" data-post="0">Read the recap</button></div>
     </div>`;
   const cards = ITEMS.map((it,i)=>({it,i}))
-    .filter(({it})=> (fmt==='all'||it.fmt===fmt) && (!q || (it.epSub+it.body+it.date).toLowerCase().includes(q)))
+    .filter(({it})=> (fmt==='all'||it.fmt===fmt) && (!q || (it.epSub+it.body+it.date+(it.mentions||[]).map(m=>m.name+' '+m.context).join(' ')).toLowerCase().includes(q)))
     .map(({it,i})=>epCard(it,i)).join('');
   $('#all-eps').innerHTML = cards || `<p style="color:var(--ink-soft);grid-column:1/-1">No episodes match — try another word.</p>`;
 }
@@ -722,7 +752,7 @@ function renderBlog(cat='all',q=''){
   q=q.trim().toLowerCase();
   $('#blog-feature').innerHTML = featPost(ITEMS[0],0);
   const rows = ITEMS.map((it,i)=>({it,i})).slice(1)
-    .filter(({it})=> (cat==='all'||it.cat===cat) && (!q || (it.postTitle+it.excerpt+it.body).toLowerCase().includes(q)))
+    .filter(({it})=> (cat==='all'||it.cat===cat) && (!q || (it.postTitle+it.excerpt+it.body+(it.mentions||[]).map(m=>m.name+' '+m.context).join(' ')).toLowerCase().includes(q)))
     .map(({it,i})=>postRow(it,i)).join('');
   $('#all-posts').innerHTML = rows || `<p style="color:var(--ink-soft);padding:20px 0">No posts match — try another word or category.</p>`;
 }
@@ -735,6 +765,14 @@ function openEpisode(i){
   $('#e-dur').textContent = it.dur;
   $('#e-screen').style.background = it.grad;
   $('#e-chapters').innerHTML = (CHAPTERS[i]||CHAPTERS[0]).map(c=>`<div class="chap-row"><span class="ts">${c[0]}</span><span class="ct">${c[1]}</span></div>`).join('');
+  const watchUrl=it.media?.twitchUrl||it.media?.youtubeUrl;
+  const listenUrl=it.media?.podcastUrl;
+  const watchButton=$('#e-screen .play');
+  const listenButton=$('.player .pbtn');
+  watchButton.title=watchUrl?'Open the full replay':'Replay link coming soon';
+  listenButton.title=listenUrl?'Open the podcast':'Podcast link coming soon';
+  watchButton.onclick=()=>watchUrl&&window.open(watchUrl,'_blank','noopener');
+  listenButton.onclick=()=>listenUrl&&window.open(listenUrl,'_blank','noopener');
   show('episode');
 }
 function openPost(i){
@@ -747,6 +785,9 @@ function openPost(i){
   $('#p-body').innerHTML = it.body;
   $('#p-quote').textContent = QUOTES[i]||QUOTES[0];
   $('#p-links').innerHTML = (LINKS[i]||LINKS[0]).map(l=>`<li><span>${l[0]}</span><a href="${l[1]}" target="_blank" rel="noopener">Open →</a></li>`).join('');
+  const mentions=it.mentions||[];
+  $('#mentions-card').style.display=mentions.length?'block':'none';
+  $('#p-mentions').innerHTML=mentions.map(m=>`<li><span><strong>${m.name}</strong><br><small>${m.context||m.type}</small></span>${m.verifiedUrl?`<a href="${m.verifiedUrl}" target="_blank" rel="noopener">Open →</a>`:'<span style="color:var(--ink-soft);font-size:11px">Mentioned</span>'}</li>`).join('');
   show('post');
 }
 function show(id){
@@ -776,6 +817,38 @@ $('#blog-chips').addEventListener('click',e=>{const b=e.target.closest('button')
 $('#blog-search').addEventListener('input',e=>renderBlog($('#blog-chips').querySelector('button.on').dataset.cat, e.target.value));
 
 renderHome(); renderEpisodes(); renderBlog(); show('home');
+
+/* Production content comes from the CMA control room. The embedded demo data remains
+   as an offline/PWA fallback when the API is unavailable. */
+async function hydratePublished(){
+  try{
+    const response=await fetch('/api/public/content',{headers:{Accept:'application/json'}});
+    if(!response.ok)return;
+    const payload=await response.json();
+    if(!payload.shows?.length)return;
+    const gradients={
+      'News':'linear-gradient(135deg,#ED207C,#A54D98 55%,#1B9A8B)',
+      'Life':'linear-gradient(135deg,#1B9A8B,#20243D 62%,#ED207C)',
+      'Pop Culture':'linear-gradient(135deg,#A54D98,#ED207C 58%,#20243D)',
+      'Games':'linear-gradient(135deg,#20243D,#1B9A8B 65%,#ED207C)'
+    };
+    ITEMS=payload.shows.map(show=>{
+      const date=new Date(show.airDate||show.publishedAt);
+      return {
+        id:show.id,date:date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}),
+        short:date.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}).replace(',',' ·'),
+        dur:show.duration||'Listen now',read:show.readTime||'4 min read',fmt:show.format||'Podcast',cat:show.category||'News',
+        grad:show.media?.imageUrl?`linear-gradient(rgba(23,20,16,.12),rgba(23,20,16,.12)),url("${show.media.imageUrl}") center/cover`:gradients[show.category]||gradients.News,
+        epSub:show.episodeTitle||show.title,postTitle:show.title,excerpt:show.excerpt||'',body:show.bodyHtml||'<p>Full recap coming soon.</p>',media:show.media||{},mentions:show.mentions||[]
+      };
+    });
+    CHAPTERS=Object.fromEntries(payload.shows.map((show,index)=>[index,(show.chapters||[]).map(chapter=>[chapter.time,chapter.title])]));
+    LINKS=Object.fromEntries(payload.shows.map((show,index)=>[index,(show.links||[]).filter(link=>link.url).map(link=>[link.label,link.url])]));
+    QUOTES=Object.fromEntries(payload.shows.map((show,index)=>[index,show.quote||'']));
+    renderHome();renderEpisodes();renderBlog();
+  }catch(error){console.info('Using offline content fallback.');}
+}
+hydratePublished();
 
 /* ---- PWA: install + notifications ---- */
 const statusEl=$('#pwa-status');

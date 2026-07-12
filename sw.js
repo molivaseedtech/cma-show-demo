@@ -1,8 +1,7 @@
-/* Minimal service worker — prototype.
-   In production this also subscribes to Web Push and receives 'push' events
-   from the backend to notify users of new episodes / live streams / blog posts. */
-const CACHE = 'cma-proto-v1';
-const ASSETS = ['./index.html', './manifest.webmanifest', './icon.svg'];
+/* Public-shell cache. API content remains network-backed and falls back to the
+   embedded editorial demo when offline. */
+const CACHE = 'cma-platform-v3-brand';
+const ASSETS = ['./index.html', './manifest.webmanifest', './icon.svg', './assets/cma-logo.webp', './assets/cma-hero.webp', './assets/carla-marie.webp', './assets/anthony.webp'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));

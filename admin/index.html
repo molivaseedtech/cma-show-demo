@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171410">
+  <title>CMA Control Room</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="../"><img class="admin-brand-logo" src="../assets/cma-logo.webp" alt="The Carla Marie and Anthony Show"><span>Control Room<small>Editorial + AI operations</small></span></a>
+      <button class="new-btn" id="new-show">＋ New show package</button>
+      <div class="side-title"><span>Show packages</span><button id="refresh" title="Refresh">↻</button></div>
+      <div class="filter-row" id="filters">
+        <button class="on" data-filter="active">Active</button><button data-filter="published">Published</button><button data-filter="all">All</button>
+      </div>
+      <div id="show-list" class="show-list"></div>
+      <div class="side-foot">
+        <a href="../" target="_blank">View public site ↗</a>
+        <span id="timezone">America/New_York</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobile-menu">☰</button>
+        <div>
+          <span class="overline">CMA publishing desk</span>
+          <h1 id="page-title">Production overview</h1>
+        </div>
+        <div class="top-actions">
+          <span class="save-state" id="save-state">All changes saved</span>
+          <button class="btn ghost" id="save" disabled>Save draft</button>
+        </div>
+      </header>
+
+      <section class="provider-strip" id="provider-strip"></section>
+
+      <section class="empty-state" id="empty-state">
+        <span class="empty-icon">✦</span>
+        <h2>One package. Everything in sync.</h2>
+        <p>Bring in a Twitch replay, audio file, transcript, or Apple Shortcut. Generate the recap, review every mention, then release the podcast page, chapters, and blog together.</p>
+        <button class="btn coral" id="empty-new">Create tonight’s show</button>
+      </section>
+
+      <section class="workspace hidden" id="workspace">
+        <div class="status-rail">
+          <div class="package-status"><span class="status-dot" id="status-dot"></span><strong id="status-label">Draft</strong><span id="status-detail"></span></div>
+          <div class="rail-actions">
+            <button class="btn tiny ghost" id="archive">Archive</button>
+            <button class="btn tiny" id="publish">Publish now</button>
+          </div>
+        </div>
+
+        <nav class="tabs" id="tabs">
+          <button class="on" data-tab="source">1. Source</button>
+          <button data-tab="draft">2. AI draft</button>
+          <button data-tab="edit">3. Edit package</button>
+          <button data-tab="publish">4. Review & publish</button>
+        </nav>
+
+        <div class="tab-panel" data-panel="source">
+          <div class="section-head"><div><span class="overline coral-text">Ingest</span><h2>Bring in the show</h2><p>Use the stream replay, upload the final audio, paste a transcript, or send one from Apple Shortcuts.</p></div></div>
+          <div class="source-grid">
+            <article class="card source-card featured">
+              <span class="card-icon">◉</span><div><h3>Twitch replay</h3><p>Pull the latest VODs from CMA’s channel and attach one to this package.</p></div>
+              <button class="btn ghost small" id="browse-twitch">Browse VODs</button>
+            </article>
+            <article class="card source-card">
+              <span class="card-icon">↑</span><div><h3>Upload media</h3><p>MP3, M4A, WAV, or MP4. Files stay on this server.</p></div>
+              <label class="btn ghost small file-btn"><span>Choose file</span><input id="media-file" type="file" accept="audio/*,video/*"></label>
+            </article>
+            <article class="card source-card">
+              <span class="card-icon">↗</span><div><h3>Media URL</h3><p>Twitch, YouTube, or direct podcast media URL.</p></div>
+              <button class="btn ghost small" id="download-source">Download audio</button>
+            </article>
+          </div>
+
+          <div class="form-grid two">
+            <label>Source type<select id="source-type"><option value="upload">Upload</option><option value="twitch">Twitch</option><option value="podcast">Podcast</option><option value="youtube">YouTube</option><option value="shortcut">Apple Shortcut</option></select></label>
+            <label>Source URL<input id="source-url" type="url" placeholder="https://..."></label>
+          </div>
+          <div class="attached" id="attached-source"></div>
+
+          <div class="section-split">
+            <div><span class="overline teal-text">Transcript</span><h2>Words become the source of truth</h2></div>
+            <div class="inline-actions"><select id="transcribe-provider"><option value="auto">Auto: M4 → OpenAI</option><option value="local">On-device whisper.cpp</option><option value="openai">OpenAI cloud</option></select><button class="btn" id="transcribe">Transcribe media</button></div>
+          </div>
+          <label class="full">Transcript<textarea id="transcript" class="transcript" placeholder="Paste the transcript here, or transcribe the attached file…"></textarea></label>
+          <p class="helper"><strong>Apple Shortcut:</strong> POST JSON to <code>/api/shortcuts/ingest</code> with <code>title</code>, <code>transcript</code>, and optional <code>generate: true</code>. Use the admin token header when configured.</p>
+        </div>
+
+        <div class="tab-panel hidden" data-panel="draft">
+          <div class="ai-hero">
+            <div><span class="overline">AI producer</span><h2>Turn the transcript into the complete package.</h2><p>The draft includes the blog, podcast title, chapters, links, named mentions, and a quote. Nothing publishes until CMA reviews it.</p></div>
+            <div class="ai-action"><select id="generate-provider"><option value="auto">Auto: M4 → OpenAI → Gemini</option><option value="ollama">On-device Ollama</option><option value="openai">OpenAI cloud</option><option value="gemini">Gemini backup</option></select><button class="btn coral" id="generate">✦ Generate full draft</button></div>
+          </div>
+          <div class="ai-output" id="ai-output"><span>✦</span><p>Attach a transcript, then generate a synchronized editorial package.</p></div>
+          <label>Notes for the AI<textarea id="editor-notes" placeholder="Pronunciation, must-include segment, sponsor language, tone notes…"></textarea></label>
+        </div>
+
+        <div class="tab-panel hidden" data-panel="edit">
+          <div class="section-head"><div><span class="overline purple-text">Editorial</span><h2>Edit every public detail</h2><p>This is the single source that feeds the episode page and daily blog.</p></div></div>
+          <div class="form-grid two">
+            <label>Blog headline<input id="title" type="text"></label>
+            <label>Podcast episode title<input id="episode-title" type="text"></label>
+            <label>Category<select id="category"><option>News</option><option>Pop Culture</option><option>Games</option><option>Life</option></select></label>
+            <label>Format<select id="format"><option>Livestream</option><option>Podcast</option></select></label>
+            <label>Air date & time<input id="air-date" type="datetime-local"></label>
+            <label>Duration<input id="duration" type="text" placeholder="22 min"></label>
+            <label class="span-two">Homepage summary<textarea id="excerpt" class="short"></textarea></label>
+          </div>
+          <div class="editor-grid">
+            <label>Blog body (safe HTML)<textarea id="body-html" class="article-editor"></textarea></label>
+            <div><span class="field-label">Live preview</span><article class="article-preview" id="body-preview"></article></div>
+          </div>
+
+          <div class="repeat-head"><div><h3>Chapters</h3><p>Clicking one on the public page will eventually seek the player.</p></div><button class="btn tiny ghost" data-add="chapter">＋ Add chapter</button></div>
+          <div class="repeat-list" id="chapters-list"></div>
+
+          <div class="repeat-head"><div><h3>Links mentioned</h3><p>Only publish URLs CMA has verified.</p></div><button class="btn tiny ghost" data-add="link">＋ Add link</button></div>
+          <div class="repeat-list" id="links-list"></div>
+
+          <div class="repeat-head"><div><h3>Things mentioned</h3><p>Brands, people, products, places, shows, and stories detected in the transcript.</p></div><button class="btn tiny ghost" data-add="mention">＋ Add mention</button></div>
+          <div class="repeat-list" id="mentions-list"></div>
+
+          <label>Quote card<input id="quote" type="text"></label>
+          <h3 class="subhead">Media destinations</h3>
+          <div class="form-grid two">
+            <label>Podcast URL<input id="podcast-url" type="url" placeholder="https://..."></label>
+            <label>Twitch replay URL<input id="twitch-url" type="url" placeholder="https://twitch.tv/videos/..."></label>
+            <label>YouTube URL<input id="youtube-url" type="url" placeholder="https://youtube.com/..."></label>
+            <label>Hero image URL<input id="image-url" type="url" placeholder="https://..."></label>
+          </div>
+        </div>
+
+        <div class="tab-panel hidden" data-panel="publish">
+          <div class="publish-grid">
+            <div>
+              <span class="overline coral-text">Final check</span><h2>Approve the whole package</h2><p class="publish-lede">These four checks are required so a blog can’t go live with unreviewed links or a missing player.</p>
+              <div class="checklist">
+                <label><input type="checkbox" id="review-blog"><span><strong>Blog copy reviewed</strong><small>Headline, excerpt, facts, spelling, and article body</small></span></label>
+                <label><input type="checkbox" id="review-chapters"><span><strong>Chapters reviewed</strong><small>Timestamps and segment names</small></span></label>
+                <label><input type="checkbox" id="review-links"><span><strong>Links and mentions verified</strong><small>No hallucinated URLs or incorrect names</small></span></label>
+                <label><input type="checkbox" id="review-media"><span><strong>Media destinations confirmed</strong><small>Podcast, Twitch, YouTube, and artwork as applicable</small></span></label>
+              </div>
+            </div>
+            <aside class="schedule-card">
+              <span class="schedule-icon">◷</span><h3>Release everything together</h3><p>Set the 4:00 AM release once. The episode page, chapters, blog, mentions, and public feed switch live in one transaction.</p>
+              <label>Publish date & time<input id="publish-at" type="datetime-local"></label>
+              <button class="btn coral full-btn" id="schedule">Schedule package</button>
+              <button class="btn ghost full-btn" id="publish-secondary">Publish immediately</button>
+              <small id="schedule-zone">Times use this browser’s timezone.</small>
+            </aside>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="twitch-dialog">
+    <div class="dialog-head"><div><span class="overline">Twitch channel</span><h2>Choose a recent replay</h2></div><button id="close-twitch">×</button></div>
+    <div id="twitch-videos" class="vod-list"><div class="loading">Loading Twitch VODs…</div></div>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
