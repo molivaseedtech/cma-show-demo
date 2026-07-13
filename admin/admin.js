@@ -466,17 +466,18 @@ $('#browse-twitch').addEventListener('click', async () => {
   $('#twitch-dialog').showModal(); $('#twitch-videos').innerHTML = '<p>Looking for recent shows…</p>';
   try {
     const payload = await request('/api/admin/twitch/videos?limit=12');
-    $('#twitch-videos').innerHTML = payload.videos.length ? payload.videos.map(video => `<article class="vod"><img src="${esc(video.thumbnailUrl)}" alt=""><span><strong>${esc(video.title)}</strong><small>${new Date(video.createdAt).toLocaleString()} · ${esc(video.duration)}</small></span><button class="button secondary" data-vod='${esc(JSON.stringify(video))}'>Choose</button></article>`).join('') : '<p>No recent replays were found.</p>';
+    const helper = payload.fallback ? '<p>Live Twitch discovery is optional here. Choose the channel to keep the draft connected, then paste the direct replay URL once Twitch finishes processing it.</p>' : '';
+    $('#twitch-videos').innerHTML = payload.videos.length ? `${helper}${payload.videos.map(video => `<article class="vod"><img src="${esc(video.thumbnailUrl)}" alt=""><span><strong>${esc(video.title)}</strong><small>${new Date(video.createdAt).toLocaleString()} · ${esc(video.duration)}</small></span><button class="button secondary" data-vod='${esc(JSON.stringify(video))}'>Choose</button></article>`).join('')}` : '<p>No recent replays were found.</p>';
   } catch (error) { $('#twitch-videos').innerHTML = `<p>${esc(error.message)}</p>`; }
 });
 $('#close-twitch').addEventListener('click', () => $('#twitch-dialog').close());
 $('#twitch-videos').addEventListener('click', event => {
   const button = event.target.closest('[data-vod]'); if (!button) return;
   const video = JSON.parse(button.dataset.vod);
-  state.current.source = { ...state.current.source, type: 'twitch', url: video.url, twitchVideoId: video.id };
+  state.current.source = { ...state.current.source, type: video.manual ? 'twitch-channel' : 'twitch', url: video.url, ...(video.manual ? {} : { twitchVideoId: video.id }) };
   state.current.media = { ...state.current.media, twitchUrl: video.url, imageUrl: video.thumbnailUrl || '' };
   if (!state.current.episodeTitle) state.current.episodeTitle = video.title;
-  $('#source-url').value = video.url; $('#twitch-dialog').close(); renderSource(); queueSave(); toast('Replay selected.');
+  $('#source-url').value = video.url; $('#twitch-dialog').close(); renderSource(); queueSave(); toast(video.manual ? 'Twitch channel linked. Paste the direct replay URL when it is ready.' : 'Replay selected.');
 });
 
 $('#open-alert').addEventListener('click', () => $('#alert-dialog').showModal());

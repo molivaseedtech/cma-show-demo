@@ -461,7 +461,26 @@ async function api(req, res, url) {
     return comment ? json(res, 200, { comment }) : errorJson(res, 404, 'Comment not found.');
   }
   if (pathname === '/api/admin/uploads' && req.method === 'POST') return json(res, 201, await saveUpload(req, url));
-  if (pathname === '/api/admin/twitch/videos' && req.method === 'GET') return json(res, 200, { videos: await listTwitchVideos(Number(url.searchParams.get('limit') || 10)) });
+  if (pathname === '/api/admin/twitch/videos' && req.method === 'GET') {
+    const channel = process.env.TWITCH_CHANNEL_LOGIN || 'CarlaMarieandAnthony';
+    try {
+      return json(res, 200, { videos: await listTwitchVideos(Number(url.searchParams.get('limit') || 10)), fallback: false });
+    } catch (error) {
+      return json(res, 200, {
+        fallback: true,
+        videos: [{
+          id: `manual-${channel.toLowerCase()}`,
+          title: 'CM&A Twitch channel — link the latest replay',
+          description: 'Open the channel, copy the replay URL, and paste it into this draft when the VOD is ready.',
+          url: `https://www.twitch.tv/${channel}`,
+          createdAt: new Date().toISOString(),
+          duration: 'Manual replay link',
+          thumbnailUrl: '/assets/cma-hero.webp',
+          manual: true
+        }]
+      });
+    }
+  }
 
   const showRoute = pathname.match(/^\/api\/admin\/shows\/([^/]+)(?:\/(generate|transcribe|download|publish|schedule|archive))?$/);
   if (showRoute) {
