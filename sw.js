@@ -1,6 +1,6 @@
 /* Public-shell cache. API content remains network-backed and falls back to the
    embedded editorial demo when offline. */
-const CACHE = 'cma-platform-v6-mobile-theme';
+const CACHE = 'cma-platform-v7-public-polish';
 const ASSETS = ['./index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png', './data/podcast.json', './assets/cma-logo.webp', './assets/cma-hero.webp', './assets/carla-marie.webp', './assets/anthony.webp'];
 
 self.addEventListener('install', e => {

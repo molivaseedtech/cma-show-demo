@@ -53,9 +53,11 @@
   nav.links a{font-family:'Archivo';font-weight:700;font-size:14px;padding:9px 13px;border-radius:999px;color:var(--ink-soft);cursor:pointer;transition:.15s}
   nav.links a:hover,nav.links a.active{color:var(--ink);background:#fff}
   .cta{display:flex;align-items:center;gap:10px}
-  .mobile-menu-toggle{display:none;width:42px;height:42px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);place-items:center;cursor:pointer}
-  .mobile-menu-toggle span,.mobile-menu-toggle::before,.mobile-menu-toggle::after{content:"";display:block;width:19px;height:2px;background:currentColor;border-radius:99px;transition:.18s}
-  .mobile-menu-toggle span{margin:4px 0}.mobile-menu-toggle[aria-expanded=true] span{opacity:0}.mobile-menu-toggle[aria-expanded=true]::before{transform:translateY(6px) rotate(45deg)}.mobile-menu-toggle[aria-expanded=true]::after{transform:translateY(-6px) rotate(-45deg)}
+  .mobile-menu-toggle{display:none;width:48px;height:48px;padding:0;border:0;border-radius:6px;background:var(--coral);color:#fff;place-items:center;cursor:pointer;box-shadow:0 5px 15px rgba(237,32,124,.28);transition:.16s transform,.16s background}
+  .mobile-menu-toggle:hover{background:var(--coral-dark);transform:translateY(-1px)}
+  .mobile-menu-toggle .menu-icon{display:grid;gap:5px;width:22px}
+  .mobile-menu-toggle .menu-icon span{display:block;width:22px;height:2px;background:currentColor;border-radius:99px;transition:.18s transform,.18s opacity}
+  .mobile-menu-toggle[aria-expanded=true] .menu-icon span:nth-child(1){transform:translateY(7px) rotate(45deg)}.mobile-menu-toggle[aria-expanded=true] .menu-icon span:nth-child(2){opacity:0}.mobile-menu-toggle[aria-expanded=true] .menu-icon span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
   .mobile-nav{display:none;border-top:1px solid var(--line);background:var(--card);padding:10px 20px 16px;grid-template-columns:1fr 1fr;gap:7px;box-shadow:0 18px 28px -24px rgba(17,21,41,.55)}
   .mobile-nav a{padding:12px 14px;border:1px solid var(--line);border-radius:6px;color:var(--ink);font:800 12px Archivo;text-align:center}.mobile-nav a:hover,.mobile-nav a.active{background:var(--coral);border-color:var(--coral);color:#fff}
   @media(max-width:940px){nav.links{display:none}.mobile-menu-toggle{display:grid}.mobile-nav:not([hidden]){display:grid}.cta .btn span.hide{display:none}.nav{gap:10px}.nav>.logo{margin-right:auto}}
@@ -86,6 +88,7 @@
   .platform{font-family:'Archivo';font-weight:700;font-size:13px;color:var(--ink-soft);padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;transition:.15s;cursor:pointer}
   .platform:hover{color:var(--ink);border-color:var(--ink)}
   .platform.spotify:hover{background:#1ed760;border-color:#1ed760;color:#102217}.platform.apple:hover{background:#a855f7;border-color:#a855f7;color:#fff}.platform.iheart:hover{background:#c6002b;border-color:#c6002b;color:#fff}.platform.youtube:hover{background:#ff0000;border-color:#ff0000;color:#fff}.platform.twitch:hover{background:#9146ff;border-color:#9146ff;color:#fff}
+  @media(max-width:1100px) and (min-width:861px){.hero .listen-on{gap:5px}.hero .listen-on>span{font-size:9px;letter-spacing:.08em}.hero .listen-on .platform{font-size:10.5px;padding:5px 7px}}
   /* Hero live card */
   .stream{border-radius:24px;overflow:hidden;box-shadow:var(--shadow);background:var(--ink)}
   .stream .screen{aspect-ratio:16/10;background:linear-gradient(135deg,#F0463C,#ff7a4d 55%,#FFC24B);display:grid;place-items:center;position:relative}
@@ -100,7 +103,7 @@
   .stream .bar .s{font-size:12px;color:#c9c0b4}
   .sched{display:flex;gap:6px}
   .sched span{font-family:'Archivo';font-weight:800;font-size:11px;padding:6px 9px;border-radius:8px;background:rgba(255,255,255,.1);text-transform:uppercase;letter-spacing:.04em}
-  .sched span.on{background:var(--sun);color:var(--ink)}
+  .sched span.on{background:var(--sun);color:#20243D}
   @media(max-width:860px){.hero-grid{grid-template-columns:1fr;gap:30px}}
 
   /* Section */
@@ -227,11 +230,11 @@
   .links-card li{padding:9px 0;border-bottom:1px solid var(--line);font-size:14px;display:flex;justify-content:space-between;gap:10px}
   .links-card li:last-child{border:none}
   .links-card a{color:var(--coral);font-weight:600}
-  .quote-card{background:linear-gradient(140deg,var(--ink),#2a241c);border-radius:20px;padding:30px;color:var(--cream);position:relative;overflow:hidden;margin:28px 0}
+  .quote-card{background:linear-gradient(140deg,var(--ink),#2a241c);border-radius:20px;padding:30px;color:#fff;position:relative;overflow:hidden;margin:28px 0}
   .quote-card::before{content:"\201C";position:absolute;top:-20px;left:18px;font-family:'Archivo';font-weight:900;font-size:150px;color:rgba(255,194,75,.18);line-height:1}
-  .quote-card .qt{font-family:'Fraunces',serif;font-weight:600;font-size:24px;line-height:1.3;position:relative;z-index:1;margin-bottom:16px}
+  .quote-card .qt{font-family:'Fraunces',serif;font-weight:600;font-size:24px;line-height:1.3;color:#fff;position:relative;z-index:1;margin-bottom:16px}
   .quote-card .qmeta{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
-  .quote-card .qby{font-size:13px;color:#c9c0b4}
+  .quote-card .qby{font-size:13px;color:#e3dfe9}
   .quote-card .qby b{color:var(--sun);font-family:'Archivo'}
   .qshare{display:inline-flex;align-items:center;gap:7px;background:var(--sun);color:var(--ink);border:none;cursor:pointer;font-family:'Archivo';font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.04em;padding:10px 16px;border-radius:999px;transition:.15s}
   .qshare:hover{transform:translateY(-2px)}
@@ -306,7 +309,7 @@
   .news{position:relative;overflow:hidden;border-radius:8px;background:var(--coral)}.news::before{content:"+";position:absolute;right:20px;top:-40px;font-family:'termina';font-size:190px;font-weight:900;color:rgba(255,255,255,.12)}.news>*{position:relative;z-index:1}
   .hosts{gap:16px}.host{min-height:240px;border:0;box-shadow:none}.host:first-child{background:#f9eaf2}.host:last-child{background:#e4f5f2}.host .ph{width:46%;background-size:cover!important;background-position:center!important}.host .info{align-self:center}.host h3{font-size:25px}.host .role{color:var(--coral)}
   .brand-area{display:grid;grid-template-columns:190px 1fr;gap:26px;align-items:center}.brands-art{width:170px;margin:auto}.brands span{border-radius:3px;border-color:var(--ink);color:var(--ink);font-family:'termina','Archivo';font-size:11px}
-  footer.site{background:var(--ink);border-top:10px solid var(--coral)}footer.site .brand-logo{filter:none;width:190px;background:#fff;padding:8px}
+  footer.site{background:var(--ink);border-top:10px solid var(--coral)}footer.site .brand-logo{filter:none;width:190px;background:transparent;padding:0}
   .support-strip{background:var(--ink);color:#fff;padding:11px 20px;display:flex;justify-content:center;align-items:center;gap:18px;flex-wrap:wrap;font:700 11px 'termina','Archivo';text-transform:uppercase;letter-spacing:.04em}
   .support-strip .coming{color:#f7b6d2}.support-strip a{color:#fff;border-bottom:1px solid rgba(255,255,255,.55)}
   .coming-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.coming-card{min-height:190px;border:1px solid var(--line);border-top:6px solid var(--coral);background:#fff;padding:24px;border-radius:8px}.coming-card:nth-child(2){border-top-color:var(--teal)}.coming-card:nth-child(3){border-top-color:var(--purple)}.coming-card .soon{display:inline-block;background:var(--ink);color:#fff;padding:4px 7px;border-radius:3px;font:800 9px Archivo;text-transform:uppercase;letter-spacing:.09em}.coming-card h3{font-size:18px;margin:16px 0 8px}.coming-card p{font-size:13px;color:var(--ink-soft)}
@@ -338,9 +341,9 @@
   .comment-account{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:20px}.comment-account h3{font-size:17px;margin-bottom:8px}.comment-account p{font-size:13px;color:var(--ink-soft);margin-bottom:16px}.signed-in-as{font-size:11px;color:var(--ink-soft);margin:-6px 0 14px}.signed-in-as button{border:0;background:none;color:var(--coral);font-weight:800;cursor:pointer}.listener-auth{width:min(510px,calc(100% - 28px));border:0;border-radius:12px;padding:0;background:var(--card);color:var(--ink);box-shadow:0 30px 90px rgba(17,21,41,.4)}.listener-auth::backdrop{background:rgba(17,21,41,.74)}.listener-auth-inner{position:relative;padding:30px}.listener-auth h3{font-size:27px;margin:8px 0 20px}.listener-auth form{display:flex;flex-direction:column;gap:13px}.listener-auth label{display:flex;flex-direction:column;gap:6px;font:800 11px Archivo;text-transform:uppercase;color:var(--ink-soft)}.listener-auth input{width:100%;padding:12px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);font:14px Inter}.listener-auth form .btn{justify-content:center}.listener-auth small{color:var(--ink-soft);font-size:10px;text-align:center}.dialog-close{position:absolute;right:16px;top:14px;border:0;background:none;color:var(--ink);font-size:28px;cursor:pointer}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:18px}.auth-tabs button{border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink-soft);padding:10px;font:800 11px Archivo;cursor:pointer}.auth-tabs button.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}.auth-status{min-height:18px;margin-top:13px;color:var(--coral);font-size:12px;text-align:center}
   .mini-player{position:fixed;left:50%;bottom:14px;z-index:120;width:min(760px,calc(100% - 28px));transform:translateX(-50%);background:var(--ink);color:#fff;border:1px solid rgba(255,255,255,.14);border-radius:12px;box-shadow:0 18px 55px rgba(17,21,41,.38);padding:13px 16px}.mini-main{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px}.mini-play{width:42px;height:42px;border:0;border-radius:50%;background:var(--coral);display:grid;place-items:center;cursor:pointer}.mini-play::after{content:"";border-left:13px solid #fff;border-top:8px solid transparent;border-bottom:8px solid transparent;margin-left:3px}.mini-copy{min-width:0}.mini-copy span{display:block;color:#f7b6d2;font:800 9px Archivo;text-transform:uppercase;letter-spacing:.09em}.mini-copy strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:800 13px Archivo}.mini-actions button{border:0;background:rgba(255,255,255,.1);color:#fff;border-radius:5px;width:34px;height:34px;cursor:pointer}.mini-controls{display:grid;grid-template-columns:42px 1fr 42px;align-items:center;gap:8px;margin-top:10px;font-size:10px;color:#d2d4de}.mini-controls input{width:100%;height:5px;border:0;border-radius:999px;background:linear-gradient(90deg,var(--coral) 0 var(--mini-progress,0%),rgba(255,255,255,.18) var(--mini-progress,0%) 100%);appearance:none;cursor:pointer}.mini-player.collapsed{width:min(460px,calc(100% - 28px));left:auto;right:14px;transform:none}.mini-player.collapsed .mini-controls{display:none}.mini-player.collapsed #mini-collapse{transform:rotate(180deg)}
   html[data-theme=dark]{--cream:#101426;--ink:#f7f4fb;--ink-soft:#bdc0cf;--line:#34394f;--card:#191e33;--shadow:0 20px 55px -26px rgba(0,0,0,.78);color-scheme:dark}html[data-theme=dark] body{background:var(--cream);color:var(--ink)}html[data-theme=dark] header.site,html[data-theme=dark] .hero{background:#12172a;border-color:var(--line)}html[data-theme=dark] nav.links a{color:#e4e1eb}html[data-theme=dark] nav.links a:hover,html[data-theme=dark] nav.links a.active{color:#fff}html[data-theme=dark] .live-pill,html[data-theme=dark] .platform,html[data-theme=dark] .ep-card,html[data-theme=dark] .ep-feature,html[data-theme=dark] .feat,html[data-theme=dark] .post-row:hover,html[data-theme=dark] .host,html[data-theme=dark] .aside-card,html[data-theme=dark] .chap,html[data-theme=dark] .comment,html[data-theme=dark] .comment-form,html[data-theme=dark] .comment-account,html[data-theme=dark] .checkin-panel,html[data-theme=dark] .coming-card,html[data-theme=dark] .toolbar button,html[data-theme=dark] .search input,html[data-theme=dark] .live-alert{background:var(--card);color:var(--ink);border-color:var(--line)}html[data-theme=dark] .player,html[data-theme=dark] .mini-player,html[data-theme=dark] .stream .bar,html[data-theme=dark] footer.site,html[data-theme=dark] .support-strip{background:#20243d;color:#fff}html[data-theme=dark] .quote-card{background:linear-gradient(140deg,#20243d,#151827)}html[data-theme=dark] .appband{background:linear-gradient(135deg,#20243d,#343958)}html[data-theme=dark] .btn:not(.coral):not(.light):not(.ghost){background:#20243d;border-color:#20243d;color:#fff}html[data-theme=dark] .post-body p,html[data-theme=dark] .post-body li,html[data-theme=dark] .post-body ul{color:#e8e5ee}html[data-theme=dark] .chap-row:hover{background:#242a42}html[data-theme=dark] .episode-community{background:linear-gradient(135deg,#201729,#151a2e)}html[data-theme=dark] .privacy-note{background:#24293f}html[data-theme=dark] .platform-checks label{color:var(--ink)}html[data-theme=dark] .btn.ghost{color:var(--ink);border-color:var(--ink)}html[data-theme=dark] .btn.ghost:hover{background:var(--ink);color:#111426}html[data-theme=dark] .theme-toggle{background:var(--card)}html[data-theme=dark] .listener-auth input{background:#111629}html[data-theme=dark] header.site .brand-logo,html[data-theme=dark] footer.site .brand-logo{background:transparent;border-radius:0;padding:0;filter:drop-shadow(0 1px 0 rgba(255,255,255,.2))}html[data-theme=dark] .brands span{background:#20263d;color:#f7f4fb;border-color:#4a526e}html[data-theme=dark] .ep-cover .play,html[data-theme=dark] .ep-feature .cv .play,html[data-theme=dark] .stream .play,html[data-theme=dark] .watch .screen .play,html[data-theme=dark] .watch-play{background:#f7f4fb;border:1px solid rgba(255,255,255,.28);box-shadow:0 8px 26px rgba(0,0,0,.32)}html[data-theme=dark] .ep-cover .play::after,html[data-theme=dark] .ep-feature .cv .play::after,html[data-theme=dark] .stream .play::after,html[data-theme=dark] .watch .screen .play::after,html[data-theme=dark] .watch-play::after{border-left-color:#20243d}html[data-theme=dark] .player .pbtn,html[data-theme=dark] .mini-play{background:var(--coral)}
-  html[data-theme=dark] .coming-card .soon{background:#30243d;color:#ffacd0;border:1px solid #6e3d59}html[data-theme=dark] .coming-card:nth-child(2) .soon{background:#173d3b;color:#79dfd2;border-color:#28645f}html[data-theme=dark] .appband,html[data-theme=dark] .appband h2{color:#fff}html[data-theme=dark] .appband .btn.ghost{color:#fff;border-color:#fff}html[data-theme=dark] .appband .btn.ghost:hover{background:#fff;color:#20243d}html[data-theme=dark] .mobile-nav,html[data-theme=dark] .mobile-menu-toggle{background:#191e33;color:#f7f4fb;border-color:#34394f}
+  html[data-theme=dark] .quote-card{background:linear-gradient(140deg,#27365f,#171d35);color:#f7f4fb}html[data-theme=dark] .quote-card .qt{color:#f7f4fb}html[data-theme=dark] .quote-card .qby{color:#e8dce5}html[data-theme=dark] .quote-card .qby b{color:#f7b6d2}html[data-theme=dark] .qshare{background:#f7b6d2;color:#20243d}html[data-theme=dark] .sched span.on{background:#f7b6d2;color:#20243d;border:1px solid #ffd4e5}html[data-theme=dark] .coming-card .soon{background:#30243d;color:#ffacd0;border:1px solid #6e3d59}html[data-theme=dark] .coming-card:nth-child(2) .soon{background:#173d3b;color:#79dfd2;border-color:#28645f}html[data-theme=dark] .appband,html[data-theme=dark] .appband h2{color:#fff}html[data-theme=dark] .appband .btn.ghost{color:#fff;border-color:#fff}html[data-theme=dark] .appband .btn.ghost:hover{background:#fff;color:#20243d}html[data-theme=dark] .mobile-nav{background:#191e33;color:#f7f4fb;border-color:#34394f}html[data-theme=dark] .mobile-menu-toggle{background:var(--coral);color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.34)}html[data-theme=dark] .mobile-menu-toggle:hover{background:var(--coral-dark)}
   @media(max-width:760px){.listen-orbit{grid-template-columns:1fr}.watch-orbit{grid-template-columns:1fr 1fr}.map-stage{height:440px;min-height:0}.map-card .map-legend{top:auto;bottom:12px;right:12px;max-width:230px}.mini-player.collapsed{left:50%;right:auto;transform:translateX(-50%)}.theme-label{display:none}.latest-episode-button .hide{display:none}}
-  @media(max-width:560px){.nav{height:66px}.nav>.logo .brand-logo{width:142px}.theme-toggle{width:42px;height:42px;justify-content:center;padding:0}.mobile-menu-toggle{width:42px;height:42px}.mobile-nav{grid-template-columns:1fr}.hero h1{font-size:clamp(38px,13vw,56px)}.hero p.lede{font-size:17px}.listen-on{margin-right:-16px;padding-right:16px}.appband{padding:26px 20px}.coming-card{min-height:0}.foot-grid{grid-template-columns:1fr 1fr;gap:24px 16px}}
+  @media(max-width:560px){.nav{height:66px}.nav>.logo .brand-logo{width:142px}.theme-toggle{width:42px;height:42px;justify-content:center;padding:0}.mobile-menu-toggle{width:44px;height:44px}.mobile-nav{grid-template-columns:1fr}.hero h1{font-size:clamp(38px,13vw,56px)}.hero p.lede{font-size:17px}.listen-on{margin-right:-16px;padding-right:16px}.appband{padding:26px 20px}.coming-card{min-height:0}.foot-grid{grid-template-columns:1fr 1fr;gap:24px 16px}}
   @media(prefers-reduced-motion:reduce){.platform-bubble,.listener-marker svg{transition:none}.platform-bubble:hover{transform:none}}
 </style>
 </head>
@@ -348,7 +351,7 @@
 
 <header class="site">
   <div class="wrap nav">
-    <a class="logo" data-nav="home"><img class="brand-logo" src="assets/cma-logo.webp" alt="The Carla Marie and Anthony Show" /></a>
+    <a class="logo" data-nav="home"><img class="brand-logo" src="/assets/cma-logo.webp" alt="The Carla Marie and Anthony Show" /></a>
     <nav class="links">
       <a data-nav="home">Home</a>
       <a data-nav="episodes">Episodes</a>
@@ -356,7 +359,7 @@
       <a data-nav="about">About</a>
       <a href="https://youlookgreat.co/" target="_blank" rel="noopener">YLG Apparel</a>
     </nav>
-    <div class="cta"><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode"><span aria-hidden="true">☾</span><span class="theme-label">Dark</span></button><button class="btn coral sm latest-episode-button" type="button" data-play-latest>▶ <span class="hide">Listen to today’s episode</span></button><button class="mobile-menu-toggle" id="mobile-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav"><span></span></button></div>
+    <div class="cta"><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode"><span aria-hidden="true">☾</span><span class="theme-label">Dark</span></button><button class="btn coral sm latest-episode-button" type="button" data-play-latest>▶ <span class="hide">Listen to today’s episode</span></button><button class="mobile-menu-toggle" id="mobile-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav"><span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span></button></div>
   </div>
   <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile menu" hidden><a data-nav="home">Home</a><a data-nav="episodes">Episodes</a><a data-nav="blog">Blog</a><a data-nav="about">About</a><a href="https://youlookgreat.co/" target="_blank" rel="noopener">YLG Apparel</a></nav>
 </header>
@@ -382,6 +385,7 @@
           <a class="platform apple" href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener">Apple Podcasts</a>
           <a class="platform iheart" href="https://www.iheart.com/podcast/269-the-morning-show-podcast-92979375/" target="_blank" rel="noopener">iHeartRadio</a>
           <a class="platform youtube" href="https://www.youtube.com/channel/UCOevkSiHvkmZKV2NC9J_8rQ" target="_blank" rel="noopener">YouTube</a>
+          <a class="platform twitch" href="https://www.twitch.tv/CarlaMarieandAnthony" target="_blank" rel="noopener">Twitch</a>
         </div>
       </div>
       <div class="stream">
@@ -423,7 +427,7 @@
   <section class="block" style="padding-top:0">
     <div class="wrap">
       <div class="sec-head">
-        <div><span class="eyebrow" style="color:var(--teal)">The CMA Blog</span><h2>From the blog</h2><p>When a story, product, or how-to needs more detail, CMA can publish an AI-assisted post that they reviewed themselves.</p></div>
+        <div><span class="eyebrow" style="color:var(--teal)">The CM&amp;A Blog</span><h2>From the blog</h2><p>More stories, recommendations, and moments from Carla Marie &amp; Anthony—ready whenever you want to catch up.</p></div>
         <a class="btn ghost sm" data-nav="blog">Read all posts →</a>
       </div>
       <div class="post-list" id="home-posts"></div>
@@ -433,7 +437,7 @@
   <!-- Clearly labeled future community concepts from the planning transcript -->
   <section class="block" style="padding-top:0">
     <div class="wrap">
-      <div class="sec-head"><div><span class="eyebrow">What’s next</span><h2>More ways to be part of the show</h2><p>These are visible concept placeholders while the final services and moderation rules are selected.</p></div></div>
+      <div class="sec-head"><div><span class="eyebrow">New features</span><h2>More ways to be part of the show</h2><p>We’re building more ways to connect with the show, share your voice, and stay in the loop.</p></div></div>
       <div class="coming-grid">
         <article class="coming-card"><span class="soon">Website feature</span><h3>Where are you listening?</h3><p>Check in on the live community map below. Twitch will later share the same listener map during streams.</p></article>
         <article class="coming-card"><span class="soon">Community pilot</span><h3>Keep the conversation going</h3><p>A moderated home for episode comments and listener interaction, including people who do not use Spotify or Instagram.</p></article>
@@ -682,7 +686,7 @@
   <div class="wrap">
     <div class="foot-grid">
       <div>
-        <a class="logo" data-nav="home" style="color:var(--cream)"><img class="brand-logo" src="assets/cma-logo.webp" alt="The Carla Marie and Anthony Show" /></a>
+        <a class="logo" data-nav="home" style="color:var(--cream)"><img class="brand-logo" src="/assets/cma-logo.webp" alt="The Carla Marie and Anthony Show" /></a>
         <p style="color:#c9c0b4;font-size:14px;margin-top:14px;max-width:24em">A daily dose of audio to make your day a little better.</p>
       </div>
       <div><h5>Show</h5><a data-nav="home">Home</a><a data-nav="episodes">Episodes</a><a data-nav="blog">Blog</a><a data-nav="about">About</a></div>
