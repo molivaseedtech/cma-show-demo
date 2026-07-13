@@ -53,7 +53,13 @@
   nav.links a{font-family:'Archivo';font-weight:700;font-size:14px;padding:9px 13px;border-radius:999px;color:var(--ink-soft);cursor:pointer;transition:.15s}
   nav.links a:hover,nav.links a.active{color:var(--ink);background:#fff}
   .cta{display:flex;align-items:center;gap:10px}
-  @media(max-width:940px){nav.links{display:none}.cta .btn span.hide{display:none}}
+  .mobile-menu-toggle{display:none;width:42px;height:42px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);place-items:center;cursor:pointer}
+  .mobile-menu-toggle span,.mobile-menu-toggle::before,.mobile-menu-toggle::after{content:"";display:block;width:19px;height:2px;background:currentColor;border-radius:99px;transition:.18s}
+  .mobile-menu-toggle span{margin:4px 0}.mobile-menu-toggle[aria-expanded=true] span{opacity:0}.mobile-menu-toggle[aria-expanded=true]::before{transform:translateY(6px) rotate(45deg)}.mobile-menu-toggle[aria-expanded=true]::after{transform:translateY(-6px) rotate(-45deg)}
+  .mobile-nav{display:none;border-top:1px solid var(--line);background:var(--card);padding:10px 20px 16px;grid-template-columns:1fr 1fr;gap:7px;box-shadow:0 18px 28px -24px rgba(17,21,41,.55)}
+  .mobile-nav a{padding:12px 14px;border:1px solid var(--line);border-radius:6px;color:var(--ink);font:800 12px Archivo;text-align:center}.mobile-nav a:hover,.mobile-nav a.active{background:var(--coral);border-color:var(--coral);color:#fff}
+  @media(max-width:940px){nav.links{display:none}.mobile-menu-toggle{display:grid}.mobile-nav:not([hidden]){display:grid}.cta .btn span.hide{display:none}.nav{gap:10px}.nav>.logo{margin-right:auto}}
+  @media(max-width:560px){.nav{height:66px}.nav>.logo .brand-logo{width:142px}.cta{gap:6px}.cta .latest-episode-button{display:none}.theme-toggle{width:42px;height:42px;justify-content:center;padding:0}.mobile-nav{grid-template-columns:1fr}.wrap{padding-left:16px;padding-right:16px}}
 
   /* Views */
   .view{display:none;animation:fade .35s ease}
@@ -74,10 +80,12 @@
   .hero h1 .hl{color:var(--coral)}
   .hero p.lede{font-size:19px;color:var(--ink-soft);max-width:30em;margin-bottom:24px}
   .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px}
-  .listen-on{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .listen-on{display:flex;align-items:center;gap:12px;flex-wrap:nowrap;overflow-x:auto;padding:3px 0 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .listen-on::-webkit-scrollbar{display:none}.listen-on>*{flex:0 0 auto}
   .listen-on span{font-family:'Archivo';font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-soft)}
   .platform{font-family:'Archivo';font-weight:700;font-size:13px;color:var(--ink-soft);padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;transition:.15s;cursor:pointer}
   .platform:hover{color:var(--ink);border-color:var(--ink)}
+  .platform.spotify:hover{background:#1ed760;border-color:#1ed760;color:#102217}.platform.apple:hover{background:#a855f7;border-color:#a855f7;color:#fff}.platform.iheart:hover{background:#c6002b;border-color:#c6002b;color:#fff}.platform.youtube:hover{background:#ff0000;border-color:#ff0000;color:#fff}.platform.twitch:hover{background:#9146ff;border-color:#9146ff;color:#fff}
   /* Hero live card */
   .stream{border-radius:24px;overflow:hidden;box-shadow:var(--shadow);background:var(--ink)}
   .stream .screen{aspect-ratio:16/10;background:linear-gradient(135deg,#F0463C,#ff7a4d 55%,#FFC24B);display:grid;place-items:center;position:relative}
@@ -276,8 +284,8 @@
   .brand-logo{width:210px;height:auto;display:block}
   header.site{background:#fff;border-bottom:1px solid #eee;box-shadow:0 8px 22px -22px rgba(32,36,61,.45);backdrop-filter:none}
   .nav{height:78px}.nav>.logo{min-width:220px}.nav>.logo .mark,.nav>.logo>span:not(.mark){display:none}
-  .listen-strip{background:var(--coral);color:#fff;padding:10px 20px;display:flex;align-items:center;justify-content:center;gap:22px;font-family:'termina','Archivo';font-size:12px}
-  .listen-strip span{font-weight:400}.listen-strip a{font-weight:800}.listen-strip a:hover{text-decoration:underline}
+  .listen-strip{background:var(--coral);color:#fff;padding:10px 20px;display:flex;align-items:center;justify-content:center;gap:22px;font-family:'termina','Archivo';font-size:12px;white-space:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .listen-strip::-webkit-scrollbar{display:none}.listen-strip>*{flex:0 0 auto}.listen-strip span{font-weight:400}.listen-strip a{font-weight:800;padding:4px 7px;border-radius:4px;transition:.15s}.listen-strip a:hover{text-decoration:none;transform:translateY(-1px)}.listen-strip a.spotify:hover{background:#1ed760;color:#102217}.listen-strip a.apple:hover{background:#a855f7}.listen-strip a.iheart:hover{background:#c6002b}.listen-strip a.twitch:hover{background:#9146ff}
   nav.links a{font-family:'termina','Archivo';font-size:12px;border-radius:2px;color:#111}
   nav.links a:hover,nav.links a.active{background:var(--coral);color:#fff}
   .hero{position:relative;overflow:hidden;padding:64px 0 52px;background:#fff}
@@ -307,7 +315,7 @@
   @media(max-width:940px){.nav>.logo{min-width:0}.brand-logo{width:170px}.listen-strip{gap:13px;font-size:10px;overflow:auto;justify-content:flex-start}.hero::before{mask-image:linear-gradient(#000,transparent)}.brand-area{grid-template-columns:1fr}.brands-art{display:none}}
   @media(max-width:860px){.listener-map-shell{grid-template-columns:1fr}.map-stage{min-height:380px}}
   @media(max-width:760px){.coming-grid{grid-template-columns:1fr}}
-  @media(max-width:600px){.hero{padding-top:42px}.stream{box-shadow:7px 7px 0 var(--coral)}.host .ph{width:42%}.listen-strip span{display:none}.support-strip{justify-content:flex-start}}
+  @media(max-width:600px){.hero{padding-top:42px}.stream{box-shadow:7px 7px 0 var(--coral)}.host .ph{width:42%}.listen-strip{justify-content:flex-start;padding-inline:16px}.support-strip{justify-content:flex-start}}
   /* Full-size support placement and real MapLibre community map. */
   .support-feature{position:relative;overflow:hidden;background:linear-gradient(115deg,var(--coral),var(--purple) 58%,var(--teal));color:#fff;border-radius:10px;padding:38px 42px;display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:center;box-shadow:12px 12px 0 var(--ink)}
   .support-feature::before{content:"+";position:absolute;right:33%;top:-72px;font:900 250px termina;color:rgba(255,255,255,.12)}.support-feature>*{position:relative;z-index:1}.support-feature .eyebrow{color:#fff}.support-feature h2{font-size:clamp(28px,4vw,48px);margin:8px 0 12px}.support-feature p{max-width:650px;font-size:16px}.support-actions{display:flex;flex-direction:column;gap:10px}.support-actions .btn{justify-content:center}.support-actions small{text-align:center;color:rgba(255,255,255,.8)}
@@ -329,8 +337,9 @@
   .comment-account{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:20px}.comment-account h3{font-size:17px;margin-bottom:8px}.comment-account p{font-size:13px;color:var(--ink-soft);margin-bottom:16px}.signed-in-as{font-size:11px;color:var(--ink-soft);margin:-6px 0 14px}.signed-in-as button{border:0;background:none;color:var(--coral);font-weight:800;cursor:pointer}.listener-auth{width:min(510px,calc(100% - 28px));border:0;border-radius:12px;padding:0;background:var(--card);color:var(--ink);box-shadow:0 30px 90px rgba(17,21,41,.4)}.listener-auth::backdrop{background:rgba(17,21,41,.74)}.listener-auth-inner{position:relative;padding:30px}.listener-auth h3{font-size:27px;margin:8px 0 20px}.listener-auth form{display:flex;flex-direction:column;gap:13px}.listener-auth label{display:flex;flex-direction:column;gap:6px;font:800 11px Archivo;text-transform:uppercase;color:var(--ink-soft)}.listener-auth input{width:100%;padding:12px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);font:14px Inter}.listener-auth form .btn{justify-content:center}.listener-auth small{color:var(--ink-soft);font-size:10px;text-align:center}.dialog-close{position:absolute;right:16px;top:14px;border:0;background:none;color:var(--ink);font-size:28px;cursor:pointer}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:18px}.auth-tabs button{border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink-soft);padding:10px;font:800 11px Archivo;cursor:pointer}.auth-tabs button.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}.auth-status{min-height:18px;margin-top:13px;color:var(--coral);font-size:12px;text-align:center}
   .mini-player{position:fixed;left:50%;bottom:14px;z-index:120;width:min(760px,calc(100% - 28px));transform:translateX(-50%);background:var(--ink);color:#fff;border:1px solid rgba(255,255,255,.14);border-radius:12px;box-shadow:0 18px 55px rgba(17,21,41,.38);padding:13px 16px}.mini-main{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px}.mini-play{width:42px;height:42px;border:0;border-radius:50%;background:var(--coral);display:grid;place-items:center;cursor:pointer}.mini-play::after{content:"";border-left:13px solid #fff;border-top:8px solid transparent;border-bottom:8px solid transparent;margin-left:3px}.mini-copy{min-width:0}.mini-copy span{display:block;color:#f7b6d2;font:800 9px Archivo;text-transform:uppercase;letter-spacing:.09em}.mini-copy strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:800 13px Archivo}.mini-actions button{border:0;background:rgba(255,255,255,.1);color:#fff;border-radius:5px;width:34px;height:34px;cursor:pointer}.mini-controls{display:grid;grid-template-columns:42px 1fr 42px;align-items:center;gap:8px;margin-top:10px;font-size:10px;color:#d2d4de}.mini-controls input{width:100%;height:5px;border:0;border-radius:999px;background:linear-gradient(90deg,var(--coral) 0 var(--mini-progress,0%),rgba(255,255,255,.18) var(--mini-progress,0%) 100%);appearance:none;cursor:pointer}.mini-player.collapsed{width:min(460px,calc(100% - 28px));left:auto;right:14px;transform:none}.mini-player.collapsed .mini-controls{display:none}.mini-player.collapsed #mini-collapse{transform:rotate(180deg)}
   html[data-theme=dark]{--cream:#101426;--ink:#f7f4fb;--ink-soft:#bdc0cf;--line:#34394f;--card:#191e33;--shadow:0 20px 55px -26px rgba(0,0,0,.78);color-scheme:dark}html[data-theme=dark] body{background:var(--cream);color:var(--ink)}html[data-theme=dark] header.site,html[data-theme=dark] .hero{background:#12172a;border-color:var(--line)}html[data-theme=dark] nav.links a{color:#e4e1eb}html[data-theme=dark] nav.links a:hover,html[data-theme=dark] nav.links a.active{color:#fff}html[data-theme=dark] .live-pill,html[data-theme=dark] .platform,html[data-theme=dark] .ep-card,html[data-theme=dark] .ep-feature,html[data-theme=dark] .feat,html[data-theme=dark] .post-row:hover,html[data-theme=dark] .host,html[data-theme=dark] .aside-card,html[data-theme=dark] .chap,html[data-theme=dark] .comment,html[data-theme=dark] .comment-form,html[data-theme=dark] .comment-account,html[data-theme=dark] .checkin-panel,html[data-theme=dark] .coming-card,html[data-theme=dark] .toolbar button,html[data-theme=dark] .search input,html[data-theme=dark] .live-alert{background:var(--card);color:var(--ink);border-color:var(--line)}html[data-theme=dark] .player,html[data-theme=dark] .mini-player,html[data-theme=dark] .stream .bar,html[data-theme=dark] footer.site,html[data-theme=dark] .support-strip{background:#20243d;color:#fff}html[data-theme=dark] .quote-card{background:linear-gradient(140deg,#20243d,#151827)}html[data-theme=dark] .appband{background:linear-gradient(135deg,#20243d,#343958)}html[data-theme=dark] .btn:not(.coral):not(.light):not(.ghost){background:#20243d;border-color:#20243d;color:#fff}html[data-theme=dark] .post-body p,html[data-theme=dark] .post-body li,html[data-theme=dark] .post-body ul{color:#e8e5ee}html[data-theme=dark] .chap-row:hover{background:#242a42}html[data-theme=dark] .episode-community{background:linear-gradient(135deg,#201729,#151a2e)}html[data-theme=dark] .privacy-note{background:#24293f}html[data-theme=dark] .platform-checks label{color:var(--ink)}html[data-theme=dark] .btn.ghost{color:var(--ink);border-color:var(--ink)}html[data-theme=dark] .btn.ghost:hover{background:var(--ink);color:#111426}html[data-theme=dark] .theme-toggle{background:var(--card)}html[data-theme=dark] .listener-auth input{background:#111629}html[data-theme=dark] header.site .brand-logo,html[data-theme=dark] footer.site .brand-logo{background:transparent;border-radius:0;padding:0;filter:drop-shadow(0 1px 0 rgba(255,255,255,.2))}html[data-theme=dark] .brands span{background:#20263d;color:#f7f4fb;border-color:#4a526e}html[data-theme=dark] .ep-cover .play,html[data-theme=dark] .ep-feature .cv .play,html[data-theme=dark] .stream .play,html[data-theme=dark] .watch .screen .play,html[data-theme=dark] .watch-play{background:#f7f4fb;border:1px solid rgba(255,255,255,.28);box-shadow:0 8px 26px rgba(0,0,0,.32)}html[data-theme=dark] .ep-cover .play::after,html[data-theme=dark] .ep-feature .cv .play::after,html[data-theme=dark] .stream .play::after,html[data-theme=dark] .watch .screen .play::after,html[data-theme=dark] .watch-play::after{border-left-color:#20243d}html[data-theme=dark] .player .pbtn,html[data-theme=dark] .mini-play{background:var(--coral)}
-  html[data-theme=dark] .appband{color:#fff}
+  html[data-theme=dark] .coming-card .soon{background:#30243d;color:#ffacd0;border:1px solid #6e3d59}html[data-theme=dark] .coming-card:nth-child(2) .soon{background:#173d3b;color:#79dfd2;border-color:#28645f}html[data-theme=dark] .appband,html[data-theme=dark] .appband h2{color:#fff}html[data-theme=dark] .appband .btn.ghost{color:#fff;border-color:#fff}html[data-theme=dark] .appband .btn.ghost:hover{background:#fff;color:#20243d}html[data-theme=dark] .mobile-nav,html[data-theme=dark] .mobile-menu-toggle{background:#191e33;color:#f7f4fb;border-color:#34394f}
   @media(max-width:760px){.listen-orbit{grid-template-columns:1fr}.watch-orbit{grid-template-columns:1fr 1fr}.map-stage{height:440px;min-height:0}.map-card .map-legend{top:auto;bottom:12px;right:12px;max-width:230px}.mini-player.collapsed{left:50%;right:auto;transform:translateX(-50%)}.theme-label{display:none}.latest-episode-button .hide{display:none}}
+  @media(max-width:560px){.nav{height:66px}.nav>.logo .brand-logo{width:142px}.theme-toggle{width:42px;height:42px;justify-content:center;padding:0}.mobile-menu-toggle{width:42px;height:42px}.mobile-nav{grid-template-columns:1fr}.hero h1{font-size:clamp(38px,13vw,56px)}.hero p.lede{font-size:17px}.listen-on{margin-right:-16px;padding-right:16px}.appband{padding:26px 20px}.coming-card{min-height:0}.foot-grid{grid-template-columns:1fr 1fr;gap:24px 16px}}
   @media(prefers-reduced-motion:reduce){.platform-bubble,.listener-marker svg{transition:none}.platform-bubble:hover{transform:none}}
 </style>
 </head>
@@ -346,11 +355,12 @@
       <a data-nav="about">About</a>
       <a href="https://youlookgreat.co/" target="_blank" rel="noopener">YLG Apparel</a>
     </nav>
-    <div class="cta"><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode"><span aria-hidden="true">☾</span><span class="theme-label">Dark</span></button><button class="btn coral sm latest-episode-button" type="button" data-play-latest>▶ <span class="hide">Listen to today’s episode</span></button></div>
+    <div class="cta"><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode"><span aria-hidden="true">☾</span><span class="theme-label">Dark</span></button><button class="btn coral sm latest-episode-button" type="button" data-play-latest>▶ <span class="hide">Listen to today’s episode</span></button><button class="mobile-menu-toggle" id="mobile-menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-nav"><span></span></button></div>
   </div>
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile menu" hidden><a data-nav="home">Home</a><a data-nav="episodes">Episodes</a><a data-nav="blog">Blog</a><a data-nav="about">About</a><a href="https://youlookgreat.co/" target="_blank" rel="noopener">YLG Apparel</a></nav>
 </header>
 
-<div class="listen-strip"><span>Catch us on</span><a href="https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN" target="_blank" rel="noopener">Spotify</a><a href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener">Apple Podcasts</a><a href="https://www.iheart.com/podcast/269-the-morning-show-podcast-92979375/" target="_blank" rel="noopener">iHeartRadio</a><a href="https://www.twitch.tv/CarlaMarieandAnthony" target="_blank" rel="noopener">Twitch</a></div>
+<div class="listen-strip"><span>Catch us on</span><a class="spotify" href="https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN" target="_blank" rel="noopener">Spotify</a><a class="apple" href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener">Apple Podcasts</a><a class="iheart" href="https://www.iheart.com/podcast/269-the-morning-show-podcast-92979375/" target="_blank" rel="noopener">iHeartRadio</a><a class="twitch" href="https://www.twitch.tv/CarlaMarieandAnthony" target="_blank" rel="noopener">Twitch</a></div>
 
 <main>
 <!-- ============ HOME ============ -->
@@ -367,10 +377,10 @@
         </div>
         <div class="listen-on">
           <span>Catch us on</span>
-          <a class="platform" href="https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN" target="_blank" rel="noopener">Spotify</a>
-          <a class="platform" href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener">Apple Podcasts</a>
-          <a class="platform" href="https://www.iheart.com/podcast/269-the-morning-show-podcast-92979375/" target="_blank" rel="noopener">iHeartRadio</a>
-          <a class="platform" href="https://www.youtube.com/channel/UCOevkSiHvkmZKV2NC9J_8rQ" target="_blank" rel="noopener">YouTube</a>
+          <a class="platform spotify" href="https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN" target="_blank" rel="noopener">Spotify</a>
+          <a class="platform apple" href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener">Apple Podcasts</a>
+          <a class="platform iheart" href="https://www.iheart.com/podcast/269-the-morning-show-podcast-92979375/" target="_blank" rel="noopener">iHeartRadio</a>
+          <a class="platform youtube" href="https://www.youtube.com/channel/UCOevkSiHvkmZKV2NC9J_8rQ" target="_blank" rel="noopener">YouTube</a>
         </div>
       </div>
       <div class="stream">
@@ -474,7 +484,7 @@
         </div>
         <div class="appactions">
           <button class="btn coral" id="install-btn">⬇ Install the app</button>
-          <button class="btn ghost" id="notify-btn" style="color:var(--cream);border-color:var(--cream)">🔔 Enable notifications</button>
+          <button class="btn ghost" id="notify-btn">🔔 Enable notifications</button>
           <span id="pwa-status" style="font-size:12px;color:#9a9286;text-align:center"></span>
         </div>
       </div>
@@ -805,6 +815,10 @@ function applyTheme(theme){
   document.querySelector('meta[name="theme-color"]').content=value==='dark'?'#101426':'#ED207C';
 }
 applyTheme(document.documentElement.dataset.theme);$('#theme-toggle').addEventListener('click',()=>applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark'));
+const mobileMenuToggle=$('#mobile-menu-toggle'),mobileNav=$('#mobile-nav');
+function closeMobileMenu(){mobileNav.hidden=true;mobileMenuToggle.setAttribute('aria-expanded','false');mobileMenuToggle.setAttribute('aria-label','Open menu');}
+mobileMenuToggle.addEventListener('click',()=>{const opening=mobileNav.hidden;mobileNav.hidden=!opening;mobileMenuToggle.setAttribute('aria-expanded',String(opening));mobileMenuToggle.setAttribute('aria-label',opening?'Close menu':'Open menu');});
+mobileNav.querySelectorAll('a').forEach(link=>link.addEventListener('click',closeMobileMenu));window.addEventListener('resize',()=>{if(innerWidth>940)closeMobileMenu();});
 
 function dateKeyFrom(value){const date=new Date(value||0);return Number.isNaN(date.valueOf())?'':date.toISOString().slice(0,10);}
 function secondsFromTimestamp(value='0'){return String(value).split(':').map(Number).reduce((total,part)=>total*60+(Number.isFinite(part)?part:0),0);}
