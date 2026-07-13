@@ -177,8 +177,8 @@ function showDashboard() {
   clearTimeout(state.saveTimer);
   $('#editor').classList.add('hidden'); $('#dashboard').classList.remove('hidden');
   $('#header-title').textContent = 'Publishing workspace';
-  const firstName = (state.user?.name || 'CM&A').split(' ')[0];
-  $('#welcome-name').textContent = `${firstName}, what are we working on?`;
+  const welcomeName = state.user?.name || 'CM&A';
+  $('#welcome-name').textContent = `${welcomeName}, what are we working on?`;
   renderDashboard();
 }
 
@@ -425,7 +425,19 @@ $('#transcript-file').addEventListener('change', async event => {
   finally { event.target.value = ''; }
 });
 
-$('#download-source').addEventListener('click', event => withBusy(event.currentTarget, 'Getting audio…', async () => { await episodeAction('download'); toast('Audio is ready.'); }).catch(() => {}));
+function twitchVideoIdFromUrl(value = '') { return String(value).match(/twitch\.tv\/videos\/(\d+)/i)?.[1] || ''; }
+function isTwitchUrl(value = '') { try { return /(^|\.)twitch\.tv(?:\/|$)/i.test(new URL(value).hostname); } catch { return false; } }
+
+$('#download-source').addEventListener('click', event => withBusy(event.currentTarget, 'Linking media…', async () => {
+  const url = $('#source-url').value.trim();
+  if (!/^https:\/\//i.test(url)) throw new Error('Paste a complete https:// Twitch, YouTube, or podcast link first.');
+  const twitch = isTwitchUrl(url);
+  state.current.source = { ...state.current.source, type: twitch ? 'twitch' : 'link', url, ...(twitchVideoIdFromUrl(url) ? { twitchVideoId: twitchVideoIdFromUrl(url) } : {}) };
+  state.current.media = { ...state.current.media, ...(twitch ? { twitchUrl: url } : {}) };
+  await saveDraft(true); renderSource();
+  if (twitch) { toast('Twitch replay linked. Add a transcript or prepare the draft when you are ready.'); return; }
+  event.currentTarget.textContent = 'Getting audio…'; await episodeAction('download'); toast('Audio is ready.');
+}).catch(() => {}));
 
 $('#make-draft').addEventListener('click', event => withBusy(event.currentTarget, 'Preparing your draft…', async () => {
   if (state.current.format === 'Article') { $('#publish-blog').checked = true; updateBlogChoice(); return goStep('review'); }
