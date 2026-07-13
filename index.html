@@ -6,6 +6,7 @@
 <title>The Carla Marie & Anthony Show</title>
 <link rel="manifest" href="manifest.webmanifest" />
 <meta name="theme-color" content="#ED207C" />
+<script>document.documentElement.dataset.theme=localStorage.getItem('cma-theme')||'light';</script>
 <link rel="apple-touch-icon" sizes="180x180" href="icon-192.png" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -16,6 +17,7 @@
 <link rel="stylesheet" href="https://use.typekit.net/wqj6dqq.css" />
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css" />
 <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
 <style>
   :root{
     --cream:#FFFFFF; --ink:#20243D; --ink-soft:#4f5262;
@@ -316,6 +318,19 @@
   .unified-watch{position:relative;min-height:210px;margin:18px 0;background:linear-gradient(135deg,var(--purple),var(--coral),var(--teal));border-radius:8px;display:grid;place-items:center;color:#fff;overflow:hidden}.unified-watch.hidden{display:none}.unified-watch>span{position:absolute;left:14px;bottom:12px;background:rgba(32,36,61,.75);padding:5px 8px;border-radius:3px;font:800 9px Archivo;text-transform:uppercase}.watch-play{width:62px;height:62px;border:0;border-radius:50%;background:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 28px rgba(32,36,61,.28)}.watch-play::after{content:"";border-left:19px solid var(--ink);border-top:12px solid transparent;border-bottom:12px solid transparent;margin-left:5px}.article .player{margin:18px 0}.article .player .pbtn{border:0}.chapter-block{margin:18px 0 28px}.chapter-block .chap{margin:0}.chapter-block .chap-row{cursor:pointer}.chapter-block .chap-row:hover{background:#f8edf3}.article .post-body{margin-top:28px}.platform-card{overflow:hidden}.platform-orbit{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.platform-bubble{min-height:94px;border-radius:8px;color:#fff!important;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:5px;margin:0!important;font:800 10px Archivo;text-transform:uppercase;transition:.2s transform,.2s box-shadow;animation:platformFloat 3.8s ease-in-out infinite}.platform-bubble:nth-child(2){animation-delay:-.7s}.platform-bubble:nth-child(3){animation-delay:-1.4s}.platform-bubble:nth-child(4){animation-delay:-2.1s}.platform-bubble:nth-child(5){animation-delay:-2.8s;grid-column:1/-1;min-height:78px}.platform-bubble:hover{transform:translateY(-5px) rotate(-1deg);box-shadow:0 10px 24px rgba(32,36,61,.25)}.platform-bubble b{font-size:25px;line-height:1}.platform-bubble.spotify{background:#1db954}.platform-bubble.apple{background:linear-gradient(135deg,#b44cff,#ed207c)}.platform-bubble.iheart{background:#c6002b}.platform-bubble.twitch{background:#9146ff}.platform-bubble.youtube{background:#ff0033}@keyframes platformFloat{0%,100%{translate:0 0}50%{translate:0 -4px}}.episode-community{margin-top:46px;padding:34px;border:1px solid var(--line);border-top:8px solid var(--purple);border-radius:9px;background:linear-gradient(135deg,#fbf4fa,#fff)}.community-intro{max-width:680px}.community-intro h2{font-size:clamp(25px,3vw,38px);margin:7px 0}.community-intro p{color:var(--ink-soft)}.comment-grid{display:grid;grid-template-columns:1fr .8fr;gap:22px;margin-top:25px}.comment-list{display:flex;flex-direction:column;gap:10px}.comment{background:#fff;border:1px solid var(--line);border-radius:7px;padding:16px}.comment strong{font:800 12px Archivo}.comment time{display:block;color:var(--ink-soft);font-size:10px;margin:2px 0 8px}.comment p{font-size:14px}.comment.pending{border-style:dashed;background:#fffaf0}.comment.pending::before{content:"Waiting for CMA review";display:block;color:#9b6811;font:800 9px Archivo;text-transform:uppercase;margin-bottom:7px}.comment-form{background:#fff;border:1px solid var(--line);border-radius:8px;padding:20px}.comment-form h3{font-size:17px;margin-bottom:14px}.comment-form label{display:block;font:800 10px Archivo;text-transform:uppercase;margin-bottom:11px}.comment-form input,.comment-form textarea{width:100%;margin-top:6px;padding:11px;border:1px solid var(--line);border-radius:5px;font:14px Inter}.comment-form textarea{min-height:110px;resize:vertical}.comment-form .btn{width:100%;justify-content:center}.comment-form small{display:block;color:var(--ink-soft);font-size:10px;margin-top:9px;text-align:center}
   @media(max-width:760px){.comment-grid{grid-template-columns:1fr}.episode-community{padding:24px 18px}.platform-orbit{grid-template-columns:repeat(3,1fr)}.platform-bubble:nth-child(5){grid-column:auto}.platform-bubble{min-height:78px}}
   .platform-bubble{gap:7px}.platform-bubble img{width:29px;height:29px;display:block;object-fit:contain}.platform-bubble.spotify{background:#1ed760}.platform-bubble.apple{background:linear-gradient(135deg,#8f35d1,#d856bd)}.platform-bubble.iheart{background:#c6002b}.platform-bubble.twitch{background:#9146ff}.platform-bubble.youtube{background:#ff0000}
+
+  /* Theme, real audio controls, separated destinations, accounts, and map polish. */
+  .hidden{display:none!important}
+  .theme-toggle{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);padding:9px 12px;font:800 11px Archivo;cursor:pointer}.theme-toggle:hover{border-color:var(--coral);transform:translateY(-1px)}
+  .latest-episode-button{white-space:nowrap}
+  .player .track{display:block;width:100%;height:6px;margin-top:14px;padding:0;border:0;border-radius:999px;background:linear-gradient(90deg,var(--sun) 0 var(--player-progress,0%),rgba(255,255,255,.16) var(--player-progress,0%) 100%);appearance:none;overflow:visible;cursor:pointer}.player .track::-webkit-slider-thumb,.mini-controls input::-webkit-slider-thumb{appearance:none;width:15px;height:15px;border-radius:50%;background:#fff;border:3px solid var(--coral)}.player .track::-moz-range-thumb,.mini-controls input::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:#fff;border:3px solid var(--coral)}.player .pbtn.playing::after,.mini-play.playing::after{width:15px;height:18px;border:0;margin:0;background:linear-gradient(90deg,#fff 0 35%,transparent 35% 65%,#fff 65% 100%)}.chap-row{width:100%;border:0;background:transparent;color:var(--ink);text-align:left;font:inherit}.chap-row:focus-visible{outline:2px solid var(--coral);outline-offset:-2px}
+  .platform-group+.platform-group{margin-top:24px;padding-top:22px;border-top:1px solid var(--line)}.platform-group h4{margin-bottom:12px}.listen-orbit{grid-template-columns:repeat(3,1fr)}.watch-orbit{grid-template-columns:repeat(2,1fr)}.platform-bubble,.platform-bubble:nth-child(n){grid-column:auto;min-height:88px;animation:none;translate:none;transition:transform .18s ease,box-shadow .18s ease}.platform-bubble:hover{transform:translateY(-5px) scale(1.045);box-shadow:0 13px 27px rgba(32,36,61,.26)}
+  .listener-map-shell{align-items:start}.map-card{align-self:start;width:100%;overflow:visible}.map-stage{height:520px;min-height:0}.listener-marker{width:38px;height:49px;padding:0;border:0;background:transparent!important;overflow:visible;cursor:pointer;filter:drop-shadow(0 5px 6px rgba(17,21,41,.38))}.listener-marker svg{display:block;width:38px;height:49px;overflow:visible;transition:transform .18s ease}.listener-marker:hover svg,.listener-marker.active svg{transform:translateY(-3px) scale(1.14)}.listener-pin{display:none}.map-reset{position:absolute;left:14px;top:14px;z-index:7;border:0;border-radius:999px;background:rgba(32,36,61,.9);color:#fff;padding:9px 13px;font:800 10px Archivo;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;box-shadow:0 6px 18px rgba(17,21,41,.22)}.map-reset:hover{background:var(--coral)}.listener-popup .maplibregl-popup-content{min-width:190px;border-radius:8px;padding:12px 14px;box-shadow:0 12px 30px rgba(17,21,41,.26);color:#20243d}.listener-popup strong{display:block;font:800 13px Archivo}.listener-popup span{display:block;margin-top:3px;font-size:11px;color:#5e6170}.listener-popup small{display:block;margin-top:7px;color:#777;font-size:9px;text-transform:uppercase;letter-spacing:.04em}.listener-popup .maplibregl-popup-tip{border-top-color:#fff}.map-card .map-legend{max-width:300px}
+  .comment-account{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:20px}.comment-account h3{font-size:17px;margin-bottom:8px}.comment-account p{font-size:13px;color:var(--ink-soft);margin-bottom:16px}.signed-in-as{font-size:11px;color:var(--ink-soft);margin:-6px 0 14px}.signed-in-as button{border:0;background:none;color:var(--coral);font-weight:800;cursor:pointer}.listener-auth{width:min(510px,calc(100% - 28px));border:0;border-radius:12px;padding:0;background:var(--card);color:var(--ink);box-shadow:0 30px 90px rgba(17,21,41,.4)}.listener-auth::backdrop{background:rgba(17,21,41,.74)}.listener-auth-inner{position:relative;padding:30px}.listener-auth h3{font-size:27px;margin:8px 0 20px}.listener-auth form{display:flex;flex-direction:column;gap:13px}.listener-auth label{display:flex;flex-direction:column;gap:6px;font:800 11px Archivo;text-transform:uppercase;color:var(--ink-soft)}.listener-auth input{width:100%;padding:12px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);font:14px Inter}.listener-auth form .btn{justify-content:center}.listener-auth small{color:var(--ink-soft);font-size:10px;text-align:center}.dialog-close{position:absolute;right:16px;top:14px;border:0;background:none;color:var(--ink);font-size:28px;cursor:pointer}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:18px}.auth-tabs button{border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink-soft);padding:10px;font:800 11px Archivo;cursor:pointer}.auth-tabs button.on{background:var(--ink);color:var(--cream);border-color:var(--ink)}.auth-status{min-height:18px;margin-top:13px;color:var(--coral);font-size:12px;text-align:center}
+  .mini-player{position:fixed;left:50%;bottom:14px;z-index:120;width:min(760px,calc(100% - 28px));transform:translateX(-50%);background:var(--ink);color:#fff;border:1px solid rgba(255,255,255,.14);border-radius:12px;box-shadow:0 18px 55px rgba(17,21,41,.38);padding:13px 16px}.mini-main{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px}.mini-play{width:42px;height:42px;border:0;border-radius:50%;background:var(--coral);display:grid;place-items:center;cursor:pointer}.mini-play::after{content:"";border-left:13px solid #fff;border-top:8px solid transparent;border-bottom:8px solid transparent;margin-left:3px}.mini-copy{min-width:0}.mini-copy span{display:block;color:#f7b6d2;font:800 9px Archivo;text-transform:uppercase;letter-spacing:.09em}.mini-copy strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:800 13px Archivo}.mini-actions button{border:0;background:rgba(255,255,255,.1);color:#fff;border-radius:5px;width:34px;height:34px;cursor:pointer}.mini-controls{display:grid;grid-template-columns:42px 1fr 42px;align-items:center;gap:8px;margin-top:10px;font-size:10px;color:#d2d4de}.mini-controls input{width:100%;height:5px;border:0;border-radius:999px;background:linear-gradient(90deg,var(--coral) 0 var(--mini-progress,0%),rgba(255,255,255,.18) var(--mini-progress,0%) 100%);appearance:none;cursor:pointer}.mini-player.collapsed{width:min(460px,calc(100% - 28px));left:auto;right:14px;transform:none}.mini-player.collapsed .mini-controls{display:none}.mini-player.collapsed #mini-collapse{transform:rotate(180deg)}
+  html[data-theme=dark]{--cream:#101426;--ink:#f7f4fb;--ink-soft:#bdc0cf;--line:#34394f;--card:#191e33;--shadow:0 20px 55px -26px rgba(0,0,0,.78);color-scheme:dark}html[data-theme=dark] body{background:var(--cream);color:var(--ink)}html[data-theme=dark] header.site,html[data-theme=dark] .hero{background:#12172a;border-color:var(--line)}html[data-theme=dark] nav.links a{color:#e4e1eb}html[data-theme=dark] nav.links a:hover,html[data-theme=dark] nav.links a.active{color:#fff}html[data-theme=dark] .live-pill,html[data-theme=dark] .platform,html[data-theme=dark] .ep-card,html[data-theme=dark] .ep-feature,html[data-theme=dark] .feat,html[data-theme=dark] .post-row:hover,html[data-theme=dark] .host,html[data-theme=dark] .aside-card,html[data-theme=dark] .chap,html[data-theme=dark] .comment,html[data-theme=dark] .comment-form,html[data-theme=dark] .comment-account,html[data-theme=dark] .checkin-panel,html[data-theme=dark] .coming-card,html[data-theme=dark] .toolbar button,html[data-theme=dark] .search input{background:var(--card);color:var(--ink);border-color:var(--line)}html[data-theme=dark] .player,html[data-theme=dark] .mini-player,html[data-theme=dark] .stream .bar,html[data-theme=dark] footer.site,html[data-theme=dark] .support-strip{background:#20243d;color:#fff}html[data-theme=dark] .quote-card{background:linear-gradient(140deg,#20243d,#151827)}html[data-theme=dark] .appband{background:linear-gradient(135deg,#20243d,#343958)}html[data-theme=dark] .btn:not(.coral):not(.light):not(.ghost){background:#20243d;border-color:#20243d;color:#fff}html[data-theme=dark] .post-body p,html[data-theme=dark] .post-body li,html[data-theme=dark] .post-body ul{color:#e8e5ee}html[data-theme=dark] .chap-row:hover{background:#242a42}html[data-theme=dark] .episode-community{background:linear-gradient(135deg,#201729,#151a2e)}html[data-theme=dark] .privacy-note{background:#24293f}html[data-theme=dark] .platform-checks label{color:var(--ink)}html[data-theme=dark] .btn.ghost{color:var(--ink);border-color:var(--ink)}html[data-theme=dark] .btn.ghost:hover{background:var(--ink);color:#111426}html[data-theme=dark] .theme-toggle{background:var(--card)}html[data-theme=dark] .listener-auth input{background:#111629}html[data-theme=dark] .brand-logo{background:#fff;border-radius:4px;padding:4px}
+  @media(max-width:760px){.listen-orbit{grid-template-columns:1fr}.watch-orbit{grid-template-columns:1fr 1fr}.map-stage{height:440px;min-height:0}.map-card .map-legend{top:auto;bottom:12px;right:12px;max-width:230px}.mini-player.collapsed{left:50%;right:auto;transform:translateX(-50%)}.theme-label{display:none}.latest-episode-button .hide{display:none}}
+  @media(prefers-reduced-motion:reduce){.platform-bubble,.listener-marker svg{transition:none}.platform-bubble:hover{transform:none}}
 </style>
 </head>
 <body>
@@ -330,11 +345,11 @@
       <a data-nav="about">About</a>
       <a href="https://youlookgreat.co/" target="_blank" rel="noopener">YLG Apparel</a>
     </nav>
-    <div class="cta"><a class="btn coral sm" data-nav="episodes">▶ <span class="hide">Listen</span></a></div>
+    <div class="cta"><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode"><span aria-hidden="true">☾</span><span class="theme-label">Dark</span></button><button class="btn coral sm latest-episode-button" type="button" data-play-latest>▶ <span class="hide">Listen to today’s episode</span></button></div>
   </div>
 </header>
 
-<div class="listen-strip"><span>Catch us on</span><a href="https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN" target="_blank" rel="noopener">Spotify</a><a href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener">Apple</a><a href="https://www.iheart.com/podcast/269-the-morning-show-podcast-92979375/" target="_blank" rel="noopener">iHeartRadio</a><a href="https://www.twitch.tv/CarlaMarieandAnthony" target="_blank" rel="noopener">Twitch</a></div>
+<div class="listen-strip"><span>Catch us on</span><a href="https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN" target="_blank" rel="noopener">Spotify</a><a href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener">Apple Podcasts</a><a href="https://www.iheart.com/podcast/269-the-morning-show-podcast-92979375/" target="_blank" rel="noopener">iHeartRadio</a><a href="https://www.twitch.tv/CarlaMarieandAnthony" target="_blank" rel="noopener">Twitch</a></div>
 
 <main>
 <!-- ============ HOME ============ -->
@@ -346,14 +361,14 @@
         <h1>Your daily dose of <span class="hl">good mornings.</span></h1>
         <p class="lede">The news you need, the news you don't need but want, dumb games, and zero BS — every weekday in under 25 minutes with Carla Marie &amp; Anthony.</p>
         <div class="hero-actions">
-          <a class="btn coral" data-nav="episodes">▶ Listen to today's show</a>
+          <button class="btn coral" type="button" data-play-latest>▶ Listen to today’s episode</button>
           <a class="btn ghost" data-nav="blog">Read the blog</a>
         </div>
         <div class="listen-on">
           <span>Catch us on</span>
           <a class="platform" href="https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN" target="_blank" rel="noopener">Spotify</a>
-          <a class="platform" href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener">Apple</a>
-          <a class="platform" href="https://www.iheart.com/podcast/269-the-morning-show-podcast-92979375/" target="_blank" rel="noopener">iHeart</a>
+          <a class="platform" href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener">Apple Podcasts</a>
+          <a class="platform" href="https://www.iheart.com/podcast/269-the-morning-show-podcast-92979375/" target="_blank" rel="noopener">iHeartRadio</a>
           <a class="platform" href="https://www.youtube.com/channel/UCOevkSiHvkmZKV2NC9J_8rQ" target="_blank" rel="noopener">YouTube</a>
         </div>
       </div>
@@ -422,7 +437,7 @@
           <div class="map-stage" id="listener-map"></div>
           <div class="map-loading" id="map-loading">Loading the listener map…</div>
             <div class="map-legend"><span><i style="background:#9146ff"></i>Twitch</span><span><i style="background:#1ed760"></i>Spotify</span><span><i style="background:#8f35d1"></i>Apple Podcasts</span><span><i style="background:#c6002b"></i>iHeartRadio</span><span><i style="background:#ff0000"></i>YouTube</span></div>
-            <div class="map-focus" id="map-focus"><strong>Listeners are checking in</strong><span>Tap a pin to meet the morning crew.</span></div>
+            <button class="map-reset hidden" id="map-reset" type="button">↺ Zoom out</button>
         </div>
         <aside class="checkin-panel">
           <span class="eyebrow">Add your pin</span><h3>Listening? Check in.</h3><p>Your pin can use one color or a mix based on where you listen.</p>
@@ -433,7 +448,7 @@
             <span class="eyebrow" style="margin-bottom:8px">I’m listening on</span>
             <div class="platform-checks">
               <label><input type="checkbox" name="platform" value="twitch"> Twitch</label><label><input type="checkbox" name="platform" value="spotify"> Spotify</label>
-              <label><input type="checkbox" name="platform" value="apple"> Apple</label><label><input type="checkbox" name="platform" value="iheart"> iHeart</label>
+              <label><input type="checkbox" name="platform" value="apple"> Apple Podcasts</label><label><input type="checkbox" name="platform" value="iheart"> iHeartRadio</label>
               <label><input type="checkbox" name="platform" value="youtube"> YouTube</label><label><input type="checkbox" name="platform" value="other"> Other</label>
             </div>
             <p class="privacy-note">City-level only. We do not ask for or store a street address or precise GPS location.</p>
@@ -508,7 +523,7 @@
 <div id="episodes" class="view">
   <section class="block">
     <div class="wrap">
-      <div class="sec-head"><div><span class="eyebrow">The Podcast</span><h2>Episodes</h2><p>The daily show — listen to the audio or watch the full livestream. New episodes Mon, Tue &amp; Thu.</p></div></div>
+      <div class="sec-head"><div><span class="eyebrow">The Podcast</span><h2>Episodes</h2><p>The Morning Show Podcast is new every weekday, Monday through Friday. Twitch replays are available on stream days.</p></div></div>
 
       <!-- Featured latest -->
       <div class="ep-feature" id="ep-feature"></div>
@@ -582,8 +597,8 @@
 
           <div class="unified-watch hidden" id="u-watch"><button class="watch-play" id="u-watch-play" aria-label="Watch the full replay"></button><span>Watch the full stream replay</span></div>
           <div class="player" id="u-player">
-            <div class="row"><button class="pbtn" id="u-play" aria-label="Open the podcast"></button><div><div class="ptitle" id="u-player-title">Listen to the podcast</div><div class="ptime"><span id="u-duration"></span> · The Morning Show Podcast</div></div></div>
-            <div class="track"><i></i></div>
+            <div class="row"><button class="pbtn" id="u-play" aria-label="Play the podcast"></button><div><div class="ptitle" id="u-player-title">Listen to the podcast</div><div class="ptime"><span id="u-current">0:00</span> / <span id="u-total">--:--</span> · The Morning Show Podcast</div></div></div>
+            <input class="track" id="u-track" type="range" min="0" max="1000" value="0" aria-label="Episode playback position">
           </div>
           <div class="chapter-block"><span class="engine-tag">✦ AI chapters · reviewed by CMA</span><div class="chap" id="u-chapters"></div></div>
 
@@ -602,19 +617,23 @@
               <button class="btn coral sm" style="width:100%;justify-content:center" type="submit">Sign up</button>
             </form>
           </div>
-          <div class="aside-card platform-card"><span class="engine-tag">Listen or watch</span><h4>Take the show with you</h4><div class="platform-orbit">
-            <a class="platform-bubble spotify" id="platform-spotify" href="https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/spotify/FFFFFF" alt="" aria-hidden="true"><span>Spotify</span></a>
-            <a class="platform-bubble apple" id="platform-apple" href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/applepodcasts/FFFFFF" alt="" aria-hidden="true"><span>Apple Podcasts</span></a>
-            <a class="platform-bubble iheart" id="platform-iheart" href="https://www.iheart.com/podcast/269-the-morning-show-podcast-92979375/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/iheartradio/FFFFFF" alt="" aria-hidden="true"><span>iHeartRadio</span></a>
-            <a class="platform-bubble twitch" id="platform-twitch" href="https://www.twitch.tv/CarlaMarieandAnthony" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/twitch/FFFFFF" alt="" aria-hidden="true"><span>Twitch</span></a>
-            <a class="platform-bubble youtube" id="platform-youtube" href="https://www.youtube.com/channel/UCOevkSiHvkmZKV2NC9J_8rQ" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/youtube/FFFFFF" alt="" aria-hidden="true"><span>YouTube</span></a>
-          </div></div>
+          <div class="aside-card platform-card">
+            <section class="platform-group"><span class="engine-tag">Listen</span><h4>Morning Show Podcast</h4><div class="platform-orbit listen-orbit">
+              <a class="platform-bubble spotify" id="platform-spotify" href="https://open.spotify.com/show/5iK0gOYXv5ynWBAaLXrwcN" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/spotify/FFFFFF" alt="" aria-hidden="true"><span>Spotify</span></a>
+              <a class="platform-bubble apple" id="platform-apple" href="https://podcasts.apple.com/us/podcast/the-morning-show-podcast/id1610409032" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/applepodcasts/FFFFFF" alt="" aria-hidden="true"><span>Apple Podcasts</span></a>
+              <a class="platform-bubble iheart" id="platform-iheart" href="https://www.iheart.com/podcast/269-the-morning-show-podcast-92979375/" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/iheartradio/FFFFFF" alt="" aria-hidden="true"><span>iHeartRadio</span></a>
+            </div></section>
+            <section class="platform-group watch-group"><span class="engine-tag">Watch</span><h4>Livestreams and replays</h4><div class="platform-orbit watch-orbit">
+              <a class="platform-bubble twitch" id="platform-twitch" href="https://www.twitch.tv/CarlaMarieandAnthony" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/twitch/FFFFFF" alt="" aria-hidden="true"><span>Twitch</span></a>
+              <a class="platform-bubble youtube" id="platform-youtube" href="https://www.youtube.com/channel/UCOevkSiHvkmZKV2NC9J_8rQ" target="_blank" rel="noopener"><img src="https://cdn.simpleicons.org/youtube/FFFFFF" alt="" aria-hidden="true"><span>YouTube</span></a>
+            </div></section>
+          </div>
         </aside>
       </div>
 
       <section class="episode-community" id="episode-community">
-        <div class="community-intro"><span class="eyebrow">Community pilot</span><h2>Keep the conversation going</h2><p>A moderated place to react to this episode—even if you do not use Spotify or Instagram.</p></div>
-        <div class="comment-grid"><div class="comment-list" id="episode-comments"></div><form class="comment-form" id="comment-form"><h3>Join this episode’s conversation</h3><label>Name or handle<input name="name" maxlength="40" required placeholder="MorningShowFan"></label><label>Your comment<textarea name="comment" maxlength="500" required placeholder="What did you think?"></textarea></label><button class="btn coral" type="submit">Submit for review</button><small id="comment-status">Comments appear after CMA moderation.</small></form></div>
+        <div class="community-intro"><span class="eyebrow">Listener community</span><h2>Keep the conversation going</h2><p>Create a free listener account, complete a quick human check, and join the moderated episode conversation.</p></div>
+        <div class="comment-grid"><div class="comment-list" id="episode-comments"></div><div><div class="comment-account" id="comment-account"><h3>Join this episode’s conversation</h3><p>Listener accounts keep names consistent and help protect the community from spam.</p><button class="btn coral" id="open-listener-auth" type="button">Sign in or create an account</button></div><form class="comment-form hidden" id="comment-form"><h3>Join this episode’s conversation</h3><p class="signed-in-as">Commenting as <strong id="comment-user-name"></strong> <button type="button" id="listener-logout">Sign out</button></p><label>Your comment<textarea name="comment" maxlength="500" required placeholder="What did you think?"></textarea></label><button class="btn coral" type="submit">Submit for review</button><small id="comment-status">Comments appear after CMA moderation.</small></form></div></div>
       </section>
     </div>
   </section>
@@ -666,12 +685,15 @@
         <a href="https://www.tiktok.com/@thecarlamarie" target="_blank" rel="noopener">TikTok</a>
       </div>
     </div>
-    <div class="foot-bottom"><span>© 2026 Carla Marie &amp; Anthony. All rights reserved.</span><span>Concept by SeedTech</span></div>
+    <div class="foot-bottom"><span>© 2026 Carla Marie &amp; Anthony. All rights reserved.</span><span>Designed and built by SeedTech</span></div>
   </div>
 </footer>
 
 <dialog class="install-help" id="install-help"><div class="install-help-inner"><span class="eyebrow">Install CMA</span><h3>Add the show to your Home Screen</h3><div id="install-instructions"></div><button class="btn coral" id="close-install">Got it</button></div></dialog>
 <aside class="live-alert" id="live-alert"><strong id="live-alert-title"></strong><p id="live-alert-body"></p><button id="close-live-alert">Dismiss</button></aside>
+<dialog class="listener-auth" id="listener-auth"><div class="listener-auth-inner"><button class="dialog-close" id="close-listener-auth" type="button" aria-label="Close">×</button><span class="eyebrow">Listener account</span><h3>Join the CMA conversation</h3><div class="auth-tabs"><button class="on" type="button" data-auth-view="signup">Create account</button><button type="button" data-auth-view="login">Sign in</button></div><form id="listener-signup"><label>Name or handle<input name="name" maxlength="40" required autocomplete="nickname"></label><label>Email<input name="email" type="email" required autocomplete="email"></label><label>Password<input name="password" type="password" minlength="8" maxlength="128" required autocomplete="new-password"></label><div id="listener-captcha"></div><button class="btn coral" type="submit">Create my account</button><small>Complete the human check once when you create your account.</small></form><form class="hidden" id="listener-login"><label>Email<input name="email" type="email" required autocomplete="email"></label><label>Password<input name="password" type="password" required autocomplete="current-password"></label><button class="btn coral" type="submit">Sign in</button></form><p class="auth-status" id="listener-auth-status"></p></div></dialog>
+
+<aside class="mini-player hidden" id="mini-player" aria-label="Podcast mini player"><audio id="site-audio" preload="metadata"></audio><div class="mini-main"><button class="mini-play" id="mini-play" type="button" aria-label="Play episode"></button><div class="mini-copy"><span>The Morning Show Podcast</span><strong id="mini-title">Today’s episode</strong></div><div class="mini-actions"><button id="mini-collapse" type="button" aria-label="Minimize player">⌄</button></div></div><div class="mini-controls"><span id="mini-current">0:00</span><input id="mini-track" type="range" min="0" max="1000" value="0" aria-label="Episode playback position"><span id="mini-total">--:--</span></div></aside>
 
 <script>
 /* One dataset with episodes plus optional CMA-reviewed written posts. */
@@ -768,10 +790,58 @@ const $ = s=>document.querySelector(s);
 const views = ['home','episodes','blog','about','post','blogpost'];
 let current = 0;
 const COMMENT_KEY='cma-episode-comments';
+let podcastEpisodes=[];
+let podcastFeedPromise=null;
+let activePlaybackIndex=0;
 const DEMO_COMMENTS=[
   {name:'PNW Morning Crew',time:'Today at 8:42 AM',comment:'The chapter links make it so easy to jump back to the part I wanted to send my sister.'},
   {name:'Jersey Jen',time:'Today at 9:06 AM',comment:'Listening from Hoboken and I absolutely picked the same side in this story.'}
 ];
+
+function applyTheme(theme){
+  const value=theme==='dark'?'dark':'light';document.documentElement.dataset.theme=value;localStorage.setItem('cma-theme',value);
+  const button=$('#theme-toggle');if(button){button.querySelector('[aria-hidden]').textContent=value==='dark'?'☀':'☾';button.querySelector('.theme-label').textContent=value==='dark'?'Light':'Dark';button.setAttribute('aria-label',`Switch to ${value==='dark'?'light':'dark'} mode`);}
+  document.querySelector('meta[name="theme-color"]').content=value==='dark'?'#101426':'#ED207C';
+}
+applyTheme(document.documentElement.dataset.theme);$('#theme-toggle').addEventListener('click',()=>applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark'));
+
+function dateKeyFrom(value){const date=new Date(value||0);return Number.isNaN(date.valueOf())?'':date.toISOString().slice(0,10);}
+function secondsFromTimestamp(value='0'){return String(value).split(':').map(Number).reduce((total,part)=>total*60+(Number.isFinite(part)?part:0),0);}
+function clock(value){if(!Number.isFinite(value))return'--:--';const seconds=Math.max(0,Math.floor(value));return`${Math.floor(seconds/60)}:${String(seconds%60).padStart(2,'0')}`;}
+async function loadPodcastEpisodes(){
+  if(podcastEpisodes.length)return podcastEpisodes;
+  if(podcastFeedPromise)return podcastFeedPromise;
+  podcastFeedPromise=(async()=>{let payload;try{const response=await fetch('/api/public/podcast?limit=30',{headers:{Accept:'application/json'}});if(!response.ok)throw new Error();payload=await response.json();}catch{payload=await fetch('data/podcast.json').then(response=>response.json()).catch(()=>({episodes:[]}));}podcastEpisodes=payload.episodes||[];return podcastEpisodes;})();
+  return podcastFeedPromise;
+}
+function episodeAudio(item,index){
+  if(item?.media?.audioUrl)return{audioUrl:item.media.audioUrl,title:item.epSub||item.postTitle};
+  const exact=podcastEpisodes.find(episode=>dateKeyFrom(episode.publishedAt)===dateKeyFrom(item?.date));
+  return exact||podcastEpisodes[0]||null;
+}
+const siteAudio=$('#site-audio');
+function updatePlayButtons(){const playing=!siteAudio.paused&&!siteAudio.ended;$('#mini-play').classList.toggle('playing',playing);$('#mini-play').setAttribute('aria-label',playing?'Pause episode':'Play episode');$('#u-play').classList.toggle('playing',playing&&activePlaybackIndex===current);}
+function updatePlaybackProgress(){
+  const progress=siteAudio.duration?siteAudio.currentTime/siteAudio.duration*1000:0;const percent=progress/10;
+  $('#mini-current').textContent=clock(siteAudio.currentTime);$('#mini-total').textContent=clock(siteAudio.duration);$('#mini-track').value=progress||0;$('#mini-track').style.setProperty('--mini-progress',`${percent}%`);
+  $('#u-current').textContent=clock(siteAudio.currentTime);if(Number.isFinite(siteAudio.duration))$('#u-total').textContent=clock(siteAudio.duration);$('#u-track').value=progress||0;$('#u-track').style.setProperty('--player-progress',`${percent}%`);
+}
+async function playItemAt(item,index,seconds=0,forcePlay=true){
+  await loadPodcastEpisodes();const episode=episodeAudio(item,index);if(!episode?.audioUrl){alert('The Megaphone audio is not connected to this episode yet.');return;}
+  activePlaybackIndex=index;const desired=new URL(episode.audioUrl,location.href).href;const changed=siteAudio.src!==desired;
+  if(changed){siteAudio.src=episode.audioUrl;siteAudio.load();$('#mini-title').textContent=episode.title||item?.epSub||'The Morning Show Podcast';}
+  $('#mini-player').classList.remove('hidden');
+  const begin=()=>{if(seconds>0||changed)siteAudio.currentTime=Math.min(seconds,Number.isFinite(siteAudio.duration)?Math.max(0,siteAudio.duration-.25):seconds);if(forcePlay)siteAudio.play().catch(()=>{});updatePlaybackProgress();};
+  if(siteAudio.readyState>=1)begin();else siteAudio.addEventListener('loadedmetadata',begin,{once:true});
+}
+async function playLatest(){await loadPodcastEpisodes();const latest=podcastEpisodes[0];if(!latest){alert('The Megaphone feed is not available right now.');return;}await playItemAt({...ITEMS[0],media:{...(ITEMS[0].media||{}),audioUrl:latest.audioUrl},epSub:latest.title},0,0,true);}
+document.querySelectorAll('[data-play-latest]').forEach(button=>button.addEventListener('click',playLatest));
+$('#mini-play').addEventListener('click',()=>{if(!siteAudio.src){playLatest();return;}siteAudio.paused?siteAudio.play():siteAudio.pause();});
+$('#mini-collapse').addEventListener('click',()=>$('#mini-player').classList.toggle('collapsed'));
+function seekFromRange(range){if(Number.isFinite(siteAudio.duration)){siteAudio.currentTime=Number(range.value)/1000*siteAudio.duration;updatePlaybackProgress();}}
+$('#mini-track').addEventListener('input',event=>seekFromRange(event.currentTarget));$('#u-track').addEventListener('input',event=>seekFromRange(event.currentTarget));
+siteAudio.addEventListener('play',updatePlayButtons);siteAudio.addEventListener('pause',updatePlayButtons);siteAudio.addEventListener('ended',updatePlayButtons);siteAudio.addEventListener('timeupdate',updatePlaybackProgress);siteAudio.addEventListener('durationchange',updatePlaybackProgress);
+loadPodcastEpisodes();
 
 /* ---- card renderers ---- */
 function epCard(it,i){
@@ -856,11 +926,11 @@ function openUnified(i){
   $('#p-img').style.background = it.grad;
   $('#p-body').innerHTML = it.body;
   $('#p-quote').textContent = QUOTES[i]||QUOTES[0];
-  const listenUrl=it.media?.podcastUrl||'';const watchUrl=it.media?.twitchUrl||it.media?.youtubeUrl||'';
-  $('#u-duration').textContent=it.dur;$('#u-player-title').textContent=it.fmt==='Livestream'?'Listen to the podcast version':'Listen to the podcast';
-  $('#u-play').title=listenUrl?'Open the podcast':'Podcast link coming soon';$('#u-play').onclick=()=>listenUrl&&window.open(listenUrl,'_blank','noopener');
+  const watchUrl=it.media?.twitchUrl||it.media?.youtubeUrl||'';
+  $('#u-current').textContent='0:00';$('#u-total').textContent=it.dur||'--:--';$('#u-player-title').textContent=it.fmt==='Livestream'?'Listen to the podcast version':'Listen to the podcast';
+  $('#u-play').title='Play this episode here';$('#u-play').onclick=()=>siteAudio.src&&activePlaybackIndex===i?(siteAudio.paused?siteAudio.play():siteAudio.pause()):playItemAt(it,i,0,true);
   $('#u-watch').classList.toggle('hidden',it.fmt!=='Livestream'||!watchUrl);$('#u-watch-play').onclick=()=>watchUrl&&window.open(watchUrl,'_blank','noopener');
-  $('#u-chapters').innerHTML=(CHAPTERS[i]||CHAPTERS[0]).map(c=>`<div class="chap-row" data-chapter-url="${listenUrl}"><span class="ts">${c[0]}</span><span class="ct">${c[1]}</span></div>`).join('');
+  $('#u-chapters').innerHTML=(CHAPTERS[i]||CHAPTERS[0]).map(c=>`<button class="chap-row" type="button" data-chapter-seconds="${secondsFromTimestamp(c[0])}"><span class="ts">${c[0]}</span><span class="ct">${c[1]}</span></button>`).join('');
   $('#p-links').innerHTML = (LINKS[i]||LINKS[0]).map(l=>`<li><span>${l[0]}</span><a href="${l[1]}" target="_blank" rel="noopener">Open →</a></li>`).join('');
   const mentions=it.mentions||[];
   $('#mentions-card').style.display=mentions.length?'block':'none';
@@ -885,17 +955,36 @@ function show(id){
   window.scrollTo({top:0});
 }
 
+/* ---- listener accounts + CAPTCHA-protected community comments ---- */
+const TURNSTILE_TEST_SITE_KEY='1x00000000000000000000AA';
+const DEMO_LISTENER_ACCOUNT='cma-demo-listener-account';
+const DEMO_LISTENER_SESSION='cma-demo-listener-session';
+const staticDemoHost=location.hostname.endsWith('vercel.app')||location.hostname.endsWith('github.io')||location.protocol==='file:';
+let listenerUser=null,listenerSiteKey=staticDemoHost?TURNSTILE_TEST_SITE_KEY:'',listenerCaptchaReady=staticDemoHost,captchaWidget=null;
+async function listenerRequest(url,options={}){const response=await fetch(url,{credentials:'same-origin',...options,headers:{...(options.body?{'Content-Type':'application/json'}:{}),...(options.headers||{})}});const payload=await response.json().catch(()=>null);if(!response.ok||!payload){const error=new Error(payload?.error||'Listener accounts are not connected on this preview.');error.status=response.status;throw error;}return payload;}
+async function hashDemoPassword(value){const bytes=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value));return[...new Uint8Array(bytes)].map(byte=>byte.toString(16).padStart(2,'0')).join('');}
+function updateCommentAccess(){const signedIn=Boolean(listenerUser);$('#comment-account').classList.toggle('hidden',signedIn);$('#comment-form').classList.toggle('hidden',!signedIn);$('#comment-user-name').textContent=listenerUser?.name||'';}
+async function loadListenerSession(){try{const payload=await listenerRequest('/api/listener/session');listenerUser=payload.user||null;listenerSiteKey=payload.turnstileSiteKey||'';listenerCaptchaReady=Boolean(payload.captchaReady&&listenerSiteKey);}catch{if(staticDemoHost){listenerSiteKey=TURNSTILE_TEST_SITE_KEY;listenerCaptchaReady=true;if(localStorage.getItem(DEMO_LISTENER_SESSION)==='yes')listenerUser=JSON.parse(localStorage.getItem(DEMO_LISTENER_ACCOUNT)||'null');}}updateCommentAccess();}
+function renderListenerCaptcha(attempt=0){if(!listenerCaptchaReady){$('#listener-auth-status').textContent='Listener signup is waiting for the production CAPTCHA keys.';return;}if(captchaWidget!==null){window.turnstile?.reset(captchaWidget);return;}if(window.turnstile){captchaWidget=window.turnstile.render('#listener-captcha',{sitekey:listenerSiteKey,theme:'auto'});return;}if(attempt<24)setTimeout(()=>renderListenerCaptcha(attempt+1),250);else $('#listener-auth-status').textContent='The human verification could not load. Check your connection and try again.';}
+function openListenerAuth(){const dialog=$('#listener-auth');$('#listener-auth-status').textContent='';dialog.showModal();renderListenerCaptcha();}
+$('#open-listener-auth').addEventListener('click',openListenerAuth);$('#close-listener-auth').addEventListener('click',()=>$('#listener-auth').close());
+document.querySelectorAll('[data-auth-view]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-auth-view]').forEach(value=>value.classList.toggle('on',value===button));$('#listener-signup').classList.toggle('hidden',button.dataset.authView!=='signup');$('#listener-login').classList.toggle('hidden',button.dataset.authView!=='login');$('#listener-auth-status').textContent='';if(button.dataset.authView==='signup')renderListenerCaptcha();}));
+$('#listener-signup').addEventListener('submit',async event=>{event.preventDefault();const status=$('#listener-auth-status');const form=new FormData(event.currentTarget);const captchaToken=window.turnstile&&captchaWidget!==null?window.turnstile.getResponse(captchaWidget):'';if(!captchaToken){status.textContent='Complete the “Verify you are human” check first.';return;}const input={name:form.get('name').trim(),email:form.get('email').trim(),password:form.get('password'),captchaToken};status.textContent='Creating your listener account…';try{const payload=await listenerRequest('/api/listener/signup',{method:'POST',body:JSON.stringify(input)});listenerUser=payload.user;}catch(error){if(!staticDemoHost){status.textContent=error.message;window.turnstile?.reset(captchaWidget);return;}const account={id:`demo-${Date.now()}`,name:input.name,email:input.email.toLowerCase(),passwordHash:await hashDemoPassword(input.password)};localStorage.setItem(DEMO_LISTENER_ACCOUNT,JSON.stringify(account));localStorage.setItem(DEMO_LISTENER_SESSION,'yes');listenerUser=account;}event.currentTarget.reset();window.turnstile?.reset(captchaWidget);updateCommentAccess();$('#listener-auth').close();});
+$('#listener-login').addEventListener('submit',async event=>{event.preventDefault();const status=$('#listener-auth-status');const form=new FormData(event.currentTarget);const email=form.get('email').trim(),password=form.get('password');status.textContent='Signing in…';try{const payload=await listenerRequest('/api/listener/login',{method:'POST',body:JSON.stringify({email,password})});listenerUser=payload.user;}catch(error){if(!staticDemoHost){status.textContent=error.message;return;}const account=JSON.parse(localStorage.getItem(DEMO_LISTENER_ACCOUNT)||'null');if(!account||account.email!==email.toLowerCase()||account.passwordHash!==await hashDemoPassword(password)){status.textContent='That email and password do not match.';return;}localStorage.setItem(DEMO_LISTENER_SESSION,'yes');listenerUser=account;}event.currentTarget.reset();updateCommentAccess();$('#listener-auth').close();});
+$('#listener-logout').addEventListener('click',async()=>{try{await listenerRequest('/api/listener/logout',{method:'POST'});}catch{}localStorage.removeItem(DEMO_LISTENER_SESSION);listenerUser=null;updateCommentAccess();});
+loadListenerSession();
+
 /* ---- events ---- */
 document.addEventListener('click',e=>{
   const ep=e.target.closest('[data-ep]'); if(ep){openEpisode(+ep.dataset.ep);return;}
   const po=e.target.closest('[data-post]'); if(po){openPost(+po.dataset.post);return;}
   const nv=e.target.closest('[data-nav]'); if(nv){show(nv.dataset.nav);}
 });
-$('#u-chapters').addEventListener('click',event=>{const row=event.target.closest('[data-chapter-url]');if(row?.dataset.chapterUrl)window.open(row.dataset.chapterUrl,'_blank','noopener');});
+$('#u-chapters').addEventListener('click',event=>{const row=event.target.closest('[data-chapter-seconds]');if(row)playItemAt(ITEMS[current],current,Number(row.dataset.chapterSeconds),true);});
 $('#share-quote').addEventListener('click',async()=>{const item=ITEMS[current];const text=`“${$('#p-quote').textContent}” — The Carla Marie & Anthony Show`;try{if(navigator.share)await navigator.share({title:item.postTitle,text,url:location.href});else{await navigator.clipboard.writeText(`${text}\n${location.href}`);alert('Quote and episode link copied.');}}catch{}});
 $('#share-blog-quote').addEventListener('click',async()=>{const item=ITEMS[current];const text=`“${$('#b-quote').textContent}” — The Carla Marie & Anthony Show`;try{if(navigator.share)await navigator.share({title:item.postTitle,text,url:location.href});else{await navigator.clipboard.writeText(`${text}\n${location.href}`);alert('Quote and blog link copied.');}}catch{}});
 $('#b-to-episode').addEventListener('click',()=>openUnified(current));
-$('#comment-form').addEventListener('submit',async event=>{event.preventDefault();const item=ITEMS[current];const key=item.id||`${item.date}-${item.epSub}`;const form=new FormData(event.currentTarget);const input={episodeId:key,episodeTitle:item.postTitle,name:form.get('name').trim(),comment:form.get('comment').trim()};let submitted;try{const response=await fetch('/api/public/comments',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)});if(!response.ok)throw new Error();submitted=(await response.json()).comment;}catch{submitted={...input,id:`local-${Date.now()}`};}const saved=JSON.parse(localStorage.getItem(COMMENT_KEY)||'{}');saved[key]=[...(saved[key]||[]),{...submitted,time:'Submitted just now',pending:true}];localStorage.setItem(COMMENT_KEY,JSON.stringify(saved));event.currentTarget.reset();$('#comment-status').textContent='✓ Submitted. CMA can approve it before it appears publicly.';renderEpisodeComments(item);});
+$('#comment-form').addEventListener('submit',async event=>{event.preventDefault();if(!listenerUser){openListenerAuth();return;}const item=ITEMS[current];const key=item.id||`${item.date}-${item.epSub}`;const form=new FormData(event.currentTarget);const input={episodeId:key,episodeTitle:item.postTitle,comment:form.get('comment').trim()};let submitted;try{const response=await fetch('/api/public/comments',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)});const payload=await response.json().catch(()=>({}));if(!response.ok){if(response.status===401){listenerUser=null;updateCommentAccess();openListenerAuth();}throw new Error(payload.error||'Your comment could not be submitted.');}submitted=payload.comment;}catch(error){if(!staticDemoHost){$('#comment-status').textContent=error.message;return;}submitted={...input,name:listenerUser.name,id:`local-${Date.now()}`};}const saved=JSON.parse(localStorage.getItem(COMMENT_KEY)||'{}');saved[key]=[...(saved[key]||[]),{...submitted,time:'Submitted just now',pending:true}];localStorage.setItem(COMMENT_KEY,JSON.stringify(saved));event.currentTarget.reset();$('#comment-status').textContent='✓ Submitted. CMA can approve it before it appears publicly.';renderEpisodeComments(item);});
 
 // episodes filters/search
 $('#ep-chips').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
@@ -945,42 +1034,53 @@ hydratePublished();
 
 /* ---- Listener check-in map + Discord community ---- */
 const CHECKIN_KEY='cma-demo-checkins';
-const PLATFORM_COLORS={twitch:'#9146ff',spotify:'#1ed760',apple:'#ed207c',iheart:'#e4312b',youtube:'#ff0033',other:'#1b9a8b'};
+const PLATFORM_COLORS={twitch:'#9146ff',spotify:'#1ed760',apple:'#8f35d1',iheart:'#c6002b',youtube:'#ff0000',other:'#1b9a8b'};
+const PLATFORM_LABELS={twitch:'Twitch',spotify:'Spotify',apple:'Apple Podcasts',iheart:'iHeartRadio',youtube:'YouTube',other:'Other'};
 const REGION_COORDS={WA:[-120.7,47.4],OR:[-120.5,44],CA:[-119.5,36.7],NV:[-116.6,39],AZ:[-111.7,34.3],UT:[-111.6,39.3],ID:[-114.5,44.2],MT:[-109.6,47],WY:[-107.6,43],CO:[-105.5,39],NM:[-106,34.5],ND:[-100.5,47.5],SD:[-100,44.5],NE:[-99.8,41.5],KS:[-98.4,38.5],OK:[-97.5,35.6],TX:[-99.3,31.2],MN:[-94.5,46],IA:[-93.5,42],MO:[-92.5,38.4],AR:[-92.4,34.9],LA:[-92,31],WI:[-89.8,44.6],IL:[-89.4,40],MI:[-85.5,44.3],IN:[-86.1,39.9],OH:[-82.8,40.3],KY:[-85.3,37.7],TN:[-86.4,35.8],MS:[-89.7,32.7],AL:[-86.8,32.8],GA:[-83.5,32.7],FL:[-82.4,28.1],SC:[-80.9,33.8],NC:[-79.4,35.5],VA:[-78.7,37.5],WV:[-80.5,38.6],PA:[-77.7,41],NY:[-75.5,43],NJ:[-74.5,40.1],MD:[-76.7,39],DE:[-75.5,39],CT:[-72.7,41.6],RI:[-71.5,41.7],MA:[-71.8,42.2],VT:[-72.7,44],NH:[-71.6,43.7],ME:[-69,45.2],AK:[-152,64],HI:[-157,20.8]};
-let communityCheckins=[],communityComments=[],listenerMap=null,mapMarkers=[];
+const MAP_HOME={center:[-98.5,38.5],zoom:2.5};
+let communityCheckins=[],communityComments=[],listenerMap=null,mapMarkers=[],mapPopup=null,mapTourTimer=null,mapTourResumeTimer=null,mapTourIndex=0,mapTourFocused=false;
 
 function checkinCoords(item){
   const longitude=Number(item.longitude),latitude=Number(item.latitude);
   return Number.isFinite(longitude)&&Number.isFinite(latitude)?[longitude,latitude]:(REGION_COORDS[item.region]||[-98.5,39.5]);
 }
-function pinBackground(platforms){
-  const colors=(platforms||[]).map(platform=>PLATFORM_COLORS[platform]||PLATFORM_COLORS.other);
-  return colors.length>1?`conic-gradient(${colors.map((color,index)=>`${color} ${index/colors.length*100}% ${(index+1)/colors.length*100}%`).join(',')})`:(colors[0]||PLATFORM_COLORS.other);
+function escapeMapText(value=''){return String(value).replace(/[&<>"']/g,character=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));}
+function pinSvg(platforms,index){
+  const colors=[...new Set((platforms||[]).map(platform=>PLATFORM_COLORS[platform]||PLATFORM_COLORS.other))];if(!colors.length)colors.push(PLATFORM_COLORS.other);
+  const stops=colors.map((color,position)=>`<stop offset="${colors.length===1?0:position/(colors.length-1)*100}%" stop-color="${color}"/>`).join('');const id=`listener-gradient-${index}`;
+  return `<svg viewBox="0 0 38 49" role="presentation" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1">${stops}</linearGradient></defs><path d="M19 1.5C9.7 1.5 2.2 9 2.2 18.3c0 12.2 16.8 28.9 16.8 28.9s16.8-16.7 16.8-28.9C35.8 9 28.3 1.5 19 1.5Z" fill="url(#${id})" stroke="#fff" stroke-width="3"/><circle cx="19" cy="18" r="6.4" fill="#fff" fill-opacity=".96"/></svg>`;
 }
-function focusCheckin(item,pin){
-  document.querySelectorAll('.listener-marker').forEach(value=>value.classList.remove('active'));pin?.classList.add('active');
-  const focus=$('#map-focus');focus.querySelector('strong').textContent=`${item.name} · ${item.city}, ${item.region}`;
-  focus.querySelector('span').textContent=`Listening on ${item.platforms.map(value=>value==='iheart'?'iHeart':value[0].toUpperCase()+value.slice(1)).join(' + ')}`;
-  if(listenerMap)listenerMap.flyTo({center:checkinCoords(item),zoom:7,speed:.85,curve:1.35,essential:true});
+function clearMapTour(){clearInterval(mapTourTimer);clearTimeout(mapTourResumeTimer);mapTourTimer=null;mapTourResumeTimer=null;}
+function zoomOutMap(){mapPopup?.remove();mapPopup=null;document.querySelectorAll('.listener-marker').forEach(value=>value.classList.remove('active'));$('#map-reset').classList.add('hidden');mapTourFocused=false;if(listenerMap)listenerMap.easeTo({...MAP_HOME,duration:1500,essential:false});}
+function pauseMapTour(){clearMapTour();mapTourResumeTimer=setTimeout(startMapTour,18000);}
+function focusCheckin(item,pin,automatic=false){
+  if(!listenerMap)return;document.querySelectorAll('.listener-marker').forEach(value=>value.classList.remove('active'));pin?.classList.add('active');mapPopup?.remove();
+  const platforms=(item.platforms||[]).map(value=>PLATFORM_LABELS[value]||value).join(' + ');
+  mapPopup=new maplibregl.Popup({offset:36,closeButton:false,className:'listener-popup'}).setLngLat(checkinCoords(item)).setHTML(`<strong>${escapeMapText(item.name)}</strong><span>${escapeMapText(item.city)}, ${escapeMapText(item.region)}</span><small>Listening on ${escapeMapText(platforms)}</small>`).addTo(listenerMap);
+  $('#map-reset').classList.remove('hidden');mapTourFocused=true;listenerMap.flyTo({center:checkinCoords(item),zoom:7,speed:.75,curve:1.3,essential:!window.matchMedia('(prefers-reduced-motion: reduce)').matches});if(!automatic)pauseMapTour();
+}
+function startMapTour(){
+  clearMapTour();if(window.matchMedia('(prefers-reduced-motion: reduce)').matches||!listenerMap||!communityCheckins.length)return;
+  mapTourTimer=setInterval(()=>{if(mapTourFocused){zoomOutMap();return;}const item=communityCheckins[mapTourIndex%communityCheckins.length];const marker=mapMarkers[mapTourIndex%mapMarkers.length]?.getElement();mapTourIndex+=1;focusCheckin(item,marker,true);},6500);
 }
 function renderCheckins(){
   if(!listenerMap||!listenerMap.loaded())return;
-  mapMarkers.forEach(marker=>marker.remove());mapMarkers=[];
+  clearMapTour();mapPopup?.remove();mapPopup=null;mapMarkers.forEach(marker=>marker.remove());mapMarkers=[];
   communityCheckins.slice(0,80).forEach((item,index)=>{
     const markerElement=document.createElement('button');markerElement.className='listener-marker';markerElement.type='button';markerElement.setAttribute('aria-label',`${item.name} in ${item.city}, ${item.region}`);
-    const pin=document.createElement('span');pin.className='listener-pin';pin.style.background=pinBackground(item.platforms);pin.style.animationDelay=`${(index%8)*-.31}s`;markerElement.append(pin);
-    markerElement.addEventListener('click',()=>focusCheckin(item,markerElement));
+    markerElement.innerHTML=pinSvg(item.platforms,index);markerElement.addEventListener('click',()=>focusCheckin(item,markerElement,false));
     mapMarkers.push(new maplibregl.Marker({element:markerElement,anchor:'bottom'}).setLngLat(checkinCoords(item)).addTo(listenerMap));
   });
-  if(communityCheckins[0]){const focus=$('#map-focus');focus.querySelector('strong').textContent=`${communityCheckins[0].name} · ${communityCheckins[0].city}, ${communityCheckins[0].region}`;focus.querySelector('span').textContent=`Listening on ${communityCheckins[0].platforms.join(' + ')}`;}
+  startMapTour();
 }
 function initListenerMap(styleUrl){
   if(listenerMap||!window.maplibregl)return;
-  listenerMap=new maplibregl.Map({container:'listener-map',style:styleUrl||'https://demotiles.maplibre.org/globe.json',center:[-98.5,38.5],zoom:2.5,minZoom:1.2,maxZoom:14,attributionControl:true});
+  listenerMap=new maplibregl.Map({container:'listener-map',style:styleUrl||'https://demotiles.maplibre.org/globe.json',...MAP_HOME,minZoom:1.2,maxZoom:14,attributionControl:true});
   listenerMap.addControl(new maplibregl.NavigationControl({showCompass:false}),'bottom-right');
   listenerMap.on('load',()=>{$('#map-loading').classList.add('hidden');renderCheckins();});
   listenerMap.on('error',()=>{$('#map-loading').textContent='The live map could not load. Check the map provider connection.';});
 }
+$('#map-reset').addEventListener('click',()=>{zoomOutMap();pauseMapTour();});
 async function geocodeCity(city,region){
   try{const url=`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=us&q=${encodeURIComponent(`${city}, ${region}, USA`)}`;const result=await fetch(url,{headers:{Accept:'application/json'}}).then(response=>response.json());if(result[0])return{longitude:Number(result[0].lon),latitude:Number(result[0].lat)};}catch{}
   const fallback=REGION_COORDS[region]||[-98.5,39.5];return{longitude:fallback[0],latitude:fallback[1]};
@@ -1002,7 +1102,7 @@ $('#checkin-form').addEventListener('submit',async event=>{
   let checkin;
   try{const response=await fetch('/api/public/checkins',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(input)});if(!response.ok)throw new Error();checkin=(await response.json()).checkin;}
   catch{checkin={...input,id:`local-${Date.now()}`,createdAt:new Date().toISOString()};const local=JSON.parse(localStorage.getItem(CHECKIN_KEY)||'[]');localStorage.setItem(CHECKIN_KEY,JSON.stringify([checkin,...local].slice(0,20)));}
-  communityCheckins=[checkin,...communityCheckins.filter(item=>item.id!==checkin.id)];renderCheckins();event.currentTarget.reset();status.textContent=`✓ Your ${input.region} pin is on the map.`;if(listenerMap)listenerMap.flyTo({center:checkinCoords(checkin),zoom:7,speed:.8,essential:true});
+  communityCheckins=[checkin,...communityCheckins.filter(item=>item.id!==checkin.id)];renderCheckins();event.currentTarget.reset();status.textContent=`✓ Your ${input.region} pin is on the map.`;if(listenerMap)focusCheckin(checkin,mapMarkers[0]?.getElement(),false);
 });
 
 function showNewestAlert(alerts){

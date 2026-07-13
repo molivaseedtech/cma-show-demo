@@ -5,7 +5,7 @@ This repository now contains two connected products:
 - `/` — the listener-facing PWA, hydrated from published content.
 - `/admin` — CMA's editorial control room for Twitch/audio ingest, transcription, AI drafting, editing, review, synchronized scheduling, and publishing.
 
-The listener site intentionally separates **episode show notes** from the **Blog**. Every podcast/livestream can have one unified episode page with its player, chapters, highlights, quote, useful links, and conversation. The Blog is a separate index and article experience populated only when CMA creates a standalone blog post or turns on **Add to Blog** for an episode in `/admin`.
+The listener site intentionally separates **episode show notes** from the **Blog**. Every podcast/livestream can have one unified episode page with its Megaphone-powered player, seekable chapters, highlights, quote, useful links, and conversation. The Blog is a separate index and article experience populated only when CMA creates a standalone blog post or turns on **Add to Blog** for an episode in `/admin`.
 
 The original static demo remains embedded in `index.html` as an offline fallback. When the Node server is running, published records from `data/content.json` replace that fallback.
 
@@ -44,7 +44,7 @@ For a production pilot, use one running instance. Moving to multiple instances r
 
 ## Editorial workflow
 
-1. Create one **show package** the night before.
+1. Create or reopen the day’s **Morning Show Podcast** package. Twitch shows and Blog posts keep their own independent daily drafts.
 2. Attach a Twitch VOD, upload media, link a source, or upload/paste a transcript created on the M4.
 3. If there is no transcript, transcribe in `Auto` mode. It tries the M4 first and OpenAI second.
 4. Generate the editorial package. `Auto` tries local Ollama, OpenAI, then Gemini.
@@ -190,12 +190,29 @@ The admin includes a plain-language alert composer. New published podcasts and T
 
 Android and supported desktop browsers can use the browser's one-tap install prompt. Apple does not expose an equivalent web API on iPhone/iPad, so the app shows a short Safari Share → Add to Home Screen guide. Once installed, iOS/iPadOS Home Screen web apps can receive standards-based Web Push on supported OS versions.
 
+## On-site podcast player and listener accounts
+
+The public mini player reads CMA's Megaphone RSS feed and plays the enclosure audio directly on the site. It follows listeners between pages, can be minimized, and shares playback state with the episode-page player and chapter buttons. Published CMA records are automatically matched to Megaphone episodes by release date.
+
+Episode comments require a listener account. Account creation is protected by Cloudflare Turnstile, and the server validates every signup token before creating the account. Configure production keys and a separate session secret on the hosted server:
+
+```dotenv
+LISTENER_SESSION_SECRET=<long random secret>
+TURNSTILE_SITE_KEY=<public Turnstile site key>
+TURNSTILE_SECRET_KEY=<private Turnstile secret key>
+```
+
+Local development uses Cloudflare's documented test keys. The Vercel static preview keeps demonstration accounts in that browser only; production accounts and moderated comments require the Node server with persistent storage.
+
 ## API map
 
 - `GET /api/public/content` — published packages only.
+- `GET /api/public/podcast` — current Megaphone RSS episodes and direct audio enclosures.
 - `GET /api/public/community` — listener pins, recent alerts, and the configured Discord invite.
 - `POST /api/public/checkins` — privacy-limited city/state listener check-in.
-- `POST /api/public/comments` — submit an episode comment into CMA's moderation queue.
+- `GET /api/listener/session` — current listener login and public CAPTCHA configuration.
+- `POST /api/listener/signup|login|logout` — listener account lifecycle.
+- `POST /api/public/comments` — authenticated comment submission into CMA's moderation queue.
 - `GET/POST /api/admin/shows` — list/create packages.
 - `PATCH /api/admin/shows/:id` — edit the complete package.
 - `POST /api/admin/uploads` — private raw media upload.

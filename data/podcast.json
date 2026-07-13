@@ -1,0 +1,21 @@
+{
+  "feedUrl": "https://feeds.megaphone.fm/GEMINIMEDIA5276993481",
+  "updatedAt": "2026-07-12T22:10:00.000Z",
+  "episodes": [
+    {
+      "title": "Friday, July 10, 2026",
+      "publishedAt": "2026-07-10T08:00:00.000Z",
+      "audioUrl": "https://www.podtrac.com/pts/redirect.mp3/pdst.fm/e/pscrb.fm/rss/p/claritaspod.com/measure/prfx.byspotify.com/e/mgln.ai/e/796/traffic.megaphone.fm/GEMINIMEDIA5816263029.mp3"
+    },
+    {
+      "title": "Thursday, July 9, 2026",
+      "publishedAt": "2026-07-09T08:00:00.000Z",
+      "audioUrl": "https://www.podtrac.com/pts/redirect.mp3/pdst.fm/e/pscrb.fm/rss/p/claritaspod.com/measure/prfx.byspotify.com/e/mgln.ai/e/796/traffic.megaphone.fm/GEMINIMEDIA7102070703.mp3"
+    },
+    {
+      "title": "Wednesday, July 8, 2026",
+      "publishedAt": "2026-07-08T08:00:00.000Z",
+      "audioUrl": "https://www.podtrac.com/pts/redirect.mp3/pdst.fm/e/pscrb.fm/rss/p/claritaspod.com/measure/prfx.byspotify.com/e/mgln.ai/e/796/traffic.megaphone.fm/GEMINIMEDIA3423685027.mp3"
+    }
+  ]
+}

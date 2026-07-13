@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#20243d">
-  <title>CMA Show Desk</title>
+  <title>CMA Content Studio</title>
+  <script>document.documentElement.dataset.theme=localStorage.getItem('cma-theme')||'light';</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,14 +14,15 @@
 <body>
   <section class="login-screen hidden" id="login-screen">
     <div class="login-card">
+      <button class="admin-theme-toggle login-theme" type="button" data-theme-toggle aria-label="Switch to dark mode"><span aria-hidden="true">☾</span><span>Dark mode</span></button>
       <img src="../assets/cma-logo.webp" alt="The Carla Marie and Anthony Show">
-      <span class="eyebrow">Private show desk</span>
+      <span class="eyebrow">CMA admin</span>
       <h1>Welcome back.</h1>
-      <p>Sign in to prepare tonight’s episode and tomorrow morning’s site.</p>
+      <p>Sign in to prepare the next podcast, Twitch replay, or blog post.</p>
       <form id="login-form">
         <label>Who are you?<select id="login-user"></select></label>
         <label>Password<input id="login-password" type="password" autocomplete="current-password" required></label>
-        <button class="button primary full" type="submit">Open the show desk</button>
+        <button class="button primary full" type="submit">Open CMA Content Studio</button>
         <p class="form-error" id="login-error"></p>
       </form>
     </div>
@@ -29,21 +31,21 @@
   <div class="app hidden" id="app">
     <div class="preview-banner hidden" id="preview-banner"><strong>Demo preview</strong> Changes stay in this browser. Real CMA content and passwords are not connected here.</div>
     <header class="app-header">
-      <button class="logo-button" id="go-home" aria-label="Show desk home"><img src="../assets/cma-logo.webp" alt="The Carla Marie and Anthony Show"></button>
-      <div class="header-center"><span class="eyebrow">Private show desk</span><strong id="header-title">Tonight’s work</strong></div>
-      <div class="header-actions"><span class="save-status" id="save-status">Saved</span><button class="text-button" id="logout">Sign out</button></div>
+      <button class="logo-button" id="go-home" aria-label="CMA Content Studio home"><img src="../assets/cma-logo.webp" alt="The Carla Marie and Anthony Show"></button>
+      <div class="header-center"><span class="eyebrow">CMA Content Studio</span><strong id="header-title">Publishing workspace</strong></div>
+      <div class="header-actions"><span class="save-status" id="save-status">Saved</span><button class="admin-theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode"><span aria-hidden="true">☾</span><span>Dark</span></button><button class="text-button" id="logout">Sign out</button></div>
     </header>
 
     <main>
       <section class="dashboard" id="dashboard">
         <div class="welcome">
-          <div><span class="eyebrow">Good evening</span><h1 id="welcome-name">What are we working on?</h1><p>Choose one. The show desk will walk you through the rest.</p></div>
+          <div><span class="eyebrow">CMA publishing</span><h1 id="welcome-name">What are we working on?</h1><p>Choose one. The Content Studio will walk you through the rest.</p></div>
           <div class="deadline"><span>Podcast target</span><strong>4:00 AM ET</strong><small>Ready before 5:00 AM</small></div>
         </div>
 
         <div class="start-grid">
           <button class="start-card podcast" data-new="Podcast">
-            <span class="start-icon">🎙</span><span><strong>Tonight’s podcast</strong><small>Upload the final audio from Adobe Audition</small></span><b>Start →</b>
+            <span class="start-icon">🎙</span><span><strong>Morning Show podcast</strong><small>Upload the final audio from Adobe Audition</small></span><b>Start →</b>
           </button>
           <button class="start-card twitch" data-new="Livestream">
             <span class="start-icon">◉</span><span><strong>Today’s Twitch show</strong><small>Choose the replay after the stream ends</small></span><b>Start →</b>
@@ -56,7 +58,7 @@
         <details class="work-guide">
           <summary>Need a quick refresher?</summary>
           <ol>
-            <li>Choose tonight’s podcast, today’s Twitch show, or a blog post.</li>
+            <li>Choose the Morning Show podcast, today’s Twitch show, or a blog post.</li>
             <li>Add the finished audio, your on-Mac transcript, or the Twitch replay.</li>
             <li>Read the draft, adjust anything in plain language, and check the links.</li>
             <li>Schedule or publish when you are ready. Starting the same item again reopens today’s draft—never a second copy.</li>
@@ -76,8 +78,8 @@
       </section>
 
       <section class="editor hidden" id="editor">
-        <button class="back-button" id="back-home">← Back to tonight’s work</button>
-        <div class="editor-title"><div><span class="type-badge" id="type-badge">Podcast</span><h1 id="episode-heading">Tonight’s episode</h1><p id="episode-subtitle">Nothing goes live until you say so.</p></div><button class="text-button danger" id="archive">Archive</button></div>
+        <button class="back-button" id="back-home">← Back to publishing workspace</button>
+        <div class="editor-title"><div><span class="type-badge" id="type-badge">Podcast</span><h1 id="episode-heading">Morning Show episode</h1><p id="episode-subtitle">Nothing goes live until you say so.</p></div><button class="text-button danger" id="archive">Archive</button></div>
 
         <nav class="steps" id="steps" aria-label="Episode preparation steps">
           <button class="active" data-step="source"><span>1</span><b>Add the show</b><small>Audio or replay</small></button>
@@ -86,7 +88,7 @@
         </nav>
 
         <section class="step-panel" data-panel="source">
-          <div class="plain-heading"><span class="eyebrow">Step 1 of 3</span><h2 id="source-heading">Add tonight’s final audio</h2><p id="source-help">Use the file Anthony finished in Adobe Audition. We’ll handle the transcript and first draft.</p></div>
+          <div class="plain-heading"><span class="eyebrow">Step 1 of 3</span><h2 id="source-heading">Add the final podcast audio</h2><p id="source-help">Use the file Anthony finished in Adobe Audition. We’ll handle the transcript and first draft.</p></div>
 
           <div class="source-options" id="source-options">
             <label class="drop-zone" id="drop-zone">
@@ -173,7 +175,7 @@
             </aside>
           </div>
 
-          <details class="optional-details destinations"><summary>Optional: player and image links</summary><div class="field-row"><label>Podcast/Megaphone link<input id="podcast-url" type="url"></label><label>Twitch replay link<input id="twitch-url" type="url"></label><label>YouTube link<input id="youtube-url" type="url"></label><label>Cover image link<input id="image-url" type="url"></label></div></details>
+          <details class="optional-details destinations"><summary>Optional: player and image links</summary><div class="field-row"><label>Podcast page link<input id="podcast-url" type="url"></label><label>Direct Megaphone audio link<input id="audio-url" type="url" placeholder="Filled automatically from the RSS feed when dates match"></label><label>Twitch replay link<input id="twitch-url" type="url"></label><label>YouTube link<input id="youtube-url" type="url"></label><label>Cover image link<input id="image-url" type="url"></label></div></details>
           <div class="step-actions"><button class="button secondary" data-go="review">Back to review</button><span></span></div>
         </section>
       </section>

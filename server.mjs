@@ -10,6 +10,8 @@ import { createOrReuseShow, getShow, listShows, publishDueShows, publishShow, pu
 import { generatePackage, runLocalProcess, transcribeFile } from './lib/ai.mjs';
 import { listTwitchVideos } from './lib/twitch.mjs';
 import { addCheckin, addComment, createAlert, listComments, moderateComment, publicCommunity } from './lib/community.mjs';
+import { getMegaphoneEpisodes } from './lib/megaphone.mjs';
+import { authenticateListener, getListener, registerListener } from './lib/listeners.mjs';
 
 const ROOT = process.cwd();
 loadEnv(ROOT);
@@ -20,8 +22,13 @@ const HOST = process.env.HOST || '127.0.0.1';
 const JSON_LIMIT = 12 * 1024 * 1024;
 const UPLOAD_LIMIT = 500 * 1024 * 1024;
 const SESSION_COOKIE = 'cma_admin_session';
+const LISTENER_COOKIE = 'cma_listener_session';
 const SESSION_KEY = process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex');
+const LISTENER_SESSION_KEY = process.env.LISTENER_SESSION_SECRET || crypto.createHash('sha256').update(`${SESSION_KEY}:listeners`).digest('hex');
+const TURNSTILE_TEST_SITE_KEY = '1x00000000000000000000AA';
+const TURNSTILE_TEST_SECRET_KEY = '1x0000000000000000000000000000000AA';
 const loginAttempts = new Map();
+const listenerAuthAttempts = new Map();
 const checkinAttempts = new Map();
 const commentAttempts = new Map();
 
@@ -88,6 +95,26 @@ function sessionToken(userId, expires = Date.now() + 12 * 60 * 60 * 1000) {
   return `${payload}.${signature}`;
 }
 
+function listenerToken(userId, expires = Date.now() + 30 * 24 * 60 * 60 * 1000) {
+  const payload = Buffer.from(JSON.stringify({ userId, expires })).toString('base64url');
+  const signature = crypto.createHmac('sha256', LISTENER_SESSION_KEY).update(payload).digest('base64url');
+  return `${payload}.${signature}`;
+}
+
+async function listenerSessionUser(req) {
+  const token = parseCookies(req)[LISTENER_COOKIE];
+  if (!token) return null;
+  const [payload, supplied] = token.split('.');
+  if (!payload || !supplied) return null;
+  const expected = crypto.createHmac('sha256', LISTENER_SESSION_KEY).update(payload).digest('base64url');
+  const left = Buffer.from(supplied); const right = Buffer.from(expected);
+  if (left.length !== right.length || !crypto.timingSafeEqual(left, right)) return null;
+  try {
+    const value = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    return value.expires > Date.now() ? await getListener(value.userId) : null;
+  } catch { return null; }
+}
+
 function sessionUser(req) {
   const token = parseCookies(req)[SESSION_COOKIE];
   if (!token) return null;
@@ -114,6 +141,36 @@ function loginAllowed(req) {
   const recent = (loginAttempts.get(key) || []).filter(time => now - time < 15 * 60 * 1000);
   loginAttempts.set(key, recent);
   return { key, allowed: recent.length < 8 };
+}
+
+function listenerAuthAllowed(req) {
+  const key = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
+  const now = Date.now();
+  const recent = (listenerAuthAttempts.get(key) || []).filter(time => now - time < 15 * 60 * 1000);
+  if (recent.length >= 10) return false;
+  listenerAuthAttempts.set(key, [...recent, now]);
+  return true;
+}
+
+function secureCookie(req) {
+  return req.socket.encrypted || req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : '';
+}
+
+async function validateTurnstile(token, req) {
+  const allowLocalTestKey = isLocal(req) && !process.env.TURNSTILE_SECRET_KEY;
+  const secret = process.env.TURNSTILE_SECRET_KEY || (allowLocalTestKey ? TURNSTILE_TEST_SECRET_KEY : '');
+  if (!secret) throw Object.assign(new Error('Listener signup CAPTCHA is not configured yet.'), { status: 503 });
+  if (!token || String(token).length > 2048) throw Object.assign(new Error('Complete the “Verify you are human” check.'), { status: 400 });
+  const remoteip = req.headers['cf-connecting-ip'] || req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress || '';
+  const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ secret, response: token, remoteip, idempotency_key: crypto.randomUUID() }),
+    signal: AbortSignal.timeout(10_000)
+  });
+  const result = await response.json().catch(() => ({ success: false }));
+  if (!response.ok || !result.success) throw Object.assign(new Error('The human verification did not complete. Please try again.'), { status: 400 });
+  return result;
 }
 
 function checkinAllowed(req) {
@@ -220,6 +277,11 @@ function showAlert(show) {
   return { title: 'A new podcast episode is ready', body: show.episodeTitle || show.title, category: show.publishBlog ? 'blog' : 'podcast', url: show.media?.podcastUrl || '/' };
 }
 
+function dateKey(value) {
+  const date = new Date(value || 0);
+  return Number.isNaN(date.valueOf()) ? '' : date.toISOString().slice(0, 10);
+}
+
 async function publishDueAndNotify() {
   const shows = await publishDueShows();
   await Promise.all(shows.map(show => createAlert({ ...showAlert(show), source: 'automatic' })));
@@ -262,8 +324,18 @@ async function api(req, res, url) {
   const pathname = url.pathname;
   if (pathname === '/api/public/content' && req.method === 'GET') {
     await publishDueAndNotify();
-    const shows = (await listShows()).filter(show => show.status === 'published').map(publicShape);
+    let podcastEpisodes = [];
+    try { podcastEpisodes = await getMegaphoneEpisodes({ limit: 60 }); } catch (error) { console.warn('Megaphone enrichment:', error.message); }
+    const shows = (await listShows()).filter(show => show.status === 'published').map(show => {
+      const value = publicShape(show);
+      const episode = show.format === 'Article' ? null : podcastEpisodes.find(item => dateKey(item.publishedAt) === dateKey(show.airDate || show.publishedAt));
+      return episode ? { ...value, media: { ...value.media, audioUrl: value.media?.audioUrl || episode.audioUrl } } : value;
+    });
     return json(res, 200, { shows, generatedAt: new Date().toISOString() });
+  }
+
+  if (pathname === '/api/public/podcast' && req.method === 'GET') {
+    return json(res, 200, { episodes: await getMegaphoneEpisodes({ limit: Number(url.searchParams.get('limit') || 25) }), generatedAt: new Date().toISOString() });
   }
 
   if (pathname === '/api/public/community' && req.method === 'GET') {
@@ -275,9 +347,41 @@ async function api(req, res, url) {
     return json(res, 201, { checkin: await addCheckin(await readJson(req)) });
   }
 
+  if (pathname === '/api/listener/session' && req.method === 'GET') {
+    const user = await listenerSessionUser(req);
+    const allowLocalTestKey = isLocal(req) && !process.env.TURNSTILE_SITE_KEY;
+    const turnstileSiteKey = process.env.TURNSTILE_SITE_KEY || (allowLocalTestKey ? TURNSTILE_TEST_SITE_KEY : '');
+    return json(res, 200, { loggedIn: Boolean(user), user, turnstileSiteKey, captchaReady: Boolean(turnstileSiteKey && (process.env.TURNSTILE_SECRET_KEY || allowLocalTestKey)) });
+  }
+
+  if (pathname === '/api/listener/signup' && req.method === 'POST') {
+    if (!listenerAuthAllowed(req)) return errorJson(res, 429, 'Too many signup attempts. Wait 15 minutes and try again.');
+    const body = await readJson(req);
+    await validateTurnstile(body.captchaToken, req);
+    const user = await registerListener(body);
+    res.setHeader('Set-Cookie', `${LISTENER_COOKIE}=${encodeURIComponent(listenerToken(user.id))}; HttpOnly; SameSite=Lax; Path=/; Max-Age=2592000${secureCookie(req)}`);
+    return json(res, 201, { user });
+  }
+
+  if (pathname === '/api/listener/login' && req.method === 'POST') {
+    if (!listenerAuthAllowed(req)) return errorJson(res, 429, 'Too many sign-in attempts. Wait 15 minutes and try again.');
+    const body = await readJson(req);
+    const user = await authenticateListener(body.email, body.password);
+    if (!user) return errorJson(res, 401, 'That email and password do not match.');
+    res.setHeader('Set-Cookie', `${LISTENER_COOKIE}=${encodeURIComponent(listenerToken(user.id))}; HttpOnly; SameSite=Lax; Path=/; Max-Age=2592000${secureCookie(req)}`);
+    return json(res, 200, { user });
+  }
+
+  if (pathname === '/api/listener/logout' && req.method === 'POST') {
+    res.setHeader('Set-Cookie', `${LISTENER_COOKIE}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0${secureCookie(req)}`);
+    return json(res, 200, { ok: true });
+  }
+
   if (pathname === '/api/public/comments' && req.method === 'POST') {
     if (!commentAllowed(req)) return errorJson(res, 429, 'That is enough comments for now. Try again later.');
-    return json(res, 201, { comment: await addComment(await readJson(req)) });
+    const listener = await listenerSessionUser(req);
+    if (!listener) return errorJson(res, 401, 'Sign in with a listener account before commenting.');
+    return json(res, 201, { comment: await addComment({ ...(await readJson(req)), userId: listener.id, name: listener.name }) });
   }
 
   if (pathname === '/api/health' && req.method === 'GET') {
@@ -438,7 +542,7 @@ async function staticFile(req, res, url) {
   if (pathname === '/') pathname = '/index.html';
   if (pathname === '/admin' || pathname === '/admin/') pathname = '/admin/index.html';
   const relative = pathname.replace(/^\/+/, '');
-  const publicRootFiles = new Set(['index.html', 'manifest.webmanifest', 'sw.js', 'icon.svg', 'icon-192.png', 'icon-512.png']);
+  const publicRootFiles = new Set(['index.html', 'manifest.webmanifest', 'sw.js', 'icon.svg', 'icon-192.png', 'icon-512.png', 'data/podcast.json']);
   const publicAdminFiles = new Set(['admin/index.html', 'admin/admin.css', 'admin/admin.js']);
   if (!publicRootFiles.has(relative) && !publicAdminFiles.has(relative) && !relative.startsWith('assets/')) return false;
   const file = path.resolve(ROOT, relative);

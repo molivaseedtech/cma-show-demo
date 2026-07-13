@@ -1,7 +1,7 @@
 /* Public-shell cache. API content remains network-backed and falls back to the
    embedded editorial demo when offline. */
-const CACHE = 'cma-platform-v4-community';
-const ASSETS = ['./index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png', './assets/cma-logo.webp', './assets/cma-hero.webp', './assets/carla-marie.webp', './assets/anthony.webp'];
+const CACHE = 'cma-platform-v5-player-theme';
+const ASSETS = ['./index.html', './manifest.webmanifest', './icon.svg', './icon-192.png', './icon-512.png', './data/podcast.json', './assets/cma-logo.webp', './assets/cma-hero.webp', './assets/carla-marie.webp', './assets/anthony.webp'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));

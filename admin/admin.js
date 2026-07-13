@@ -5,6 +5,18 @@ const hostedPreview = location.hostname.endsWith('vercel.app') || location.hostn
 const PREVIEW_SHOWS_KEY = 'cma-hosted-preview-content-v2';
 const PREVIEW_ALERTS_KEY = 'cma-demo-alerts';
 
+function applyAdminTheme(theme) {
+  const value = theme === 'dark' ? 'dark' : 'light';
+  document.documentElement.dataset.theme = value; localStorage.setItem('cma-theme', value);
+  $$('[data-theme-toggle]').forEach(button => {
+    button.querySelector('[aria-hidden]').textContent = value === 'dark' ? '☀' : '☾';
+    const label = button.querySelector('span:last-child'); if (label) label.textContent = value === 'dark' ? 'Light' : button.classList.contains('login-theme') ? 'Dark mode' : 'Dark';
+    button.setAttribute('aria-label', `Switch to ${value === 'dark' ? 'light' : 'dark'} mode`);
+  });
+}
+applyAdminTheme(document.documentElement.dataset.theme);
+$$('[data-theme-toggle]').forEach(button => button.addEventListener('click', () => applyAdminTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark')));
+
 function esc(value = '') {
   return String(value).replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
 }
@@ -76,7 +88,7 @@ async function previewRequest(url, options = {}) {
     const input = JSON.parse(options.body || '{}'); const now = new Date().toISOString();
     const existing = activeDraftForDay(shows, input);
     if (existing) return { show: existing, reused: true };
-    const show = { id: crypto.randomUUID(), slug: `demo-${now.slice(0,10)}`, status: 'draft', title: input.title || 'Untitled show', episodeTitle: input.episodeTitle || '', excerpt: '', publishBlog: input.publishBlog ?? false, category: 'News', format: input.format || 'Podcast', duration: '', readTime: '', airDate: input.airDate || now, publishAt: null, publishedAt: null, source: { type: input.sourceType || 'upload', url: '', assetId: '', twitchVideoId: '' }, media: { podcastUrl: '', twitchUrl: '', youtubeUrl: '', imageUrl: '' }, transcript: '', bodyHtml: '', chapters: [], links: [], mentions: [], quote: '', review: { blog: false, chapters: false, links: false, media: false }, ai: {}, createdAt: now, updatedAt: now };
+    const show = { id: crypto.randomUUID(), slug: `demo-${now.slice(0,10)}`, status: 'draft', title: input.title || 'Untitled show', episodeTitle: input.episodeTitle || '', excerpt: '', publishBlog: input.publishBlog ?? false, category: 'News', format: input.format || 'Podcast', duration: '', readTime: '', airDate: input.airDate || now, publishAt: null, publishedAt: null, source: { type: input.sourceType || 'upload', url: '', assetId: '', twitchVideoId: '' }, media: { podcastUrl: '', audioUrl: '', twitchUrl: '', youtubeUrl: '', imageUrl: '' }, transcript: '', bodyHtml: '', chapters: [], links: [], mentions: [], quote: '', review: { blog: false, chapters: false, links: false, media: false }, ai: {}, createdAt: now, updatedAt: now };
     shows = [show, ...shows]; storePreviewShows(shows); return { show, reused: false };
   }
   const match = url.match(/^\/api\/admin\/shows\/([^/]+)(?:\/(generate|transcribe|download|publish|schedule|archive))?$/);
@@ -155,7 +167,7 @@ async function loadData() {
 function showDashboard() {
   clearTimeout(state.saveTimer);
   $('#editor').classList.add('hidden'); $('#dashboard').classList.remove('hidden');
-  $('#header-title').textContent = 'Tonight’s work';
+  $('#header-title').textContent = 'Publishing workspace';
   const firstName = (state.user?.name || 'CMA').split(' ')[0];
   $('#welcome-name').textContent = `${firstName}, what are we working on?`;
   renderDashboard();
@@ -177,7 +189,7 @@ function renderDashboard() {
     return unique;
   }, new Map());
   const past = state.shows.filter(show => ['published', 'archived'].includes(show.status));
-  $('#active-list').innerHTML = active.size ? [...active.values()].map(row).join('') : '<div class="empty-row">Nothing waiting—start tonight’s show above.</div>';
+  $('#active-list').innerHTML = active.size ? [...active.values()].map(row).join('') : '<div class="empty-row">Nothing waiting—start a podcast, Twitch show, or post above.</div>';
   $('#past-list').innerHTML = past.length ? past.map(row).join('') : '<div class="empty-row">Past releases will appear here.</div>';
 }
 
@@ -223,8 +235,8 @@ function easternInput(iso) {
 
 function nextFourEastern() {
   const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).filter(part => part.type !== 'literal').map(part => [part.type, Number(part.value)]));
-  const afterTonightRelease = parts.hour >= 4;
-  const next = new Date(Date.UTC(parts.year, parts.month - 1, parts.day + (afterTonightRelease ? 1 : 0)));
+  const afterMorningRelease = parts.hour >= 4;
+  const next = new Date(Date.UTC(parts.year, parts.month - 1, parts.day + (afterMorningRelease ? 1 : 0)));
   return `${next.toISOString().slice(0, 10)}T04:00`;
 }
 
@@ -239,13 +251,13 @@ function renderEditor() {
   $('#episode-subtitle').textContent = show.status === 'scheduled' && show.publishAt ? `Scheduled for ${new Date(show.publishAt).toLocaleString([], { timeZone: 'America/New_York', dateStyle: 'medium', timeStyle: 'short' })} Eastern` : 'Nothing goes live until you say so.';
   $('#episode-fields').classList.toggle('hidden', show.format === 'Article');
   $('#source-options').classList.toggle('hidden', show.format === 'Article');
-  $('#source-heading').textContent = show.format === 'Livestream' ? 'Choose today’s Twitch replay' : show.format === 'Article' ? 'Start writing' : 'Add tonight’s final audio';
+  $('#source-heading').textContent = show.format === 'Livestream' ? 'Choose today’s Twitch replay' : show.format === 'Article' ? 'Start writing' : 'Add the final podcast audio';
   $('#source-help').textContent = show.format === 'Livestream' ? 'The replay is usually available about 15 minutes after the stream ends.' : show.format === 'Article' ? 'No episode is needed for a quick post.' : 'Use the file Anthony finished in Adobe Audition. We’ll handle the transcript and first draft.';
   setValue('#source-url', show.source?.url); setValue('#editor-notes', show.editorNotes); setValue('#transcript', show.transcript); setValue('#review-transcript', show.transcript);
   setValue('#episode-title', show.episodeTitle); setValue('#duration', show.duration); setValue('#title', show.title); setValue('#excerpt', show.excerpt);
   $('#body-editor').innerHTML = show.bodyHtml || '';
   $('#publish-blog').checked = Boolean(show.publishBlog); updateBlogChoice();
-  setValue('#quote', show.quote); setValue('#podcast-url', show.media?.podcastUrl); setValue('#twitch-url', show.media?.twitchUrl); setValue('#youtube-url', show.media?.youtubeUrl); setValue('#image-url', show.media?.imageUrl);
+  setValue('#quote', show.quote); setValue('#podcast-url', show.media?.podcastUrl); setValue('#audio-url', show.media?.audioUrl); setValue('#twitch-url', show.media?.twitchUrl); setValue('#youtube-url', show.media?.youtubeUrl); setValue('#image-url', show.media?.imageUrl);
   setValue('#publish-at', show.publishAt ? easternInput(show.publishAt) : nextFourEastern());
   $('#review-blog').checked = Boolean(show.review?.blog); $('#review-chapters').checked = Boolean(show.review?.chapters); $('#review-links').checked = Boolean(show.review?.links); $('#review-media').checked = Boolean(show.review?.media);
   renderSource(); renderRepeats(); renderReleaseSummary(); saveMessage('Saved');
@@ -289,7 +301,7 @@ function collect() {
     transcript: $('#review-transcript').value || $('#transcript').value, episodeTitle: $('#episode-title').value.trim(), duration: $('#duration').value.trim(),
     publishBlog: $('#publish-blog').checked, title: $('#title').value.trim(), excerpt: $('#excerpt').value.trim(), bodyHtml: $('#body-editor').innerHTML,
     chapters: show.chapters || [], links: show.links || [], mentions: show.mentions || [], quote: $('#quote').value.trim(),
-    media: { podcastUrl: $('#podcast-url').value.trim(), twitchUrl: $('#twitch-url').value.trim(), youtubeUrl: $('#youtube-url').value.trim(), imageUrl: $('#image-url').value.trim() },
+    media: { podcastUrl: $('#podcast-url').value.trim(), audioUrl: $('#audio-url').value.trim(), twitchUrl: $('#twitch-url').value.trim(), youtubeUrl: $('#youtube-url').value.trim(), imageUrl: $('#image-url').value.trim() },
     review: { blog: !$('#publish-blog').checked || $('#review-blog').checked, chapters: show.format === 'Article' || $('#review-chapters').checked, links: $('#review-links').checked, media: show.format === 'Article' || $('#review-media').checked }
   };
 }

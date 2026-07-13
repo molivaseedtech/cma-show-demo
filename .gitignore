@@ -3,4 +3,5 @@
 !.env.example
 uploads/
 data/*.tmp
+data/listeners.json
 .DS_Store
