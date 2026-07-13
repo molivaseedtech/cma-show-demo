@@ -70,7 +70,7 @@ function isLocal(req) {
 
 function adminUsers() {
   const users = {};
-  if (process.env.CMA_CARLA_PASSWORD) users.carla = { name: 'Carla Marie', password: process.env.CMA_CARLA_PASSWORD };
+  if (process.env.CMA_CARLA_PASSWORD) users['carla marie'] = { name: 'Carla Marie', password: process.env.CMA_CARLA_PASSWORD };
   if (process.env.CMA_ANTHONY_PASSWORD) users.anthony = { name: 'Anthony', password: process.env.CMA_ANTHONY_PASSWORD };
   if (process.env.CMA_ADMIN_USERS) {
     try {
@@ -393,7 +393,7 @@ async function api(req, res, url) {
     const users = adminUsers();
     return json(res, 200, {
       loggedIn: Boolean(user) || (Object.keys(users).length === 0 && isLocal(req)),
-      user: user || (Object.keys(users).length === 0 && isLocal(req) ? { id: 'local', name: 'CMA' } : null),
+      user: user || (Object.keys(users).length === 0 && isLocal(req) ? { id: 'local', name: 'CM&A' } : null),
       localSetup: Object.keys(users).length === 0 && isLocal(req),
       choices: Object.entries(users).map(([id, value]) => ({ id, name: value.name }))
     });
@@ -407,7 +407,7 @@ async function api(req, res, url) {
     if (Object.keys(users).length === 0 && isLocal(req)) {
       const token = sessionToken('local');
       res.setHeader('Set-Cookie', `${SESSION_COOKIE}=${encodeURIComponent(token)}; HttpOnly; SameSite=Strict; Path=/; Max-Age=43200`);
-      return json(res, 200, { user: { id: 'local', name: 'CMA' } });
+      return json(res, 200, { user: { id: 'local', name: 'CM&A' } });
     }
     const id = String(body.user || '').toLowerCase();
     if (!users[id] || !passwordMatches(users[id].password, body.password || '')) {
@@ -453,7 +453,7 @@ async function api(req, res, url) {
     const created = await createOrReuseShow(await readJson(req), process.env.CMA_TIMEZONE || 'America/New_York');
     return json(res, created.reused ? 200 : 201, created);
   }
-  if (pathname === '/api/admin/alerts' && req.method === 'POST') return json(res, 201, { alert: await createAlert({ ...(await readJson(req)), source: sessionUser(req)?.name || 'CMA' }) });
+  if (pathname === '/api/admin/alerts' && req.method === 'POST') return json(res, 201, { alert: await createAlert({ ...(await readJson(req)), source: sessionUser(req)?.name || 'CM&A' }) });
   if (pathname === '/api/admin/comments' && req.method === 'GET') return json(res, 200, { comments: await listComments('pending') });
   const commentRoute = pathname.match(/^\/api\/admin\/comments\/([^/]+)\/(approve|remove)$/);
   if (commentRoute && req.method === 'POST') {

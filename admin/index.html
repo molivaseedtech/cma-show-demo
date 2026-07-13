@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#20243d">
-  <title>CMA Content Studio</title>
+  <title>CM&amp;A Content Studio</title>
   <script>document.documentElement.dataset.theme=localStorage.getItem('cma-theme')||'light';</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,30 +16,30 @@
     <div class="login-card">
       <button class="admin-theme-toggle login-theme" type="button" data-theme-toggle aria-label="Switch to dark mode"><span aria-hidden="true">☾</span><span>Dark mode</span></button>
       <img src="../assets/cma-logo.webp" alt="The Carla Marie and Anthony Show">
-      <span class="eyebrow">CMA admin</span>
+      <span class="eyebrow">CM&amp;A admin</span>
       <h1>Welcome back.</h1>
       <p>Sign in to prepare the next podcast, Twitch replay, or blog post.</p>
       <form id="login-form">
         <label>Who are you?<select id="login-user"></select></label>
         <label>Password<input id="login-password" type="password" autocomplete="current-password" required></label>
-        <button class="button primary full" type="submit">Open CMA Content Studio</button>
+        <button class="button primary full" type="submit">Open CM&amp;A Content Studio</button>
         <p class="form-error" id="login-error"></p>
       </form>
     </div>
   </section>
 
   <div class="app hidden" id="app">
-    <div class="preview-banner hidden" id="preview-banner"><strong>Demo preview</strong> Changes stay in this browser. Real CMA content and passwords are not connected here.</div>
+    <div class="preview-banner hidden" id="preview-banner"><strong>Demo preview</strong> Changes stay in this browser. Real CM&amp;A content and passwords are not connected here.</div>
     <header class="app-header">
-      <button class="logo-button" id="go-home" aria-label="CMA Content Studio home"><img src="../assets/cma-logo.webp" alt="The Carla Marie and Anthony Show"></button>
-      <div class="header-center"><span class="eyebrow">CMA Content Studio</span><strong id="header-title">Publishing workspace</strong></div>
+      <button class="logo-button" id="go-home" aria-label="CM&amp;A Content Studio home"><img src="../assets/cma-logo.webp" alt="The Carla Marie and Anthony Show"></button>
+      <div class="header-center"><span class="eyebrow">CM&amp;A Content Studio</span><strong id="header-title">Publishing workspace</strong></div>
       <div class="header-actions"><span class="save-status" id="save-status">Saved</span><button class="admin-theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode"><span aria-hidden="true">☾</span><span>Dark</span></button><button class="text-button" id="logout">Sign out</button></div>
     </header>
 
     <main>
       <section class="dashboard" id="dashboard">
         <div class="welcome">
-          <div><span class="eyebrow">CMA publishing</span><h1 id="welcome-name">What are we working on?</h1><p>Choose one. The Content Studio will walk you through the rest.</p></div>
+          <div><span class="eyebrow">CM&amp;A publishing</span><h1 id="welcome-name">What are we working on?</h1><p>Choose one. The Content Studio will walk you through the rest.</p></div>
           <div class="deadline"><span>Podcast target</span><strong>4:00 AM ET</strong><small>Ready before 5:00 AM</small></div>
         </div>
 
@@ -183,19 +183,19 @@
   </div>
 
   <dialog id="twitch-dialog">
-    <div class="dialog-header"><div><span class="eyebrow">CMA on Twitch</span><h2>Choose the replay</h2></div><button id="close-twitch" aria-label="Close">×</button></div>
+    <div class="dialog-header"><div><span class="eyebrow">CM&amp;A on Twitch</span><h2>Choose the replay</h2></div><button id="close-twitch" aria-label="Close">×</button></div>
     <div class="vod-list" id="twitch-videos"><p>Looking for recent shows…</p></div>
   </dialog>
 
   <dialog id="alert-dialog">
     <form id="alert-form" class="alert-form">
       <div class="dialog-header"><div><span class="eyebrow">Listener notification</span><h2>Send a quick alert</h2></div><button type="button" id="close-alert" aria-label="Close">×</button></div>
-      <p>Keep it short. It will appear in the CMA PWA and become a Web Push notification for subscribed listeners.</p>
+      <p>Keep it short. It will appear in the CM&amp;A PWA and become a Web Push notification for subscribed listeners.</p>
       <label>What is this about?<select id="alert-category"><option value="announcement">Announcement</option><option value="podcast">New podcast</option><option value="twitch">Twitch / replay</option><option value="blog">Blog post</option><option value="merch">Merch</option><option value="support">Patreon / support</option></select></label>
       <label>Notification title<input id="alert-title" maxlength="80" placeholder="New YLG merch just dropped" required></label>
       <label>Message<textarea id="alert-body" maxlength="180" class="short" placeholder="Tap to see the new collection." required></textarea></label>
       <label>Optional link<input id="alert-url" type="url" placeholder="https://..."></label>
-      <div class="alert-preview"><span>CMA</span><strong id="alert-preview-title">Your title</strong><p id="alert-preview-body">Your message will preview here.</p></div>
+      <div class="alert-preview"><span>CM&amp;A</span><strong id="alert-preview-title">Your title</strong><p id="alert-preview-body">Your message will preview here.</p></div>
       <button class="button primary full large" type="submit">Send to listeners</button>
       <small>Publishing a podcast or Twitch replay also creates its own automatic alert.</small>
     </form>

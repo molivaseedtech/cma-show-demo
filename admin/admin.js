@@ -1,6 +1,6 @@
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
-const state = { status: null, user: null, shows: [], comments: [], current: null, step: 'source', saveTimer: null, saving: false };
+const state = { status: null, user: null, shows: [], comments: [], current: null, step: 'source', saveTimer: null, saving: false, lastSavedAt: null };
 const hostedPreview = location.hostname.endsWith('vercel.app') || location.hostname.endsWith('github.io') || new URLSearchParams(location.search).has('staticPreview');
 const PREVIEW_SHOWS_KEY = 'cma-hosted-preview-content-v2';
 const PREVIEW_ALERTS_KEY = 'cma-demo-alerts';
@@ -31,7 +31,7 @@ async function previewShows() {
 function storePreviewShows(shows) { localStorage.setItem(PREVIEW_SHOWS_KEY, JSON.stringify(shows)); }
 function storePreviewAlert(input) {
   const alerts = JSON.parse(localStorage.getItem(PREVIEW_ALERTS_KEY) || '[]');
-  const alert = { id: crypto.randomUUID(), ...input, createdAt: new Date().toISOString(), source: 'CMA Demo' };
+  const alert = { id: crypto.randomUUID(), ...input, createdAt: new Date().toISOString(), source: 'CM&A Demo' };
   localStorage.setItem(PREVIEW_ALERTS_KEY, JSON.stringify([alert, ...alerts].slice(0, 25)));
   localStorage.setItem('cma-community-alerts', JSON.stringify([alert, ...alerts].slice(0, 25)));
   return alert;
@@ -64,8 +64,8 @@ function activeDraftForDay(shows, input) {
 
 async function previewRequest(url, options = {}) {
   const method = options.method || 'GET';
-  if (url === '/api/auth/session') return { loggedIn: true, user: { id: 'demo', name: 'CMA Demo' }, choices: [] };
-  if (url === '/api/auth/login') return { user: { id: 'demo', name: 'CMA Demo' } };
+  if (url === '/api/auth/session') return { loggedIn: true, user: { id: 'demo', name: 'CM&A Demo' }, choices: [] };
+  if (url === '/api/auth/login') return { user: { id: 'demo', name: 'CM&A Demo' } };
   if (url === '/api/auth/logout') return { ok: true };
   if (url === '/api/admin/status') return { demoMode: true, timezone: 'America/New_York', providers: {
     openai: { ready: false }, localTranscription: { ready: false }, localGeneration: { ready: false }, gemini: { ready: false }, megaphone: { ready: false }, twitch: { ready: false }
@@ -81,7 +81,7 @@ async function previewRequest(url, options = {}) {
     });
     localStorage.setItem('cma-episode-comments', JSON.stringify(saved)); return { comment: { id: decodeURIComponent(previewCommentRoute[1]) } };
   }
-  if (url.startsWith('/api/admin/twitch/videos')) return { videos: [{ id: 'demo-vod', title: 'CMA Live — demo replay', url: 'https://www.twitch.tv/CarlaMarieandAnthony', createdAt: new Date().toISOString(), duration: '1h 12m', thumbnailUrl: '../assets/cma-hero.webp' }] };
+  if (url.startsWith('/api/admin/twitch/videos')) return { videos: [{ id: 'demo-vod', title: 'CM&A Live — demo replay', url: 'https://www.twitch.tv/CarlaMarieandAnthony', createdAt: new Date().toISOString(), duration: '1h 12m', thumbnailUrl: '../assets/cma-hero.webp' }] };
   let shows = await previewShows();
   if (url === '/api/admin/shows' && method === 'GET') return { shows };
   if (url === '/api/admin/shows' && method === 'POST') {
@@ -98,7 +98,7 @@ async function previewRequest(url, options = {}) {
   if (!match[2] && method === 'PATCH') show = { ...show, ...body, updatedAt: new Date().toISOString() };
   if (match[2] === 'download') show = { ...show, source: { ...show.source, assetId: `demo-${Date.now()}.mp3`, filename: 'linked-audio.mp3' } };
   if (match[2] === 'transcribe') show = { ...show, transcript: show.transcript || '00:00 Carla Marie: Welcome to the demo transcript.\n00:14 Anthony: Here is the story listeners need this morning.' };
-  if (match[2] === 'generate') show = { ...show, title: show.title || 'Today on the Carla Marie & Anthony Show', episodeTitle: show.episodeTitle || 'Today’s morning show', excerpt: 'The useful stories, links, and moments from today’s show.', bodyHtml: '<p>Here is the CMA-reviewed written companion for today’s episode.</p><h2>What you need to know</h2><p>Edit this text in plain language before publishing.</p>', chapters: [{ time: '00:00', title: 'Welcome to the show' }, { time: '00:14', title: 'The story you need' }], links: [{ label: 'CMA on Twitch', url: 'https://www.twitch.tv/CarlaMarieandAnthony' }], mentions: [{ name: 'CMA community', verifiedUrl: '', context: 'Listeners' }], quote: 'Here is the story listeners need this morning.', ai: { provider: 'demo', model: 'preview', generatedAt: new Date().toISOString() }, review: { ...show.review, blog: false, chapters: false, links: false } };
+  if (match[2] === 'generate') show = { ...show, title: show.title || 'Today on the Carla Marie & Anthony Show', episodeTitle: show.episodeTitle || 'Today’s morning show', excerpt: 'The useful stories, links, and moments from today’s show.', bodyHtml: '<p>Here is the CM&amp;A-reviewed written companion for today’s episode.</p><h2>What you need to know</h2><p>Edit this text in plain language before publishing.</p>', chapters: [{ time: '00:00', title: 'Welcome to the show' }, { time: '00:14', title: 'The story you need' }], links: [{ label: 'CM&A on Twitch', url: 'https://www.twitch.tv/CarlaMarieandAnthony' }], mentions: [{ name: 'CM&A community', verifiedUrl: '', context: 'Listeners' }], quote: 'Here is the story listeners need this morning.', ai: { provider: 'demo', model: 'preview', generatedAt: new Date().toISOString() }, review: { ...show.review, blog: false, chapters: false, links: false } };
   if (match[2] === 'archive') show = { ...show, status: 'archived', publishAt: null };
   if (match[2] === 'schedule') show = { ...show, status: 'scheduled', publishAt: body.localPublishAt ? `${body.localPublishAt}:00-04:00` : body.publishAt };
   if (match[2] === 'publish') { show = { ...show, status: 'published', publishAt: null, publishedAt: new Date().toISOString() }; storePreviewAlert({ title: show.format === 'Livestream' ? 'The Twitch replay is ready' : 'A new episode is ready', body: show.episodeTitle || show.title, category: show.format === 'Livestream' ? 'twitch' : 'podcast', url: '/' }); }
@@ -126,8 +126,16 @@ function toast(message, kind = '') {
   clearTimeout(toastTimer); toastTimer = setTimeout(() => { el.className = 'toast'; }, 4300);
 }
 
-function saveMessage(message, kind = '') {
-  const el = $('#save-status'); el.textContent = message; el.className = `save-status ${kind}`;
+function saveMessage(message, kind = '', savedAt = null) {
+  const el = $('#save-status');
+  if (message === 'Saved') {
+    const date = new Date(savedAt || Date.now()); state.lastSavedAt = Number.isNaN(date.valueOf()) ? new Date() : date;
+    el.textContent = `Saved · ${state.lastSavedAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
+    el.title = `Last saved ${state.lastSavedAt.toLocaleString()}`;
+  } else {
+    el.textContent = message === 'Not saved' && state.lastSavedAt ? `Not saved · last saved ${state.lastSavedAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}` : message;
+  }
+  el.className = `save-status ${kind}`;
 }
 
 function showLogin(session = {}) {
@@ -135,13 +143,13 @@ function showLogin(session = {}) {
   const choices = session.choices || [];
   $('#login-user').innerHTML = choices.length
     ? choices.map(user => `<option value="${esc(user.id)}">${esc(user.name)}</option>`).join('')
-    : '<option value="local">CMA on this Mac</option>';
+    : '<option value="local">CM&amp;A on this Mac</option>';
   $('#login-password').required = choices.length > 0;
   $('#login-password').closest('label').classList.toggle('hidden', choices.length === 0);
 }
 
 async function startApp(user) {
-  state.user = user || { name: 'CMA' };
+  state.user = user || { name: 'CM&A' };
   $('#preview-banner').classList.toggle('hidden', !hostedPreview);
   $('#login-screen').classList.add('hidden'); $('#app').classList.remove('hidden');
   await loadData(); showDashboard();
@@ -160,6 +168,7 @@ async function boot() {
 async function loadData() {
   const [status, content, moderation] = await Promise.all([request('/api/admin/status'), request('/api/admin/shows'), request('/api/admin/comments')]);
   state.status = status; state.shows = content.shows; state.comments = moderation.comments || [];
+  const latestSave = state.shows.map(show => show.updatedAt || show.createdAt).filter(Boolean).sort((a, b) => new Date(b) - new Date(a))[0]; saveMessage('Saved', '', latestSave || Date.now());
   if (state.current) state.current = state.shows.find(show => show.id === state.current.id) || null;
   renderConnections(); renderDashboard(); renderModeration();
 }
@@ -168,7 +177,7 @@ function showDashboard() {
   clearTimeout(state.saveTimer);
   $('#editor').classList.add('hidden'); $('#dashboard').classList.remove('hidden');
   $('#header-title').textContent = 'Publishing workspace';
-  const firstName = (state.user?.name || 'CMA').split(' ')[0];
+  const firstName = (state.user?.name || 'CM&A').split(' ')[0];
   $('#welcome-name').textContent = `${firstName}, what are we working on?`;
   renderDashboard();
 }
@@ -209,7 +218,7 @@ function renderConnections() {
 
 async function createNew(format) {
   const now = new Date();
-  const names = { Podcast: `Morning Show Podcast — ${now.toLocaleDateString([], { month: 'long', day: 'numeric' })}`, Livestream: `CMA Live — ${now.toLocaleDateString([], { month: 'long', day: 'numeric' })}`, Article: 'New post' };
+  const names = { Podcast: `Morning Show Podcast — ${now.toLocaleDateString([], { month: 'long', day: 'numeric' })}`, Livestream: `CM&A Live — ${now.toLocaleDateString([], { month: 'long', day: 'numeric' })}`, Article: 'New post' };
   const payload = await request('/api/admin/shows', { method: 'POST', body: JSON.stringify({
     title: names[format], episodeTitle: format === 'Article' ? '' : names[format], airDate: now.toISOString(), format,
     sourceType: format === 'Livestream' ? 'twitch' : format === 'Article' ? 'manual' : 'upload', publishBlog: format === 'Article'
@@ -260,7 +269,7 @@ function renderEditor() {
   setValue('#quote', show.quote); setValue('#podcast-url', show.media?.podcastUrl); setValue('#audio-url', show.media?.audioUrl); setValue('#twitch-url', show.media?.twitchUrl); setValue('#youtube-url', show.media?.youtubeUrl); setValue('#image-url', show.media?.imageUrl);
   setValue('#publish-at', show.publishAt ? easternInput(show.publishAt) : nextFourEastern());
   $('#review-blog').checked = Boolean(show.review?.blog); $('#review-chapters').checked = Boolean(show.review?.chapters); $('#review-links').checked = Boolean(show.review?.links); $('#review-media').checked = Boolean(show.review?.media);
-  renderSource(); renderRepeats(); renderReleaseSummary(); saveMessage('Saved');
+  renderSource(); renderRepeats(); renderReleaseSummary(); saveMessage('Saved', '', show.updatedAt || show.createdAt);
 }
 
 function renderSource() {
@@ -319,7 +328,7 @@ async function saveDraft(silent = false) {
     const payload = await request(`/api/admin/shows/${state.current.id}`, { method: 'PATCH', body: JSON.stringify(collect()) });
     state.current = payload.show;
     const index = state.shows.findIndex(show => show.id === payload.show.id); if (index >= 0) state.shows[index] = payload.show;
-    saveMessage('Saved'); renderSource(); renderReleaseSummary();
+    saveMessage('Saved', '', payload.show.updatedAt || Date.now()); renderSource(); renderReleaseSummary();
     if (!silent) toast('Saved.');
     return payload.show;
   } finally { state.saving = false; }
@@ -469,7 +478,7 @@ $('#alert-form').addEventListener('submit', event => withBusy(event.submitter, '
   const payload = { category: $('#alert-category').value, title: $('#alert-title').value.trim(), body: $('#alert-body').value.trim(), url: $('#alert-url').value.trim() || '/' };
   await request('/api/admin/alerts', { method: 'POST', body: JSON.stringify(payload) });
   $('#alert-dialog').close(); event.currentTarget.reset(); $('#alert-preview-title').textContent = 'Your title'; $('#alert-preview-body').textContent = 'Your message will preview here.';
-  toast(hostedPreview ? 'Demo alert sent in this browser.' : 'Alert queued for CMA listeners.');
+  toast(hostedPreview ? 'Demo alert sent in this browser.' : 'Alert queued for CM&A listeners.');
 }).catch(() => {}));
 
 boot();
